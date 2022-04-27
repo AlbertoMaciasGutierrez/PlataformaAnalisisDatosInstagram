@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+  <div class="container mr-xl-5 " style="width: 55%;">
+      <h1 class="text-center "><i><b>Iniciar Sesión</b></i></h1>
+      <br>
+  </div>
+
+  <div class="container-c  ">
+    <br>  
+
+  {% if form.errors %}
+    <p>Tu usuario o contraseña son incorrectos. Por favor inténtalo de nuevo.</p>
+  {% endif %}
+
+  {% if next %}
+      {% if user.is_authenticated %}
+      <p>Tu cuenta no tiene acceso a esta página. Para seguir,
+      inicie sesión con una cuenta que tenga acceso.</p>
+      {% else %}
+      <p>Por favor, inicia sesión para poder ver esta página.</p>
+      {% endif %}
+  {% endif %}
+
+  
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
+                        la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
+                        Bueno para cualquier plantilla que use formularios POST{% endcomment %}
+
+      <div>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+      </div>
+      <div>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </div>
+      
+      
+      
+      <div class="boton-login text-center">
+        <input class="btn btn-outline-success" type="submit" value="Ingresar" />
+      </div>
+      <br>
+      
+    </form>
+  
+  
+    <p>Todavía no tienes cuenta. <a href="{% url 'registro_usuario' %}">Registrar cuenta</a> </p>
+    <br>
+  </div>
+
+  {# Assumes you setup the password_reset view in your URLconf #}
+ {#<p><a href="{% url 'password_reset' %}">Lost password?</a></p> #} 
+
+{% endblock %}

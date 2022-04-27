@@ -1,0 +1,15 @@
+.container-c {
+    background-color: #E0E5E9; 
+    width: 55% ;
+    text-align: center;
+    margin-left: 38%;
+    border: 1px solid #000000; 
+}
+
+.container-d {
+    background-color: #E0E5E9; 
+    text-align: left;
+    width: 110% ;
+    margin-left: 12%;
+    border: 1px solid #000000; 
+}
