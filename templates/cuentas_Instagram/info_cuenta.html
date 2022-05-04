@@ -4,7 +4,50 @@
 {% block title %}INformacion Usuario Instagram{% endblock %}
 
 {% block content %}
+<div class="container-fluid ">
+    <div class="row d-flex justify-content-between p-4 mt-5 mr-2 ml-2 mb-4" style="background-color: #161616">
 
+        <div class="col-md-6 col-xl-6 col-sm-6">
+            <div class="row d-flex justify-content-between">
+
+                <img class="card-img-top rounded-circle _6q-tv" style="max-width:20rem" src="{{info.Foto_perfil}}" alt=""  width="100px" height="100px">
+                        
+                <div class="card-body text-left" style="color:white">
+                    <h3 class="card-text font-weinght-bold"> Id cuenta </h3>
+                    <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Nombre}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Verificado: &nbsp;&nbsp;                     
+                        {%if info.Usuario_verificado%}
+                            <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                        {%else%}
+                            <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                        {%endif%}
+                    </h6>
+
+                    <h6 class="card-text font-weinght-bold">Usuario Privado: &nbsp;&nbsp; 
+                        {%if info.Usuario_privado%}
+                            <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                        {%else%}
+                            <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                        {%endif%}
+                    </h6>
+                    <h6 class="card-text font-weinght-bold">Popularidad: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Popularidad}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Biografía: &nbsp;&nbsp; </h6>
+                    <p class="font-italic"> <i>{{info.Biografia}}</i> </p>
+                    {% if info.Website != None %}
+                        <h6 class="card-text font-weinght-bold">Website: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{info.Website}}"> {{info.Website}} </a></h6>
+                    {% endif %}
+                        <br>
+                    <a type="button" class="btn btn-success"  target="_blank" href="{{info.Perfil}}">
+                        Instagram de {{info.Nombre}}
+                    </a>            
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

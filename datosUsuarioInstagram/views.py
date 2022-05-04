@@ -12,9 +12,9 @@ from .forms import RegistroForm
 
 
 def obtenerInformacionCuenta(request):
-    info = informacionCuenta("macy_guty")
-    print(info)
-    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"))
+    info = informacionCuenta("kimkardashian")
+    #print(info)
+    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),{'info':info})
 
 class RegistroUsuario(CreateView):
     model = Usuario
