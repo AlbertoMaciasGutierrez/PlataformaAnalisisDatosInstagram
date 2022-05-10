@@ -19,7 +19,10 @@ from datosUsuarioInstagram import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('analisisInsta/infoCuenta', views.obtenerInformacionCuenta, name="obternerInformacionCuenta"),
+    path('analisisInsta/buscadorCuenta/', views.bucadorCuentas, name="buscadorCuentas"),
+    #path('analisisInsta/buscadorCuenta/busqueda/<nombre>/', views.realizarBusqueda, name="realizarBusqueda"),
+    path('analisisInsta/buscadorCuenta/busqueda/<IDusuario>/', views.obtenerInformacionCuenta, name="obtenerInformacionCuenta"),
+
     path('registro/',views.RegistroUsuario.as_view(), name='registro_usuario'),
     path('accounts/', include('django.contrib.auth.urls')),                                      #Add Django site authentication urls (for login, logout, password management)
 ]

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Buscador Usuario Instagram{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<div class ="container-fluid ">
+    <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+        <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
+            <h2 class="font-weinght-bold text-center">Buscador de cuentas de Instagram </h2>
+            
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center p-1 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12">
+            <form class="form-inline px-1 " method ="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar" name="Buscar" id="Buscar">
+                <button id="boton" class="btn btn-outline-success my-2 my-sm-0" type="submit"> Buscar </button> 
+            </form>
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+{% endblock %}

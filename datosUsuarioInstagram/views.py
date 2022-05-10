@@ -5,17 +5,44 @@ from datosUsuarioInstagram.instagramy_funciones import informacionCuenta
 from django.contrib.auth import login, authenticate
 from cuentas.models import Usuario
 from django.views.generic import CreateView
+from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm
 
 
+datos = {}  #Variable global para pasar los datos del usuario a los templates en obtenerInformacionCuenta           
+
 # Create your views here.
 
-
-def obtenerInformacionCuenta(request):
-    context = informacionCuenta("kimkardashian")
-    #print(info)
+@login_required
+def obtenerInformacionCuenta(request,IDusuario):
     
-    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=context )
+    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datos)
+
+
+@login_required
+def bucadorCuentas(request):
+
+    queryset = request.GET.get("Buscar")
+    #print(queryset) 
+
+    if queryset: 
+        context = informacionCuenta(queryset)
+
+        if context == None:
+            return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
+        else:
+            context['IDcuenta'] = queryset
+            datos.update(context)
+            return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
+
+    return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
+
+
+
+
+
+
+
 
 class RegistroUsuario(CreateView):
     model = Usuario

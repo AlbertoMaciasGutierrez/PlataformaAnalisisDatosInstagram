@@ -14,27 +14,31 @@ sesion_id = "52174686364%3A6ZaDyhSKSoOurV%3A15"         #Arreglar más adelante 
 
 
 def informacionCuenta(cuenta):
-    # Connecting the profile 
-    user = InstagramUser(cuenta,sessionid=sesion_id)
-    #user = InstagramUser(cuenta,from_cache=True)         #->Sin el id de la sesion no funciona la búsqueda de perfiles privados o verificados 
+    # Connecting the profile
+    try:
+        user = InstagramUser(cuenta,sessionid=sesion_id)
+        #user = InstagramUser(cuenta,from_cache=True)         #->Sin el id de la sesion no funciona la búsqueda de perfiles privados o verificados 
 
-    context = obtenerComentariosLikesPosts(user.posts)
+        context = obtenerComentariosLikesPosts(user.posts)
+        
+        datos = {
+        "Nombre": user.fullname,
+        "Usuario_verificado": user.is_verified,
+        "Popularidad": user.number_of_followers,
+        "Perfil": user.url,
+        "Usuario_privado": user.is_private,
+        "Publicaciones": user.number_of_posts,
+        "Biografia": user.biography,
+        "Foto_perfil":user.profile_picture_url,
+        "Website":user.website,
+        }
+
+        context['info'] = datos
+
+        return context
+    except:
+        return None
     
-    datos = {
-    "Nombre": user.fullname,
-    "Usuario_verificado": user.is_verified,
-    "Popularidad": user.number_of_followers,
-    "Perfil": user.url,
-    "Usuario_privado": user.is_private,
-    "Publicaciones": user.number_of_posts,
-    "Biografia": user.biography,
-    "Foto_perfil":user.profile_picture_url,
-    "Website":user.website,
-    }
-
-    context['info'] = datos
-
-    return context
 
 
 def obtenerComentariosLikesPosts(posts):

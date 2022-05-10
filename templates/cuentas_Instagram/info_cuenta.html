@@ -22,7 +22,7 @@
                 <img class="card-img-top rounded-circle _6q-tv" style="max-width:20rem" src="{{info.Foto_perfil}}" alt=""  width="100px" height="100px">
                         
                 <div class="card-body text-left" style="color:white">
-                    <h3 class="card-text font-weinght-bold"> Id cuenta </h3>
+                    <h3 class="card-text font-weinght-bold"> {{IDcuenta}}</h3>
                     <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Nombre}}</b> </i></h6>
                     <h6 class="card-text font-weinght-bold">Verificado: &nbsp;&nbsp;                     
                         {%if info.Usuario_verificado%}
@@ -89,16 +89,15 @@
         
         <div class="col-md-12 col-xl-6 col-sm-12">
             <br><br>
-            <div class="dropup text-left">
-                <button type="button" class="btn btn-outline-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Gráfico
-                </button>
-                <div class="dropdown-menu" style="">
-                    <a class="dropdown-item" href="#">Área</a>
-                    <a class="dropdown-item" href="#">Barras</a>
-                    <a class="dropdown-item" href="#">Link 3</a>
-                </div>
-            </div>
+
+            <form>
+                <select name="Gráficos" class="custom-select">
+                  <option selected>Elegir tipo de gráfico</option>
+                  <option value="area">Área</option>
+                  <option value="barras">Barras</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </form>
             <br><br>
             
             {#Añadir más tipos de gráficos#}
@@ -114,9 +113,6 @@
     </div>
 </div>
 
-
-
-
 {% endblock %}
 
 
@@ -130,7 +126,7 @@
             text: 'Likes últimas publicaciones'
         },
         subtitle: {
-            text: '*Id cuenta, últimas 12 publicaciones',
+            text: '*{{IDcuenta}}, últimas 12 publicaciones',
             align: 'right',
             verticalAlign: 'bottom'
         },
@@ -182,7 +178,7 @@
             text: 'Comentarios últimas publicaciones'
         },
         subtitle: {
-            text: '*Id cuenta, últimas 12 publicaciones',
+            text: '*{{IDcuenta}}, últimas 12 publicaciones',
             align: 'right',
             verticalAlign: 'bottom'
         },

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Busqueda {% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<div class ="container-fluid ">
+    <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+        <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
+            {%if IDcuenta %}
+                <a href="{% url 'obtenerInformacionCuenta' IDcuenta %}">{{IDcuenta}}</a>
+            {%else%}
+                <p>Cuenta no encontrada</p>
+            {%endif%}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+{% endblock %}
