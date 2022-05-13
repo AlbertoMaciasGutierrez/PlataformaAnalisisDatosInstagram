@@ -4,53 +4,46 @@
 
 {% block content %}
 
-  <div class="container mr-xl-5 " style="width: 55%;">
-      <h1 class="text-center "><i><b>Iniciar Sesión</b></i></h1>
-      <br>
-  </div>
 
-  <div class="container-c  ">
+  <div class="container">
     <br>  
+    <div class = "row">
+        <div class = "d-flex col-12 col-sm-10 col-md-8 offset-md-2 offset-sm-1 justify-content-around">
+          <div class = "card shadow-lg border-dark" style="max-width: 35rem; min-width: 20rem;">
+            <div class = "card-header font-weight-bold text-center"> <h4><i>Iniciar Sesión</i></h4></div>
+            <div class = "card-body text-dark">
+              <form method="post" action="{% url 'login_usuario' %}">
+                {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
+                                  la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
+                                  Bueno para cualquier plantilla que use formularios POST{% endcomment %}
+                
+                {{form}}
+                <br>
+                <button class="btn btn-md btn-primary btn-block" type="submit">Iniciar Sesión</button>
+                <br>
+              </form>
+              <p>Todavía no tienes cuenta. <a href="{% url 'registro_usuario' %}">Registrar cuenta</a> </p>
+              {% if form.errors %}
+              <p style="color:#f80000">Tu usuario o contraseña son incorrectos. Por favor inténtalo de nuevo.</p>
+              {% endif %}
+          
+              {% if next %}
+                {% if user.is_authenticated %}
+                <p>Tu cuenta no tiene acceso a esta página. Para seguir,
+                inicie sesión con una cuenta que tenga acceso.</p>
+                {% else %}
+                <p class = "text-info">Por favor, inicia sesión para poder ver esta página.</p>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
 
-  {% if form.errors %}
-    <p style="color:#f80000">Tu usuario o contraseña son incorrectos. Por favor inténtalo de nuevo.</p>
-  {% endif %}
+        </div>
+    </div>
 
-  {% if next %}
-      {% if user.is_authenticated %}
-      <p>Tu cuenta no tiene acceso a esta página. Para seguir,
-      inicie sesión con una cuenta que tenga acceso.</p>
-      {% else %}
-      <p>Por favor, inicia sesión para poder ver esta página.</p>
-      {% endif %}
-  {% endif %}
 
   
-    <form method="post" action="{% url 'login' %}">
-      {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
-                        la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
-                        Bueno para cualquier plantilla que use formularios POST{% endcomment %}
-
-      <div>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </div>
-      <div>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </div>
-      
-      
-      
-      <div class="boton-login text-center">
-        <input class="btn btn-outline-success" type="submit" value="Ingresar" />
-      </div>
-      <br>
-      
-    </form>
   
-  
-    <p>Todavía no tienes cuenta. <a href="{% url 'registro_usuario' %}">Registrar cuenta</a> </p>
     <br>
   </div>
 

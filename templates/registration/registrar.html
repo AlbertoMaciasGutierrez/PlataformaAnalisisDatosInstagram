@@ -8,12 +8,12 @@
         <p>Error al registrar</p>
     {% endif %}
 
-    <div class="container mr-xl-5 " style="width: 55%;">
+    <div class="container" >
       <h1 class="text-center "><i><b>Registrarse</b></i></h1>
       <br>
     </div>
 
-    <div class="container-d mr-xl-5 ">
+    <div class="container" style= "background-color: #E0E5E9; width: 55% ; border: 1px solid #000000; ">
         <br>
         <form method="POST" action="">
             {% csrf_token %}    {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar

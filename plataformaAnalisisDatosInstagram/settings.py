@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-jxxr4@@!@%8yhl8ew(dcle%(ke0&_ne!93ygxbcore&vwm+^_-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']                #Para permitir acceder a cualquier dispositivo al servidor
 
 
 # Application definition
@@ -139,5 +139,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'cuentas.Usuario'                     
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/analisisInsta/infoCuenta'
-LOGOUT_REDIRECT_URL = '/analisisInsta/infoCuenta'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/analisisInsta'
+LOGOUT_REDIRECT_URL = '/login'
