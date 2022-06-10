@@ -4,31 +4,34 @@
 
 {% block content %}
 
-    {% if form.errors %}
-        <p>Error al registrar</p>
-    {% endif %}
 
     <div class="container" >
-      <h1 class="text-center "><i><b>Registrarse</b></i></h1>
-      <br>
-    </div>
+        <br>  
+        <div class = "row">
+            <div class = "d-flex col-12 col-sm-10 col-md-8 offset-md-2 offset-sm-1 justify-content-around">
+              <div class = "card shadow-lg border-dark" style="max-width: 35rem; min-width: 20rem;">
+                <div class = "card-header font-weight-bold text-center" style="background-color:#c7d1d691"> <h4><i>Registrarse</i></h4></div>
+                <div class = "card-body text-dark">
+                    <form method="post" action="">
+                    {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
+                                      la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
+                                      Bueno para cualquier plantilla que use formularios POST{% endcomment %}
+                    
+                    {{form.as_p}}
+                    <br>
+                    <button class="btn btn-md btn-primary btn-block" type="submit">Confirmar</button>
+                    <button class="btn btn-md btn-danger btn-block" type ="reset">Borrar</button>
 
-    <div class="container" style= "background-color: #E0E5E9; width: 55% ; border: 1px solid #000000; ">
-        <br>
-        <form method="POST" action="">
-            {% csrf_token %}    {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
-                                la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
-                                Bueno para cualquier plantilla que use formularios POST{% endcomment %}
-
-            <table>
-                {{form.as_p}}      {#} "{{form.as_table}}": renderizar formularios de Django como tabla {#}
-            </table>
-
-            <div class="boton-login text-center">
-                <input class="btn btn-outline-danger text-center" type = "reset" value = "Clear">
-                <input class="btn btn-outline-primary text-center" type = "submit" value = "Save">
+                    </form>
+                    {% if form.errors %}
+                        <p style="color:#f80000">Error al registrar</p>
+                    {% endif %}
+            
+                </div>
             </div>
-        </form>
-        <br>
+        </div>
+        
     </div>
+    <br>
+
 {% endblock %}

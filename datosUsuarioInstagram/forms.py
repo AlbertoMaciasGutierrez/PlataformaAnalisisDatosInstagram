@@ -1,22 +1,50 @@
 from django import forms
 from cuentas.models import Usuario
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
+
+
+
 
 
 class RegistroForm(UserCreationForm):
-    first_name = forms.CharField(max_length=140, required=True)
-    last_name = forms.CharField(max_length=140, required=False)
-    email = forms.EmailField(required=True)
+    nombre = forms.CharField(max_length=140, required=True)
+    apellido = forms.CharField(max_length=140, required=False)
+    correo = forms.EmailField(required=True)
 
     class Meta:
         model = Usuario
-        fields = ('username','email','first_name','last_name','password1','password2',)
+        fields = ('username','correo','nombre','apellido','password1','password2',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Nombre de Usuario'})
+        self.fields['correo'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Correo'})
+        self.fields['nombre'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Nombre'})
+        self.fields['apellido'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Apellido'})
+        self.fields['password1'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Contraseña'})
+        self.fields['password2'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Contraseña'})
+
 
 
 class LoginForm(AuthenticationForm):
+    error_messages = {
+    "invalid_login":"",
+    "inactive": _("This account is inactive."),
+    }
+
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['class'] ='form-control'
-        self.fields['username'].widget.attrs['placeholder'] ='Nombre de Usuario'
-        self.fields['password'].widget.attrs['class'] ='form-control'
-        self.fields['password'].widget.attrs['placeholder'] ='Contraseña'
+        self.fields['username'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Nombre de Usuario'})
+        self.fields['password'].widget.attrs.update({'class':'form-control',
+                                                    'placeholder':'Contraseña'})
+
+
+

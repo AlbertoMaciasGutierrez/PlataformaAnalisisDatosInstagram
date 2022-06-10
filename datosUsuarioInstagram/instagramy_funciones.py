@@ -3,8 +3,8 @@ from operator import pos
 from instagramy import InstagramUser, InstagramHashTag, InstagramPost, InstagramLocation
 from instagramy.plugins.analysis import analyze_users_popularity
 
-sesion_id = "52174686364%3A6ZaDyhSKSoOurV%3A15"         #Arreglar más adelante el uso de sesión id
-
+sesion_id = "52174686364%3AlOUE15nY2hJRMW%3A15"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
+#sesion_id = "1358918301%3AzuJoghD0FN2DAg%3A24"          #macy_guty
 
 ##--------------------------------------------------------------------##
 ##----------------------------INSTAGRAMUSER---------------------------##
