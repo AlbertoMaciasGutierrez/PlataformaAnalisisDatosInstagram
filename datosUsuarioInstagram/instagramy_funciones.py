@@ -46,19 +46,31 @@ def obtenerComentariosLikesPosts(posts):
     comentarios = []
     likesComentarios = []
 
+    mediaLikes = 0
+    mediaComentarios = 0
+    contadorPublicaciones = 0
+
     for post in posts:
 
         likes.append(post.likes)
+        mediaLikes += post.likes
         comentarios.append(post.comments)
+        mediaComentarios += post.comments
         listaTemporal = []
         listaTemporal.append(post.likes)
         listaTemporal.append(post.comments)
         likesComentarios.append(listaTemporal)
+        contadorPublicaciones+=1
+
+    mediaLikes = round(mediaLikes/contadorPublicaciones,2)
+    mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
 
     context ={
         'likesComentarios': likesComentarios,
         'likes': likes,
         'comentarios': comentarios,
+        'mediaLikes': mediaLikes,
+        'mediaComentarios': mediaComentarios
     }
 
     return context

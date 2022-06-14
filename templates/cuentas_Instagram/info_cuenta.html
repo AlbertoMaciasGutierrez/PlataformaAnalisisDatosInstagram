@@ -103,8 +103,12 @@
             {#Añadir más tipos de gráficos#}
 
             <div id ="container-likes"></div>
-            <br><br><br><br>    
+            <br>
+            <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaLikes}}</b> </i>  &nbsp;likes de media </h6>
+            <br><br><br>    
             <div id ="container-comentarios"></div>
+            <br>
+            <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaComentarios}}</b> </i>  &nbsp;comentarios de media </h6>
 
 
 
@@ -126,7 +130,7 @@
             text: 'Likes últimas publicaciones'
         },
         subtitle: {
-            text: '*{{IDcuenta}}, últimas 12 publicaciones',
+            text: '*{{IDcuenta}}, últimas 10 publicaciones',
             align: 'right',
             verticalAlign: 'bottom'
         },
@@ -178,7 +182,7 @@
             text: 'Comentarios últimas publicaciones'
         },
         subtitle: {
-            text: '*{{IDcuenta}}, últimas 12 publicaciones',
+            text: '*{{IDcuenta}}, últimas 10 publicaciones',
             align: 'right',
             verticalAlign: 'bottom'
         },
