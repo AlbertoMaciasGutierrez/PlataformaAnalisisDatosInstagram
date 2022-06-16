@@ -48,6 +48,7 @@
                                     </span>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <h6 class="dropdown-header">Logueado como <br><b class= "text-dark" >{{user.get_username}}</b></h6>
+                                        <a class="dropdown-item" href="{% url 'IDSesion'%}"> ID Sesión</a>
                                         <a class="dropdown-item" href="{% url 'logout'%}"> Cerrar Sesión</a>
                                     </div>
                                 </li>

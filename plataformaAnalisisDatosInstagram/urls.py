@@ -21,8 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('analisisInsta/', views.renderizarHome, name="home"),
     path('analisisInsta/buscadorCuenta/', views.bucadorCuentas, name="buscadorCuentas"),
-    #path('analisisInsta/buscadorCuenta/busqueda/<nombre>/', views.realizarBusqueda, name="realizarBusqueda"),
     path('analisisInsta/buscadorCuenta/busqueda/<IDusuario>/', views.obtenerInformacionCuenta, name="obtenerInformacionCuenta"),
+    path('analisisInsta/IDSesion', views.idSesion, name="IDSesion"),
 
     path('registro/',views.RegistroUsuario.as_view(), name='registro_usuario'),
     path('login/',views.LoginUsuario.as_view(), name='login_usuario'),

@@ -11,6 +11,9 @@ sesion_id = "52174686364%3AlOUE15nY2hJRMW%3A15"         #instaanalysistfg      A
 ##--------------------------------------------------------------------##
 
 
+def modificarSesion_id():
+    return sesion_id
+
 
 
 def informacionCuenta(cuenta):

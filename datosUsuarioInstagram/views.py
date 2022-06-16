@@ -1,13 +1,17 @@
+from multiprocessing import context
 import os
-from django.shortcuts import render, redirect
+from .models import *
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
-from datosUsuarioInstagram.instagramy_funciones import informacionCuenta
+from django.contrib import messages
+from datosUsuarioInstagram.instagramy_funciones import informacionCuenta, modificarSesion_id
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
 from django.views.generic import CreateView
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, LoginForm
+from .forms import RegistroForm, LoginForm, IDSesionForm
+from django.views.decorators.http import require_http_methods
 
 
 datos = {}  #Variable global para pasar los datos del usuario a los templates en obtenerInformacionCuenta           
@@ -15,17 +19,20 @@ datos = {}  #Variable global para pasar los datos del usuario a los templates en
 # Create your views here.
 
 @login_required
+@require_http_methods(["GET"])
 def renderizarHome(request):
     return render(request, os.path.join("home", "home.html"),context=datos)
 
 
 @login_required
+@require_http_methods(["GET"])
 def obtenerInformacionCuenta(request,IDusuario):
     
     return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datos)
 
 
 @login_required
+@require_http_methods(["GET"])
 def bucadorCuentas(request):
 
     queryset = request.GET.get("Buscar")
@@ -45,6 +52,37 @@ def bucadorCuentas(request):
 
 
 
+
+
+
+@login_required
+@require_http_methods(["GET","POST"])
+def idSesion(request):
+    usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
+    sesionID = modificarSesion_id()
+    print(sesionID)
+    
+
+    if request.method == 'POST':
+        form = IDSesionForm(request.POST)
+        if form.is_valid():
+            IDSesion = form.save(commit=False)
+            IDSesion.usuario = usuarioActual
+            IDSesion.save()
+            messages.success(request, 'IDSesion cambiado')
+            return redirect ('/analisisInsta/IDSesion') 
+    else:
+        form = IDSesionForm()
+
+        context = {
+            "sesionID": sesionID,
+            "form":form,
+            "idSesion_disponibles": IDSesionUsuario.objects.filter(usuario = usuarioActual)
+            }
+
+    print(IDSesionUsuario.objects.filter(usuario = usuarioActual))
+
+    return render(request, os.path.join("id_sesion", "idSesion.html"),context = context)
 
 
 
