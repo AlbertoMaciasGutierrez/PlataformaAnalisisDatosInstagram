@@ -8,10 +8,13 @@ from datosUsuarioInstagram.instagramy_funciones import informacionCuenta, modifi
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm, LoginForm, IDSesionForm
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from bootstrap_modal_forms.generic import BSModalDeleteView
 
 
 datos = {}  #Variable global para pasar los datos del usuario a los templates en obtenerInformacionCuenta           
@@ -60,7 +63,6 @@ def bucadorCuentas(request):
 def idSesion(request):
     usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
     sesionID = modificarSesion_id()
-    print(sesionID)
     
 
     if request.method == 'POST':
@@ -80,9 +82,15 @@ def idSesion(request):
             "idSesion_disponibles": IDSesionUsuario.objects.filter(usuario = usuarioActual)
             }
 
-    print(IDSesionUsuario.objects.filter(usuario = usuarioActual))
 
     return render(request, os.path.join("id_sesion", "idSesion.html"),context = context)
+
+
+class IDSeionEliminar(LoginRequiredMixin, BSModalDeleteView):
+    model = IDSesionUsuario
+    template_name = 'id_sesion/idSesion_confirm_delete.html'
+    success_message = 'Success: IDSesion was deleted.'
+    success_url = reverse_lazy('IDSesion')
 
 
 
