@@ -16,11 +16,9 @@
 <div class="container">
     <div class="row d-flex justify-content-between p-4 mt-5 mb-4 row-md-6 row-xl-6 row-sm-6" style="background-color: #161616">
 
-        <div class="col-md-6 col-xl-6 col-sm-10">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
             <div class="row d-flex justify-content-between">
 
-                <img class="card-img-top rounded-circle _6q-tv" style="max-width:20rem" src="{{info.Foto_perfil}}" alt=""  width="100px" height="100px">
-                        
                 <div class="card-body text-left" style="color:white">
                     <h3 class="card-text font-weinght-bold"> {{IDcuenta}}</h3>
                     <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Nombre}}</b> </i></h6>
@@ -55,39 +53,43 @@
 
             </div>
 
-            <div class="row d-flex justify-content-between">
-                <div class="card-body text-left" style="color:white">
-                    <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
-                </div>
-                
-                <table class="table table-dark text-center" style="max-width: 20rem; min-width: 3rem;">
-                    <thead class="table-success">
-                        <tr>
-                            <th scope="col" style="font-size: medium; color:black">Likes</th>
-                            <th scope="col" style="font-size: medium; color:black">Comentarios</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-    
-                            {%for l, c in likesComentarios %}
-                                <tr>    
-                                    <th scope="row" style="font-size: x-small; font-style:italic; color:white">
-                                        {{l}}
-                                    </th>
-                                    <th scope="row" style="font-size: x-small; font-style:italic; color:white">
-                                        {{c}}
-                                    </th>
+            <div class="row d-flex justify-content-center">
+                <div class = "col-11 col-md-8 col-xl-12 col-sm-9">
+                    <div class="card-body text-left" style="color:white">
+                        <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
+                    </div>
+
+                    <div class = "table-responsive-sm ">
+                        <table class="table table-dark table-striped table-borderless table-sm" style="max-width: 20rem; min-width: 5rem;">
+                            <thead class=" text-center table-success">
+                                <tr>
+                                    <th style="color:black">Likes</th>
+                                    <th style="color:black">Comentarios</th>
                                 </tr>
+                            </thead>
+                            <tbody >
+            
+                                    {%for l, c in likesComentarios %}
+                                        <tr>    
+                                            <td class="text-center" style="font-size: small;">
+                                                {{l}}
+                                            </td>
+                                            <td class="text-center" style="font-size: small;">
+                                                {{c}}
+                                            </td>
+                                        </tr>
+                                        
+                                    {%endfor%}
                                 
-                            {%endfor%}
-                        
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             
         </div>
         
-        <div class="col-md-12 col-xl-6 col-sm-12">
+        <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
             <br><br>
 
             <form>

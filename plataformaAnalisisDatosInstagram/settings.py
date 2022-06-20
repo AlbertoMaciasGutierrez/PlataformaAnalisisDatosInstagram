@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cuentas',
     'datosUsuarioInstagram',
     'bootstrap_modal_forms',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

@@ -25,8 +25,7 @@
                         <tr>
                             <th>IDSesion</th>
                             <th>Usando</th>
-                            <th>Eliminar</th>
-                            
+                            <th>Editar/Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,8 +39,8 @@
                                     <input type="checkbox" id="defaultCheck" name="{{idSesion.content}}">
                                 </td>
                                 <td class="text-center">
+                                    <button type="button" class="update-IDSesion bs-modal btn text-warning"  data-form-url="{% url 'idSesion_editar' idSesion.pk %}"><span class="fa fa-pencil" aria-hidden="true" ></span></button>
                                     <button type="button" class="delete-IDSesion bs-modal btn text-danger"  data-form-url="{% url 'idSesion_eliminar' idSesion.pk %}"><span class="fa fa-times-circle" ></span></button>
-
                                 </td>
                             </tr>
                         {% endfor %}
@@ -64,7 +63,7 @@
                 Bueno para cualquier plantilla que use formularios POST{% endcomment %}
 
                 {{form.as_p}}
-                <button id="boton" class="btn btn-outline-primary mb-2" type="submit">Nuevo</button> 
+                <button id="boton" class="btn btn-primary mb-2" type="submit">Nuevo</button> 
             </form>
 
             
@@ -96,9 +95,48 @@
 
     <script type="text/javascript">
         $(function () {
-            $(".delete-IDSesion").each(function () {
-                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            var asyncSuccessMessageUpdate = [
+            "<div ",
+            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+            "Success: Book was updated.",
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+            "<span aria-hidden='true'>&times;</span>",
+            "</button>",
+            "</div>",
+            "<script>",
+            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+            "<\/script>"
+          ].join("");
+
+            function updateIDSesionModalForm() {
+                $(".update-IDSesion").each(function () {
+                    $(this).modalForm({
+                    formURL: $(this).data("form-url"),
+                    asyncUpdate: false,
+                    });
+                });
+            }
+            updateIDSesionModalForm();
+
+            function deleteIDSesionModalForm(){
+                $(".delete-IDSesion").each(function () {
+                    $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+                });
+            }
+            deleteIDSesionModalForm();
+
+            function reinstantiateModalForms() {
+                updateIDSesionModalForm();
+                deleteIDSesionModalForm();
+            }
+
+            // hide message
+            $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+                $(".alert").slideUp(500);
             });
+
         });
     </script>
 

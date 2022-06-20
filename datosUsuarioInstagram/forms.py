@@ -6,7 +6,7 @@ from cuentas.models import Usuario
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 from .models import IDSesionUsuario
-
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 
 
@@ -61,6 +61,14 @@ class IDSesionForm(forms.ModelForm):
         model = IDSesionUsuario
         fields = ('content',)
 
+class IDSesionUpdateForm(BSModalModelForm):
+    content = forms.CharField(label ='', widget= forms.Textarea(attrs={'class':'mt-2 mr-sm-3',
+                                                                        'rows':1,
+                                                                        'placeholder': "idSesion",
+                                                                        'style':'max-width: 20rem; min-width: 20rem;'}), required=True)
 
+    class Meta:
+        model = IDSesionUsuario
+        fields = ('content',)
 
 

@@ -10,11 +10,11 @@ from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
 from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, LoginForm, IDSesionForm
+from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from bootstrap_modal_forms.generic import BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView
 
 
 datos = {}  #Variable global para pasar los datos del usuario a los templates en obtenerInformacionCuenta           
@@ -59,7 +59,7 @@ def bucadorCuentas(request):
 
 
 @login_required
-@require_http_methods(["GET","POST"])
+@require_http_methods(["GET","POST","DELETE"])
 def idSesion(request):
     usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
     sesionID = modificarSesion_id()
@@ -70,8 +70,15 @@ def idSesion(request):
         if form.is_valid():
             IDSesion = form.save(commit=False)
             IDSesion.usuario = usuarioActual
+            
+            #Comprobamos que el IDSesion para dicho usuario no sea repetido
+            for ID in IDSesionUsuario.objects.filter(usuario = usuarioActual):
+                if IDSesion.content == ID.content:
+                    messages.success(request, 'IDSesion repetido')
+                    return redirect ('/analisisInsta/IDSesion')
+
             IDSesion.save()
-            messages.success(request, 'IDSesion cambiado')
+            messages.success(request, 'IDSesion añadido correctamente')
             return redirect ('/analisisInsta/IDSesion') 
     else:
         form = IDSesionForm()
@@ -89,8 +96,17 @@ def idSesion(request):
 class IDSeionEliminar(LoginRequiredMixin, BSModalDeleteView):
     model = IDSesionUsuario
     template_name = 'id_sesion/idSesion_confirm_delete.html'
-    success_message = 'Success: IDSesion was deleted.'
+    success_message = 'IDSesion borrado correctamente'
     success_url = reverse_lazy('IDSesion')
+
+class IDSeionEditar(LoginRequiredMixin, BSModalUpdateView):
+    model = IDSesionUsuario
+    template_name = 'id_sesion/idSesion_confirm_update.html'
+    form_class = IDSesionUpdateForm
+    success_message = 'IDSesion editado correctamente'
+    success_url = reverse_lazy('IDSesion')
+
+
 
 
 
