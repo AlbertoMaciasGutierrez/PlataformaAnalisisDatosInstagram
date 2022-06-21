@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}INformacion Hashtag Instagram{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-between p-4 mt-5 mb-4 row-md-6 row-xl-6 row-sm-6" style="background-color: #161616">
+
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
+            <div class="row d-flex justify-content-between">
+
+                <div class="card-body text-left" style="color:white">
+                    <h3 class="card-text font-weinght-bold"> #{{Hashtag}}</h3>
+                    <p>
+                    <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
+                    <br>
+                    <a type="button" class="btn btn-info"  target="_blank" href="{{info.Busqueda}}">
+                        Acceder a la Búsqueda
+                    </a>
+                    <br><br>            
+                </div>
+
+            </div>
+
+            <div class="row d-flex justify-content-center">
+                <div class = "col-11 col-md-8 col-xl-12 col-sm-9">
+                    <div class="card-body text-left" style="color:white">
+                        <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
+                    </div>
+
+                    <div class = "table-responsive-sm ">
+                        <table class="table table-dark table-striped table-borderless table-sm" style="max-width: 20rem; min-width: 5rem;">
+                            <thead class=" text-center table-success">
+                                <tr>
+                                    <th style="color:black">Likes</th>
+                                    <th style="color:black">Comentarios</th>
+                                    <th style="color:black">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+            
+                                        <tr>
+                                            <td class="text-center" style="font-size: small;">
+                                                Rellenar
+                                            </td>
+                                            <td class="text-center" style="font-size: small;">
+                                                Rellenar
+                                            </td>
+                                            <td class="text-center" style="font-size: x-small;">
+                                                Rellenar
+                                            </td>  
+                                        </tr>
+                                        
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaPublicacionesDia}}</b> </i>  &nbsp;publicaciones de media al día </h6>
+                </div>
+            </div>
+            
+        </div>
+            
+            {#Añadir más tipos de gráficos#}
+
+
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+{% endblock%}

@@ -20,8 +20,17 @@ from datosUsuarioInstagram import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('analisisInsta/', views.renderizarHome, name="home"),
+
+    #Cuentas Instagram
     path('analisisInsta/buscadorCuenta/', views.bucadorCuentas, name="buscadorCuentas"),
     path('analisisInsta/buscadorCuenta/busqueda/<IDusuario>/', views.obtenerInformacionCuenta, name="obtenerInformacionCuenta"),
+
+    #Hashtag Instagram
+    path('analisisInsta/buscadorHashtag/', views.bucadorHashtag, name="buscadorHashtag"),
+    path('analisisInsta/buscadorHashtag/busqueda/<Hashtag>/', views.obtenerInformacionHashtag, name="obtenerInformacionHashtag"),
+
+
+
     path('analisisInsta/IDSesion/', views.idSesion, name="IDSesion"),
     path('analisisInsta/IDSesion//eliminar/<int:pk>', views.IDSeionEliminar.as_view(), name='idSesion_eliminar'), 
     path('analisisInsta/IDSesion//editar/<int:pk>', views.IDSeionEditar.as_view(), name='idSesion_editar'), 

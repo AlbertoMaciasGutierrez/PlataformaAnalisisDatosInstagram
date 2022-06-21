@@ -4,7 +4,7 @@ from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from datosUsuarioInstagram.instagramy_funciones import informacionCuenta, modificarSesion_id
+from datosUsuarioInstagram.instagramy_funciones import informacionCuenta, modificarSesion_id, informacionHashtag
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
@@ -17,21 +17,26 @@ from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView
 
 
-datos = {}  #Variable global para pasar los datos del usuario a los templates en obtenerInformacionCuenta           
+datosUsuario = {}  #Diccionario global para pasar los datos del usuario a los templates en obtenerInformacionCuenta
+datosHashtag = {}  #Diccionario global para pasar los datos del hashtag a los templates en obtenerInformacionHashtag         
 
-# Create your views here.
 
 @login_required
 @require_http_methods(["GET"])
 def renderizarHome(request):
-    return render(request, os.path.join("home", "home.html"),context=datos)
+    return render(request, os.path.join("home", "home.html"))
 
+
+
+##--------------------------------------------------------------------##
+##----------------------------INSTAGRAMUSER---------------------------##
+##--------------------------------------------------------------------##
 
 @login_required
 @require_http_methods(["GET"])
 def obtenerInformacionCuenta(request,IDusuario):
     
-    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datos)
+    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datosUsuario)
 
 
 @login_required
@@ -48,10 +53,42 @@ def bucadorCuentas(request):
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
         else:
             context['IDcuenta'] = queryset
-            datos.update(context)
+            datosUsuario.update(context)
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
 
     return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
+
+
+
+##-----------------------------------------------------------------------##
+##----------------------------INSTAGRAMHASHTAG---------------------------##
+##-----------------------------------------------------------------------##
+
+@login_required
+@require_http_methods(["GET"])
+def obtenerInformacionHashtag(request,Hashtag):
+    
+    return render(request, os.path.join("hashtag", "info_hashtag.html"),context=datosHashtag)
+
+
+@login_required
+@require_http_methods(["GET"])
+def bucadorHashtag(request):
+
+    queryset = request.GET.get("Buscar")
+    #print(queryset) 
+
+    if queryset: 
+        context = informacionHashtag(queryset)
+
+        if context == None:
+            return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=context )
+        else:
+            context['Hashtag'] = queryset
+            datosHashtag.update(context)
+            return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=context )
+
+    return render(request, os.path.join("hashtag", "buscador_hashtag.html"))
 
 
 

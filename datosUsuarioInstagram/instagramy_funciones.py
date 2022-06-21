@@ -3,8 +3,9 @@ from operator import pos
 from turtle import pu
 from instagramy import InstagramUser, InstagramHashTag, InstagramPost, InstagramLocation
 from instagramy.plugins.analysis import analyze_users_popularity
+import traceback
 
-sesion_id = "52174686364%3AlOUE15nY2hJRMW%3A15"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
+sesion_id = "52174686364%3AwtLuGmNseTHIK9%3A15"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
 #sesion_id = "1358918301%3AzuJoghD0FN2DAg%3A24"          #macy_guty
 
 ##--------------------------------------------------------------------##
@@ -40,7 +41,8 @@ def informacionCuenta(cuenta):
         context['info'] = datos
 
         return context
-    except:
+    except Exception as e: 
+        traceback.print_exc()
         return None
     
 
@@ -50,14 +52,10 @@ def obtenerComentariosLikesPosts(posts):
     comentarios = []
     likesComentarios = []
 
-
-
     mediaLikes = 0
     mediaComentarios = 0
     publicacionesDia = {}
     contadorPublicaciones = 0
-
-    
 
     for post in posts:
 
@@ -91,6 +89,9 @@ def obtenerComentariosLikesPosts(posts):
     mediaPublicacionesDia = round(contadorPublicaciones/ len(publicacionesDia),2)
 
     
+    #primerDia = next(iter(publicacionesDia))
+    #ultimoDia =
+    
 
     context ={
         'likesComentarios': likesComentarios,
@@ -103,3 +104,26 @@ def obtenerComentariosLikesPosts(posts):
 
     return context
     
+
+
+##-----------------------------------------------------------------------##
+##----------------------------INSTAGRAMHASHTAG---------------------------##
+##-----------------------------------------------------------------------##
+
+def informacionHashtag(hashtag):
+    try:
+
+        tag = InstagramHashTag(hashtag, from_cache=True)
+        
+        datos = {
+            'Busqueda': tag.url,
+            'Publicaciones': tag.number_of_posts,
+        }
+
+        context = {}
+        context['info'] = datos
+
+        return context
+    except Exception as e: 
+        traceback.print_exc()
+        return None

@@ -21,6 +21,7 @@
 
                 <div class="card-body text-left" style="color:white">
                     <h3 class="card-text font-weinght-bold"> {{IDcuenta}}</h3>
+                    <p>
                     <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Nombre}}</b> </i></h6>
                     <h6 class="card-text font-weinght-bold">Verificado: &nbsp;&nbsp;                     
                         {%if info.Usuario_verificado%}
@@ -46,7 +47,7 @@
                     {% endif %}
                     <br>
                     <a type="button" class="btn btn-info"  target="_blank" href="{{info.Perfil}}">
-                        Instagram de {{info.Nombre}}
+                        Acceder a su Instagram
                     </a>
                     <br><br>            
                 </div>
