@@ -1,5 +1,6 @@
 from multiprocessing import context
 from operator import pos
+from turtle import pu
 from instagramy import InstagramUser, InstagramHashTag, InstagramPost, InstagramLocation
 from instagramy.plugins.analysis import analyze_users_popularity
 
@@ -49,11 +50,30 @@ def obtenerComentariosLikesPosts(posts):
     comentarios = []
     likesComentarios = []
 
+
+
     mediaLikes = 0
     mediaComentarios = 0
+    publicacionesDia = {}
     contadorPublicaciones = 0
 
+    
+
     for post in posts:
+
+        dia_publicacion = str(post.taken_at_timestamp.day)
+        mes_publicacion = str(post.taken_at_timestamp.month)
+        anio_publicacion = str(post.taken_at_timestamp.year)
+
+        fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
+
+        if(publicacionesDia.get(fecha_publicacion) != None):
+            cantidadPublicaciones = publicacionesDia.get(fecha_publicacion)
+            cantidadPublicaciones += 1
+            publicacionesDia.update({fecha_publicacion: cantidadPublicaciones})
+        else: 
+            publicacionesDia[fecha_publicacion] = 1
+
 
         likes.append(post.likes)
         mediaLikes += post.likes
@@ -62,18 +82,23 @@ def obtenerComentariosLikesPosts(posts):
         listaTemporal = []
         listaTemporal.append(post.likes)
         listaTemporal.append(post.comments)
+        listaTemporal.append(fecha_publicacion)
         likesComentarios.append(listaTemporal)
         contadorPublicaciones+=1
 
     mediaLikes = round(mediaLikes/contadorPublicaciones,2)
     mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
+    mediaPublicacionesDia = round(contadorPublicaciones/ len(publicacionesDia),2)
+
+    
 
     context ={
         'likesComentarios': likesComentarios,
         'likes': likes,
         'comentarios': comentarios,
         'mediaLikes': mediaLikes,
-        'mediaComentarios': mediaComentarios
+        'mediaComentarios': mediaComentarios,
+        'mediaPublicacionesDia': mediaPublicacionesDia
     }
 
     return context

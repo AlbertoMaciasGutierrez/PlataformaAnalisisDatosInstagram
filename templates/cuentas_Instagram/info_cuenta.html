@@ -65,18 +65,22 @@
                                 <tr>
                                     <th style="color:black">Likes</th>
                                     <th style="color:black">Comentarios</th>
+                                    <th style="color:black">Fecha</th>
                                 </tr>
                             </thead>
                             <tbody >
             
-                                    {%for l, c in likesComentarios %}
-                                        <tr>    
+                                    {%for l, c, f in likesComentarios %}
+                                        <tr>
                                             <td class="text-center" style="font-size: small;">
                                                 {{l}}
                                             </td>
                                             <td class="text-center" style="font-size: small;">
                                                 {{c}}
                                             </td>
+                                            <td class="text-center" style="font-size: x-small;">
+                                                {{f}}
+                                            </td>  
                                         </tr>
                                         
                                     {%endfor%}
@@ -84,6 +88,8 @@
                             </tbody>
                         </table>
                     </div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaPublicacionesDia}}</b> </i>  &nbsp;publicaciones de media al día </h6>
                 </div>
             </div>
             
