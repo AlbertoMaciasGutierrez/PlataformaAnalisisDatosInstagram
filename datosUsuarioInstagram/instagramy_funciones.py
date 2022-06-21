@@ -1,9 +1,7 @@
-from multiprocessing import context
-from operator import pos
-from turtle import pu
 from instagramy import InstagramUser, InstagramHashTag, InstagramPost, InstagramLocation
 from instagramy.plugins.analysis import analyze_users_popularity
 import traceback
+from datetime import datetime, timedelta
 
 sesion_id = "52174686364%3AwtLuGmNseTHIK9%3A15"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
 #sesion_id = "1358918301%3AzuJoghD0FN2DAg%3A24"          #macy_guty
@@ -54,7 +52,8 @@ def obtenerComentariosLikesPosts(posts):
 
     mediaLikes = 0
     mediaComentarios = 0
-    publicacionesDia = {}
+    mediaPublicacionesDia = 0
+
     contadorPublicaciones = 0
 
     for post in posts:
@@ -64,14 +63,6 @@ def obtenerComentariosLikesPosts(posts):
         anio_publicacion = str(post.taken_at_timestamp.year)
 
         fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
-
-        if(publicacionesDia.get(fecha_publicacion) != None):
-            cantidadPublicaciones = publicacionesDia.get(fecha_publicacion)
-            cantidadPublicaciones += 1
-            publicacionesDia.update({fecha_publicacion: cantidadPublicaciones})
-        else: 
-            publicacionesDia[fecha_publicacion] = 1
-
 
         likes.append(post.likes)
         mediaLikes += post.likes
@@ -84,13 +75,17 @@ def obtenerComentariosLikesPosts(posts):
         likesComentarios.append(listaTemporal)
         contadorPublicaciones+=1
 
-    mediaLikes = round(mediaLikes/contadorPublicaciones,2)
-    mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
-    mediaPublicacionesDia = round(contadorPublicaciones/ len(publicacionesDia),2)
 
-    
-    #primerDia = next(iter(publicacionesDia))
-    #ultimoDia =
+    if(contadorPublicaciones !=0):
+
+        mediaLikes = round(mediaLikes/contadorPublicaciones,2)
+        mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
+        #Para calcular la media de publicaciones al día
+        fecha1 = datetime.now()
+        fecha2 = datetime.strptime(likesComentarios[-1][2],'%d/%m/%Y')
+        diferenciaDias = (fecha1-fecha2) /timedelta(days =1)
+        mediaPublicacionesDia = round(contadorPublicaciones/ diferenciaDias,5)
+
     
 
     context ={
