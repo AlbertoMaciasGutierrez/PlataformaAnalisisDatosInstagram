@@ -1,0 +1,105 @@
+<script type="application/javascript">
+    Highcharts.chart('container-likes', {
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Likes últimas publicaciones'
+        },
+        subtitle: {
+            text: '*{{IDcuenta}}, últimas 12 publicaciones',
+            align: 'right',
+            verticalAlign: 'bottom'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF'
+        },
+        xAxis: {
+            tickInterval: 1,
+        },
+        yAxis: {
+            title: {
+            text: 'Likes'
+            }
+        },
+        plotOptions: {
+            area: {
+            fillOpacity: 0.5
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br />',
+            pointFormat: 'Publicación {point.x} => {point.y} likes'
+        },
+        series: [{
+            name: 'Cantidad likes',
+            showInLegend: false,
+            color:'#ff004c',
+            data: [{% for l in listaInfoPosts%}{{l.likes}}, {%endfor%}],
+            pointStart: 1
+        }]
+        });
+
+        Highcharts.chart('container-comentarios', {
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Comentarios últimas publicaciones'
+        },
+        subtitle: {
+            text: '*{{IDcuenta}}, últimas 12 publicaciones',
+            align: 'right',
+            verticalAlign: 'bottom'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF'
+        },
+        xAxis: {
+            tickInterval: 1,
+        },
+        yAxis: {
+            title: {
+            text: 'Comentarios'
+            }
+        },
+        plotOptions: {
+            area: {
+            fillOpacity: 0.5
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br />',
+            pointFormat: 'Publicación {point.x} => {point.y} comentarios'
+        },
+        series: [{
+            name: 'Cantidad comentarios',
+            showInLegend: false,
+            color:'#2e09d3',
+            data: [{% for l in listaInfoPosts%}{{l.comentarios}}, {%endfor%}],
+            pointStart: 1
+        }]
+        });
+    </script>

@@ -68,6 +68,13 @@ def bucadorCuentas(request):
 @require_http_methods(["GET"])
 def obtenerInformacionHashtag(request,Hashtag):
     
+    #Hacemos una lista con los likes para los gráficos
+    likes = []
+    for l in datosHashtag['listaInfoPosts']:
+        likes.append(l.likes)
+        
+    datosHashtag['likes'] = likes
+
     return render(request, os.path.join("hashtag", "info_hashtag.html"),context=datosHashtag)
 
 
@@ -92,8 +99,9 @@ def bucadorHashtag(request):
 
 
 
-
-
+##--------------------------------------------------------------------##
+##------------------------------IDSESION------------------------------##
+##--------------------------------------------------------------------##
 
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
@@ -145,9 +153,9 @@ class IDSeionEditar(LoginRequiredMixin, BSModalUpdateView):
 
 
 
-
-
-
+##--------------------------------------------------------------------##
+##-------------------------MANEJO DE USUARIOS-------------------------##
+##--------------------------------------------------------------------##
 
 class RegistroUsuario(CreateView):
     model = Usuario
