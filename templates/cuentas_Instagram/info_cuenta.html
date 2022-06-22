@@ -55,7 +55,7 @@
             </div>
 
             <div class="row d-flex justify-content-center">
-                <div class = "col-11 col-md-8 col-xl-12 col-sm-9">
+                <div class = "col-12 col-md-8 col-xl-12 col-sm-9">
                     <div class="card-body text-left" style="color:white">
                         <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
                     </div>
@@ -67,30 +67,30 @@
                                     <th style="color:black">Likes</th>
                                     <th style="color:black">Comentarios</th>
                                     <th style="color:black">Fecha</th>
+                                    <th style="color:black">Enlace</th>
                                 </tr>
                             </thead>
                             <tbody >
-            
-                                    {%for l, c, f in likesComentarios %}
-                                        <tr>
-                                            <td class="text-center" style="font-size: small;">
-                                                {{l}}
-                                            </td>
-                                            <td class="text-center" style="font-size: small;">
-                                                {{c}}
-                                            </td>
-                                            <td class="text-center" style="font-size: x-small;">
-                                                {{f}}
-                                            </td>  
-                                        </tr>
-                                        
-                                    {%endfor%}
+                                {%for l in listaInfoPosts %}
+                                    <tr>
+                                        <td class="text-center" style="font-size: small;">
+                                            {{l.likes}}
+                                        </td>
+                                        <td class="text-center" style="font-size: small;">
+                                            {{l.comentarios}}
+                                        </td>
+                                        <td class="text-center" style="font-size: x-small;">
+                                            {{l.fecha}}
+                                        </td> 
+                                        <td class="text-center">
+                                            <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                        </td>  
+                                    </tr>
+                                {%endfor%}
                                 
                             </tbody>
                         </table>
                     </div>
-                    <br>
-                    <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaPublicacionesDia}}</b> </i>  &nbsp;publicaciones de media al día </h6>
                 </div>
             </div>
             
@@ -178,7 +178,7 @@
             name: 'Cantidad likes',
             showInLegend: false,
             color:'#ff004c',
-            data: {{likes|safe}},
+            data: [{% for l in listaInfoPosts%}{{l.likes}}, {%endfor%}],
             pointStart: 1
         }]
         });
@@ -230,7 +230,7 @@
             name: 'Cantidad comentarios',
             showInLegend: false,
             color:'#2e09d3',
-            data: {{comentarios|safe}},
+            data: [{% for l in listaInfoPosts%}{{l.comentarios}}, {%endfor%}],
             pointStart: 1
         }]
         });
