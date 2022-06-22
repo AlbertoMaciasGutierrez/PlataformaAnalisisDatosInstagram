@@ -105,20 +105,61 @@ def obtenerComentariosLikesPosts(posts):
 ##----------------------------INSTAGRAMHASHTAG---------------------------##
 ##-----------------------------------------------------------------------##
 
+#Clase para introducir este tipo de objetos en la lista
+class PostHashtag:
+ 
+    def __init__(self, likes, comentarios, fecha, url):
+        self.likes = likes
+        self.comentarios = comentarios
+        self.fecha = fecha
+        self.url = url
+ 
+    def __repr__(self):
+        return '{' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+
+
+
 def informacionHashtag(hashtag):
     try:
 
-        tag = InstagramHashTag(hashtag, from_cache=True)
+        tag = InstagramHashTag(hashtag, from_cache=False)
         
+        context = postPopularesHashtag(tag.top_posts)
+        
+
         datos = {
             'Busqueda': tag.url,
             'Publicaciones': tag.number_of_posts,
         }
 
-        context = {}
         context['info'] = datos
 
         return context
     except Exception as e: 
         traceback.print_exc()
         return None
+
+def postPopularesHashtag(posts):
+    listaInfoPosts = []
+
+    contadorPublicaciones = 0
+
+    for post in posts:
+        dia_publicacion = str(post.upload_time.day)
+        mes_publicacion = str(post.upload_time.month)
+        anio_publicacion = str(post.upload_time.year)
+
+        fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
+
+        listaInfoPosts.append(PostHashtag(post.likes, post.comments, fecha_publicacion, post.post_url))
+
+        contadorPublicaciones+=1
+
+    
+    listaInfoPosts.sort(key=lambda x: x.likes, reverse=True)
+
+    context ={
+        "listaInfoPosts":listaInfoPosts
+    }
+
+    return context

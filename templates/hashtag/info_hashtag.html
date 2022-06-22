@@ -16,7 +16,7 @@
 
                 <div class="card-body text-left" style="color:white">
                     <h3 class="card-text font-weinght-bold"> #{{Hashtag}}</h3>
-                    <p>
+                    <br>
                     <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
                     <br>
                     <a type="button" class="btn btn-info"  target="_blank" href="{{info.Busqueda}}">
@@ -28,9 +28,9 @@
             </div>
 
             <div class="row d-flex justify-content-center">
-                <div class = "col-11 col-md-8 col-xl-12 col-sm-9">
+                <div class = "col-12 col-md-8 col-xl-12 col-sm-9">
                     <div class="card-body text-left" style="color:white">
-                        <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
+                        <h5 class="card-text font-weinght-bold"> Publicaciones más populares </h5>
                     </div>
 
                     <div class = "table-responsive-sm ">
@@ -40,21 +40,28 @@
                                     <th style="color:black">Likes</th>
                                     <th style="color:black">Comentarios</th>
                                     <th style="color:black">Fecha</th>
+                                    <th style="color:black">Enlace</th>
                                 </tr>
                             </thead>
                             <tbody >
             
-                                        <tr>
-                                            <td class="text-center" style="font-size: small;">
-                                                Rellenar
-                                            </td>
-                                            <td class="text-center" style="font-size: small;">
-                                                Rellenar
-                                            </td>
-                                            <td class="text-center" style="font-size: x-small;">
-                                                Rellenar
-                                            </td>  
-                                        </tr>
+                                {%for l in listaInfoPosts %}
+                                    <tr>
+                                        <td class="text-center" style="font-size: small;">
+                                            {{l.likes}}
+                                        </td>
+                                        <td class="text-center" style="font-size: small;">
+                                            {{l.comentarios}}
+                                        </td>
+                                        <td class="text-center" style="font-size: x-small;">
+                                            {{l.fecha}}
+                                        </td> 
+                                        <td class="text-center">
+                                            <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                        </td>  
+                                    </tr>
+                                
+                                {%endfor%}
                                         
                                 
                             </tbody>

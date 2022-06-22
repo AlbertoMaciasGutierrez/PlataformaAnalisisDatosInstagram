@@ -12,9 +12,9 @@
     <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
         <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
             {%if Hashtag %}
-                <a href="{% url 'obtenerInformacionHashtag' Hashtag %}">{{Hashtag}}</a>
+                <a href="{% url 'obtenerInformacionHashtag' Hashtag %}">#{{Hashtag}}</a>
             {%else%}
-                <p>Cuenta no encontrada</p>
+                <p>Hashtag no encontrado</p>
             {%endif%}
         </div>
     </div>
