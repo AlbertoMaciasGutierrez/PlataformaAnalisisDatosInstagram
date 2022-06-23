@@ -3,7 +3,7 @@ from instagramy.plugins.analysis import analyze_users_popularity
 import traceback
 from datetime import datetime, timedelta
 
-sesion_id = "52174686364%3AwtLuGmNseTHIK9%3A15"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
+sesion_id = "52174686364%3A0SjYfiJdyj2gbi%3A21"         #instaanalysistfg      Arreglar más adelante el uso de sesión id
 #sesion_id = "1358918301%3AzuJoghD0FN2DAg%3A24"          #macy_guty
 
 
@@ -54,6 +54,8 @@ def informacionCuenta(cuenta):
         "Biografia": user.biography,
         "Foto_perfil":user.profile_picture_url,
         "Website":user.website,
+        "Email": user.user_data['business_email'],
+        "Telefono": user.user_data['business_phone_number'],
         }
 
         context['info'] = datos
@@ -63,9 +65,6 @@ def informacionCuenta(cuenta):
         traceback.print_exc()
         return None
     
-
-
-
 
 
 def obtenerComentariosLikesPosts(posts):
@@ -78,7 +77,6 @@ def obtenerComentariosLikesPosts(posts):
     contadorPublicaciones = 0
 
     for post in posts:
-
         dia_publicacion = str(post.taken_at_timestamp.day)
         mes_publicacion = str(post.taken_at_timestamp.month)
         anio_publicacion = str(post.taken_at_timestamp.year)
@@ -92,7 +90,6 @@ def obtenerComentariosLikesPosts(posts):
 
 
     if(contadorPublicaciones !=0):
-
         mediaLikes = round(mediaLikes/contadorPublicaciones,2)
         mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
         
@@ -122,7 +119,8 @@ def obtenerComentariosLikesPosts(posts):
 def informacionHashtag(hashtag):
     try:
 
-        tag = InstagramHashTag(hashtag, from_cache=False)
+        #tag = InstagramHashTag(hashtag, from_cache=False)
+        tag = InstagramHashTag(hashtag, sessionid=sesion_id)
         
         context = postPopularesHashtag(tag.top_posts)
         
@@ -142,6 +140,9 @@ def informacionHashtag(hashtag):
 def postPopularesHashtag(posts):
     listaInfoPosts = []
 
+    mediaLikes = 0
+    mediaComentarios = 0
+
     contadorPublicaciones = 0
 
     for post in posts:
@@ -151,15 +152,21 @@ def postPopularesHashtag(posts):
 
         fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
 
+        mediaLikes += post.likes
+        mediaComentarios += post.comments
         listaInfoPosts.append(PostClass(post.likes, post.comments, fecha_publicacion, post.post_url))
-
         contadorPublicaciones+=1
 
-    
-    listaInfoPosts.sort(key=lambda x: x.likes, reverse=True)
+    if(contadorPublicaciones !=0):
+        mediaLikes = round(mediaLikes/contadorPublicaciones,2)
+        mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
 
+        #listaInfoPosts.sort(key=lambda x: x.likes, reverse=True)
+    
     context ={
-        "listaInfoPosts":listaInfoPosts
+        "listaInfoPosts":listaInfoPosts,
+        'mediaLikes': mediaLikes,
+        'mediaComentarios': mediaComentarios,
     }
 
     return context

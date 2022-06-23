@@ -8,6 +8,16 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <style>
+        .resaltar {
+            cursor: pointer;
+            background-color: #00c271af;
+            color: crimson;
+        }
+
+    </style>
+
 {% endblock %}
 
 {% block content %}
@@ -36,12 +46,12 @@
                         <h5 class="card-text font-weinght-bold"> Publicaciones más populares </h5>
                     </div>
 
-                    <div class = "table-responsive-sm ">
-                        <table class="table table-dark table-striped table-borderless table-sm" style="max-width: 20rem; min-width: 5rem;">
+                    <div class = "table-responsive-sm " >
+                        <table class="table table-dark table-striped table-borderless table-sm" id="myTable" style="max-width: 20rem; min-width: 5rem;">
                             <thead class=" text-center table-success">
                                 <tr>
-                                    <th style="color:black">Likes</th>
-                                    <th style="color:black">Comentarios</th>
+                                    <th onclick="sortTable(0, 'int')" style="color:black">Likes</th>
+                                    <th onclick="sortTable(1, 'int')" style="color:black">Comentarios</th>
                                     <th style="color:black">Fecha</th>
                                     <th style="color:black">Enlace</th>
                                 </tr>
@@ -108,5 +118,75 @@
 
 
 {% block JavaScript%}
+
+<script>
+    $(document).ready(() => {
+        $('th').each(function(columna) {
+            $(this).hover(function() {
+                $(this).addClass('resaltar');
+            }, function() {
+                $(this).removeClass('resaltar');
+            });
+
+            });
+        });
+    /**
+     * Funcion para ordenar una tabla... tiene que recibir el numero de columna a
+     * ordenar y el tipo de orden
+     * @param int n
+     * @param str type - ['str'|'int']
+     */
+    function sortTable(n,type) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+     
+      table = document.getElementById("myTable");
+      switching = true;
+      //Set the sorting direction to ascending:
+      dir = "asc";
+     
+      /*Make a loop that will continue until no switching has been done:*/
+      while (switching) {
+        //start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /*Loop through all table rows (except the first, which contains table headers):*/
+        for (i = 1; i < (rows.length - 1); i++) {
+          //start by saying there should be no switching:
+          shouldSwitch = false;
+          /*Get the two elements you want to compare, one from current row and one from the next:*/
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          /*check if the two rows should switch place, based on the direction, asc or desc:*/
+          if (dir == "asc") {
+            if ((type=="int" && parseFloat(x.innerHTML) > parseFloat(y.innerHTML))) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch= true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if ((type=="int" && parseFloat(x.innerHTML) < parseFloat(y.innerHTML))) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          /*If a switch has been marked, make the switch and mark that a switch has been done:*/
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          //Each time a switch is done, increase this count by 1:
+          switchcount ++;
+        } else {
+          /*If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.*/
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+    </script>
+
     {% include "graficos.html" %}
 {% endblock%}
