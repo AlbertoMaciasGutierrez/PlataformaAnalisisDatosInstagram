@@ -39,8 +39,8 @@ def modificarSesion_id():
 def informacionCuenta(cuenta):
     # Connecting the profile
     try:
-        user = InstagramUser(cuenta,sessionid=sesion_id)
-        #user = InstagramUser(cuenta,from_cache=True)         #->Sin el id de la sesion no funciona la búsqueda de perfiles privados o verificados 
+        #user = InstagramUser(cuenta,sessionid=sesion_id)
+        user = InstagramUser(cuenta,from_cache=False)         #->Sin el id de la sesion no funciona la búsqueda de perfiles privados o verificados 
 
         context = obtenerComentariosLikesPosts(user.posts)
         

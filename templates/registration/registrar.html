@@ -5,32 +5,31 @@
 {% block content %}
 
 
-    <div class="container " >
+    <div class="container" >
         <br>  
         <div class = "row">
             <div class = "d-flex col-12 col-sm-10 col-md-8 offset-md-2 offset-sm-1 justify-content-around">
-              <div class = "card shadow-lg border-dark" style="max-width: 35rem; min-width: 20rem;">
-                <div class = "card-header font-weight-bold text-center" style="background-color:#c7d1d691"> <h4><i>Registrarse</i></h4></div>
-                <div class = "card-body text-dark">
-                    <form method="post" action="">
-                    {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
-                                      la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
-                                      Bueno para cualquier plantilla que use formularios POST{% endcomment %}
-                    
-                    {{form.as_p}}
-                    <br>
-                    <button class="btn btn-md btn-primary btn-block" type="submit">Confirmar</button>
-                    <button class="btn btn-md btn-danger btn-block" type ="reset">Borrar</button>
+                <div class = "card shadow-lg border-dark" style="max-width: 35rem; min-width: 20rem;">
+                    <div class = "card-header font-weight-bold text-center" style="background-color:#c7d1d691"> <h4><i>Registrarse</i></h4></div>
+                    <div class = "card-body text-dark">
+                        <form method="post" action="">
+                        {% csrf_token %}  {%comment%} "{% csrf_token %}" Genera un token único por cada petición, de tal manera que nadie pueda falsificar
+                                        la solicitud para el sitio web ya que los falsificadores no poseerán este token, y la aplicación dará un error. 
+                                        Bueno para cualquier plantilla que use formularios POST{% endcomment %}
+                        
+                        {{form.as_p}}
+                        <br>
+                        <button class="btn btn-md btn-primary btn-block" type="submit">Confirmar</button>
+                        <button class="btn btn-md btn-danger btn-block" type ="reset">Borrar</button>
 
-                    </form>
-                    {% if form.errors %}
-                        <p style="color:#f80000">Error al registrar</p>
-                    {% endif %}
-            
+                        </form>
+                        {% if form.errors %}
+                            <p style="color:#f80000">Error al registrar</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-        
     </div>
     <br>
 
