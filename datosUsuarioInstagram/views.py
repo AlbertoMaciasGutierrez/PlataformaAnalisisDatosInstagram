@@ -10,7 +10,7 @@ from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
 from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm
+from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm, ContactoForm
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -25,6 +25,25 @@ datosHashtag = {}  #Diccionario global para pasar los datos del hashtag a los te
 @require_http_methods(["GET"])
 def renderizarHome(request):
     return render(request, os.path.join("home", "home.html"))
+
+@login_required
+@require_http_methods(["GET","POST"])
+def renderizarContacto(request):
+    context = {
+        'form': ContactoForm()
+    }
+
+    if request.method == 'POST':
+        form = ContactoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            context['mensaje'] = 'Petición guardada'
+            messages.success(request, 'Peticion enviada correctamente')
+            return redirect ('/analisisInsta/contacto')
+        else:
+            context['form'] = form
+    
+    return render(request, os.path.join("contacto", "contacto.html"),context=context)
 
 
 

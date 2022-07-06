@@ -20,6 +20,7 @@ from datosUsuarioInstagram import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('analisisInsta/', views.renderizarHome, name="home"),
+    path('analisisInsta/contacto', views.renderizarContacto, name="contacto"),
 
     #Cuentas Instagram
     path('analisisInsta/buscadorCuenta/', views.bucadorCuentas, name="buscadorCuentas"),

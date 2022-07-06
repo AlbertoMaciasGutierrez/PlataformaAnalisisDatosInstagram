@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contacto{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid ">
+    <div class="row d-flex justify-content-center mt-5 pb-5 mb-5">
+        <div class="col-12 col-sm- col-md-8 col-lg-7 col-xl-6">
+            <div class = "card shadow-lg border-dark">
+                <div class = "card-header font-weight-bold text-center" style="background-color:#c7d1d691"> <h4><i>Contacto</i></h4></div>
+                <div class = "card-body text-dark">
+                    <form action="" class="formulario_contacto" id="formulario_contacto" method="post">
+                        {% csrf_token %}
+        
+                        {{form}}
+        
+                        <br>
+                        <button class="btn btn-md btn-primary btn-block" type="submit">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center pt-5 mt-5 mb-5" >
+        <div class="col-11">
+            <h3 class="font-weinght-bold text-center">Nos encontramos en Extremadura</h3>
+            <br>
+            <div class="row justify-content-center mb-3" >
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3056.9355804977768!2d-5.613095567090285!3d39.98754492372831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd3fd1b5c575bb9b%3A0xd9563cb1fcf9d5ac!2sC.%20Espronceda%2C%2018%2C%2010310%20Talayuela%2C%20C%C3%A1ceres!5e0!3m2!1ses!2ses!4v1657036851164!5m2!1ses!2ses" width="1000" height="550" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div> 
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+{% endblock %}

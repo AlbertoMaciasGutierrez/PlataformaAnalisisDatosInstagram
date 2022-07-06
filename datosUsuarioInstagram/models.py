@@ -18,3 +18,11 @@ class IDSesionUsuario(models.Model):
 
     def __str__(self):
         return f'El IDSesion de {self.usuario} es {self.content}' 
+
+class Contacto(models.Model):
+    nombre = models.CharField(max_length=50)
+    correo = models.EmailField()
+    mensaje = models.TextField()
+    
+    def __str__(self):
+        return self.nombre

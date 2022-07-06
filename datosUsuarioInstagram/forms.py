@@ -5,7 +5,7 @@ from django import forms
 from cuentas.models import Usuario
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
-from .models import IDSesionUsuario
+from .models import IDSesionUsuario, Contacto
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 
@@ -14,42 +14,42 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 
 class RegistroForm(UserCreationForm):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Nombre de Usuario'})
-        self.fields['email'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Correo'})
-        self.fields['first_name'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Nombre'})
-        self.fields['last_name'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Apellidos',
-                                                    'rows':'2'})
-        self.fields['password1'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Contraseña'})
-        self.fields['password2'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Contraseña'})
-
-
     class Meta:
         model = Usuario
         fields = ('username','email','first_name','last_name','password1','password2')
 
-    
 
+    username = forms.CharField(label ='Nombre de Usuario', widget= forms.TextInput(attrs={'class':'form-control mb-3',
+                                                                    'placeholder':'Nombre de Usuario'}), required=True)
+
+    first_name = forms.CharField(label ='Nombre', widget= forms.TextInput(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Nombre'}), required=True)
+
+    last_name = forms.CharField(label ='Apellidos', widget= forms.Textarea(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Apellidos',
+                                                                        'rows':'2'}), required=True)
+
+    email = forms.CharField(label ='Correo', widget= forms.EmailInput(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Correo'}), required=True)
+
+    password1 = forms.CharField(label ='Contraseña', strip =False, widget= forms.PasswordInput(attrs={'class':'form-control ',
+                                                                        'placeholder':'Contraseña',
+                                                                        "autocomplete": "new-password"}), required=True)
+
+    password2 = forms.CharField(label ='Contraseña (Confirmación)', strip =False, widget= forms.PasswordInput(attrs={'class':'form-control ',
+                                                                        'placeholder':'Contraseña (Confirmación)',
+                                                                        "autocomplete": "new-password"}), required=True)
 
 class LoginForm(AuthenticationForm):
-    error_messages = {
-    "invalid_login":"",
-    "inactive": _("This account is inactive."),
-    }
 
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Nombre de Usuario'})
-        self.fields['password'].widget.attrs.update({'class':'form-control',
-                                                    'placeholder':'Contraseña'})
+
+    username = forms.CharField(label ='Nombre de Usuario', widget= forms.TextInput(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Nombre de Usuario',
+                                                                        "autofocus": True}), required=True)
+
+    password = forms.CharField(label ='Contraseña', strip =False, widget= forms.PasswordInput(attrs={'class':'form-control ',
+                                                                        'placeholder':'Contraseña',
+                                                                        "autocomplete": "current-password"}), required=True)
 
 
 class IDSesionForm(forms.ModelForm):
@@ -72,3 +72,18 @@ class IDSesionUpdateForm(BSModalModelForm):
         fields = ('content',)
 
 
+class ContactoForm(forms.ModelForm):
+
+    class Meta:
+        model = Contacto
+        fields = ('nombre','correo','mensaje')
+    
+    nombre = forms.CharField(label ='', widget= forms.TextInput(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Nombre'}), required=True)
+    
+    correo = forms.CharField(label ='', widget= forms.TextInput(attrs={'class':'form-control mb-3',
+                                                                        'placeholder':'Correo'}), required=True)
+    
+    mensaje = forms.CharField(label ='', widget= forms.Textarea(attrs={'class':'form-control',
+                                                                        'rows':6,
+                                                                        'placeholder': "Mensaje",}), required=True)
