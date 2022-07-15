@@ -48,21 +48,26 @@
                             <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
                         {%endif%}
                     </h6>
+
+                    <h6 class="card-text font-weinght-bold">Cuenta de negocios: &nbsp;&nbsp; 
+                        {%if info.Cuenta_negocios%}
+                            <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                        {%else%}
+                            <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                        {%endif%}
+                    </h6>
+
                     <h6 class="card-text font-weinght-bold">Popularidad: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Popularidad}}</b> </i></h6>
                     <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
-                    {% if info.Telefono != None %}
-                        <h6 class="card-text font-weinght-bold">Telefono: &nbsp;&nbsp; {{info.Telefono}} </h6>
-                    {% endif %}
-
-                    {% if info.Email != None %}
-                        <h6 class="card-text font-weinght-bold">Correo: &nbsp;&nbsp; {{info.Email}} </h6>
-                    {% endif %}
+                    <h6 class="card-text font-weinght-bold">Rells: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Rells}}</b> </i></h6>
+                    
 
                     {% if info.Biografia != None %}
                         <h6 class="card-text font-weinght-bold">Biografía: &nbsp;&nbsp; </h6>
                         <p class="font-italic"> <i>{{info.Biografia}}</i> </p>
                     {% endif %}
 
+                    <h6 class="card-text font-weinght-bold">Foto de Perfil: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{info.Foto_perfil}}"> Link </a></h6>
                     {% if info.Website != None %}
                         <h6 class="card-text font-weinght-bold">Website: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{info.Website}}"> {{info.Website}} </a></h6>
                     {% endif %}

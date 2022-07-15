@@ -4,7 +4,8 @@ from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from datosUsuarioInstagram.instagramy_funciones import informacionCuenta, modificarSesion_id, informacionHashtag
+from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
@@ -47,9 +48,9 @@ def renderizarContacto(request):
 
 
 
-##--------------------------------------------------------------------##
-##----------------------------INSTAGRAMUSER---------------------------##
-##--------------------------------------------------------------------##
+##-------------------------------------------------------------##
+##----------------------------USUARIOS-------------------------##
+##-------------------------------------------------------------##
 
 @login_required
 @require_http_methods(["GET"])

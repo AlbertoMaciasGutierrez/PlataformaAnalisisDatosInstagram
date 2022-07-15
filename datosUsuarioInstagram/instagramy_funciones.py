@@ -119,8 +119,8 @@ def obtenerComentariosLikesPosts(posts):
 def informacionHashtag(hashtag):
     try:
 
-        #tag = InstagramHashTag(hashtag, from_cache=False)
-        tag = InstagramHashTag(hashtag, sessionid=sesion_id)
+        tag = InstagramHashTag(hashtag, from_cache=False)
+        #tag = InstagramHashTag(hashtag, sessionid=sesion_id)
         
         context = postPopularesHashtag(tag.top_posts)
         
