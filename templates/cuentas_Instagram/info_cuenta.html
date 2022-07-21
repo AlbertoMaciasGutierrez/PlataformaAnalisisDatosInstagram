@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}INformacion Usuario Instagram{% endblock %}
+{% block title %}Información Usuario Instagram{% endblock %}
 
 {% block head %}
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -59,7 +59,7 @@
 
                     <h6 class="card-text font-weinght-bold">Popularidad: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Popularidad}}</b> </i></h6>
                     <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
-                    <h6 class="card-text font-weinght-bold">Rells: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Rells}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Vídeos: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Videos}}</b> </i></h6>
                     
 
                     {% if info.Biografia != None %}
@@ -80,75 +80,221 @@
 
             </div>
 
-            <div class="row d-flex justify-content-center">
-                <div class = "col-12 col-md-8 col-xl-12 col-sm-9">
-                    <div class="card-body text-left" style="color:white">
-                        <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
-                    </div>
+            {%if posts.listaInfoPostRecientes%}
+                <div class="row d-flex justify-content-center">
+                    <div class = "col-12 col-md-8 col-xl-12 col-sm-9">
+                        <div class="card-body text-left" style="color:white">
+                            <h5 class="card-text font-weinght-bold"> Últimas publicaciones </h5>
+                        </div>
 
-                    <div class = "table-responsive-sm ">
-                        <table class="table table-dark table-striped table-borderless table-sm"  id="myTable" style="max-width: 20rem; min-width: 5rem;">
-                            <thead class=" text-center table-success">
-                                <tr>
-                                    <th onclick="sortTable(0, 'int')" style="color:black">Likes</th>
-                                    <th onclick="sortTable(1, 'int')" style="color:black">Comentarios</th>
-                                    <th style="color:black">Fecha</th>
-                                    <th style="color:black">Enlace</th>
-                                </tr>
-                            </thead>
-                            <tbody >
-                                {%for l in listaInfoPosts %}
+                        <div class = "table-responsive-sm ">
+                            <table class="table table-dark table-striped table-borderless table-sm"  id="myTable" style="max-width: 20rem; min-width: 5rem;">
+                                <thead class=" text-center table-success">
                                     <tr>
-                                        <td class="text-center" style="font-size: small;">
-                                            {{l.likes}}
-                                        </td>
-                                        <td class="text-center" style="font-size: small;">
-                                            {{l.comentarios}}
-                                        </td>
-                                        <td class="text-center" style="font-size: x-small;">
-                                            {{l.fecha}}
-                                        </td> 
-                                        <td class="text-center">
-                                            <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
-                                        </td>  
+                                        <th onclick="sortTable(0, 'int','myTable')" style="color:black">Likes</th>
+                                        <th onclick="sortTable(1, 'int','myTable')" style="color:black">Comentarios</th>
+                                        <th style="color:black">Fecha</th>
+                                        <th style="color:black">Enlace</th>
                                     </tr>
-                                {%endfor%}
-                                
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody >
+                                    {%for l in posts.listaInfoPostRecientes %}
+                                        <tr>
+                                            <td class="text-center" style="font-size: small;">
+                                                {{l.likes}}
+                                            </td>
+                                            <td class="text-center" style="font-size: small;">
+                                                {{l.comentarios}}
+                                            </td>
+                                            <td class="text-center" style="font-size: x-small;">
+                                                {{l.fecha}}
+                                            </td> 
+                                            <td class="text-center">
+                                                <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                            </td>  
+                                        </tr>
+                                    {%endfor%}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
+                
+            {%endif%}
         </div>
+
+            {%if posts.listaInfoPostRecientes%}
+                <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
+                    <br><br>
         
-        <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
-            <br><br>
+                    <form>
+                        <select name="Gráficos" class="custom-select">
+                        <option selected>Elegir tipo de gráfico</option>
+                        <option value="area">Área</option>
+                        <option value="barras">Barras</option>
+                        <option value="Otro">Otro</option>
+                        </select>
+                    </form>
+                    <br><br>
+                    
+                    {#Añadir más tipos de gráficos#}
+        
+                    <div id ="container-likes"></div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{posts.mediaLikesPostRecientes}}</b> </i>  &nbsp;likes de media </h6>
+                    <br><br><br>    
+                    <div id ="container-comentarios"></div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i class="font-italic"> <b>{{posts.mediaComentariosPostRecientes}}</b> </i>  &nbsp;comentarios de media </h6>
 
-            <form>
-                <select name="Gráficos" class="custom-select">
-                  <option selected>Elegir tipo de gráfico</option>
-                  <option value="area">Área</option>
-                  <option value="barras">Barras</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </form>
-            <br><br>
-            
-            {#Añadir más tipos de gráficos#}
-
-            <div id ="container-likes"></div>
-            <br>
-            <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaLikes}}</b> </i>  &nbsp;likes de media </h6>
-            <br><br><br>    
-            <div id ="container-comentarios"></div>
-            <br>
-            <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{mediaComentarios}}</b> </i>  &nbsp;comentarios de media </h6>
+                </div>
+            {%endif%}
 
 
 
-            
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
+            {%if videos.listaInfoVideos%}
+                <div class="row d-flex justify-content-center">
+                    <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-5">
+                        <div class="card-body text-left" style="color:white">
+                            <h5 class="card-text font-weinght-bold"> Últimos vídeos </h5>
+                        </div>
+
+                        <div class = "table-responsive-sm ">
+                            <table class="table table-dark table-striped table-borderless table-sm"  id="myTableVideos" style="max-width: 20rem; min-width: 5rem;">
+                                <thead class=" text-center table-success">
+                                    <tr>
+                                        <th onclick="sortTable(0, 'int','myTableVideos')" style="color:black">Likes</th>
+                                        <th onclick="sortTable(1, 'int','myTableVideos')" style="color:black">Comentarios</th>
+                                        <th style="color:black">Fecha</th>
+                                        <th style="color:black">Enlace</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {%for l in videos.listaInfoVideos %}
+                                        <tr>
+                                            <td class="text-center" style="font-size: small;">
+                                                {{l.likes}}
+                                            </td>
+                                            <td class="text-center" style="font-size: small;">
+                                                {{l.comentarios}}
+                                            </td>
+                                            <td class="text-center" style="font-size: x-small;">
+                                                {{l.fecha}}
+                                            </td> 
+                                            <td class="text-center">
+                                                <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                            </td>  
+                                        </tr>
+                                    {%endfor%}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            {%endif%}
         </div>
+
+            {%if videos.listaInfoVideos%}
+                <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
+                    <br><br>
+                    <form>
+                        <select name="Gráficos" class="custom-select">
+                        <option selected>Elegir tipo de gráfico</option>
+                        <option value="area">Área</option>
+                        <option value="barras">Barras</option>
+                        <option value="Otro">Otro</option>
+                        </select>
+                    </form>
+                    <br><br>
+                    
+                    {#Añadir más tipos de gráficos#}
+        
+                    <div id ="container-likes-videos"></div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{videos.mediaLikesVideos}}</b> </i>  &nbsp;likes de media </h6>
+                    <br><br><br>    
+                    <div id ="container-comentarios-videos"></div>
+                    <br>
+                    <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i class="font-italic"> <b>{{videos.mediaComentariosVideos}}</b> </i>  &nbsp;comentarios de media </h6>
+
+                </div>
+            {%endif%}
+
+
+            <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
+                {%if etiquetadas.listaInfoPublicacionesEtiquetadas%}
+                    <div class="row d-flex justify-content-center">
+                        <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-5">
+                            <div class="card-body text-left" style="color:white">
+                                <h5 class="card-text font-weinght-bold"> Últimas publicaciones etiquetadas </h5>
+                            </div>
+    
+                            <div class = "table-responsive-sm ">
+                                <table class="table table-dark table-striped table-borderless table-sm"  id="myTableEtiquetadas" style="max-width: 20rem; min-width: 5rem;">
+                                    <thead class=" text-center table-success">
+                                        <tr>
+                                            <th onclick="sortTable(0, 'int','myTableEtiquetadas')" style="color:black">Likes</th>
+                                            <th onclick="sortTable(1, 'int','myTableEtiquetadas')" style="color:black">Comentarios</th>
+                                            <th style="color:black">Fecha</th>
+                                            <th style="color:black">Enlace</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        {%for l in etiquetadas.listaInfoPublicacionesEtiquetadas %}
+                                            <tr>
+                                                <td class="text-center" style="font-size: small;">
+                                                    {{l.likes}}
+                                                </td>
+                                                <td class="text-center" style="font-size: small;">
+                                                    {{l.comentarios}}
+                                                </td>
+                                                <td class="text-center" style="font-size: x-small;">
+                                                    {{l.fecha}}
+                                                </td> 
+                                                <td class="text-center">
+                                                    <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                </td>  
+                                            </tr>
+                                        {%endfor%}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                {%endif%}
+            </div>
+    
+                {%if etiquetadas.listaInfoPublicacionesEtiquetadas%}
+                    <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
+                        <br><br>
+                        <form>
+                            <select name="Gráficos" class="custom-select">
+                            <option selected>Elegir tipo de gráfico</option>
+                            <option value="area">Área</option>
+                            <option value="barras">Barras</option>
+                            <option value="Otro">Otro</option>
+                            </select>
+                        </form>
+                        <br><br>
+                        
+                        {#Añadir más tipos de gráficos#}
+            
+                        <div id ="container-likes-etiquetadas"></div>
+                        <br>
+                        <h6 class="card-text font-weinght-bold" style="color:white"><i class="font-italic"> <b>{{etiquetadas.mediaLikesPublicacionesEtiquetadas}}</b> </i>  &nbsp;likes de media </h6>
+                        <br><br><br>    
+                        <div id ="container-comentarios-etiquetadas"></div>
+                        <br>
+                        <h6 class="card-text font-weinght-bold " style="color:white"><i class="font-italic"> <b>{{etiquetadas.mediaComentariosPublicacionesEtiquetadas}}</b> </i>  &nbsp;comentarios de media </h6>
+    
+                    </div>
+                {%endif%}
     </div>
 </div>
 
@@ -173,10 +319,10 @@
      * @param int n
      * @param str type - ['str'|'int']
      */
-    function sortTable(n,type) {
+    function sortTable(n,type,idTable) {
       var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
      
-      table = document.getElementById("myTable");
+      table = document.getElementById(idTable);
       switching = true;
       //Set the sorting direction to ascending:
       dir = "asc";
