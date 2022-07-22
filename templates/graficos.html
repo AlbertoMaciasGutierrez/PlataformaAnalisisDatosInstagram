@@ -34,7 +34,7 @@
             },
             plotOptions: {
                 area: {
-                fillOpacity: 0.5
+                fillOpacity: 0.25
                 }
             },
             credits: {
@@ -45,9 +45,9 @@
                 pointFormat: 'Publicación {point.x} => {point.y} likes'
             },
             series: [{
-                name: 'Cantidad likes',
+                name: 'Likes',
                 showInLegend: false,
-                color:'#ff004c',
+                color:'#e70000',
                 data: [{% for l in posts.listaInfoPostRecientes%}{{l.likes}}, {%endfor%}],
                 pointStart: 1
             }]
@@ -86,7 +86,7 @@
             },
             plotOptions: {
                 area: {
-                fillOpacity: 0.5
+                fillOpacity: 0.25
                 }
             },
             credits: {
@@ -97,7 +97,7 @@
                 pointFormat: 'Publicación {point.x} => {point.y} comentarios'
             },
             series: [{
-                name: 'Cantidad comentarios',
+                name: 'Comentarios',
                 showInLegend: false,
                 color:'#2e09d3',
                 data: [{% for l in posts.listaInfoPostRecientes%}{{l.comentarios}}, {%endfor%}],
@@ -113,7 +113,7 @@
                 type: 'area'
             },
             title: {
-                text: 'Likes últimos vídeos'
+                text: 'Likes y Visulaizaciones últimos vídeos'
             },
             subtitle: {
                 text: '*{{IDcuenta}}, últimos 20 vídeos',
@@ -141,7 +141,7 @@
             },
             plotOptions: {
                 area: {
-                fillOpacity: 0.5
+                fillOpacity: 0.25
                 }
             },
             credits: {
@@ -149,15 +149,23 @@
             },
             tooltip: {
                 headerFormat: '<b>{series.name}</b><br />',
-                pointFormat: 'Vídeo {point.x} => {point.y} likes'
+                pointFormat: 'Vídeo {point.x} => {point.y}'
             },
-            series: [{
-                name: 'Cantidad likes',
-                showInLegend: false,
-                color:'#ff004c',
-                data: [{% for l in videos.listaInfoVideos%}{{l.likes}}, {%endfor%}],
-                pointStart: 1
-            }]
+            series: [
+                {
+                    name: 'Visualizaciones',
+                    showInLegend: false,
+                    color:'#00e68e',
+                    data: [{% for l in videos.listaInfoVideos%}{{l.reproducciones}}, {%endfor%}],
+                    pointStart: 1
+                },
+                {
+                    name: 'Likes',
+                    showInLegend: false,
+                    color:'#e70000',
+                    data: [{% for l in videos.listaInfoVideos%}{{l.likes}}, {%endfor%}],
+                    pointStart: 1
+                }]
             });
     
             Highcharts.chart('container-comentarios-videos', {
@@ -193,7 +201,7 @@
             },
             plotOptions: {
                 area: {
-                fillOpacity: 0.5
+                fillOpacity: 0.25
                 }
             },
             credits: {
@@ -204,7 +212,7 @@
                 pointFormat: 'Vídeo {point.x} => {point.y} comentarios'
             },
             series: [{
-                name: 'Cantidad comentarios',
+                name: 'Comentarios',
                 showInLegend: false,
                 color:'#2e09d3',
                 data: [{% for l in videos.listaInfoVideos%}{{l.comentarios}}, {%endfor%}],
@@ -249,7 +257,7 @@
                 },
                 plotOptions: {
                     area: {
-                    fillOpacity: 0.5
+                    fillOpacity: 0.25
                     }
                 },
                 credits: {
@@ -260,9 +268,9 @@
                     pointFormat: 'Publicación {point.x} => {point.y} likes'
                 },
                 series: [{
-                    name: 'Cantidad likes',
+                    name: 'Likes',
                     showInLegend: false,
-                    color:'#ff004c',
+                    color:'#e70000',
                     data: [{% for l in etiquetadas.listaInfoPublicacionesEtiquetadas%}{{l.likes}}, {%endfor%}],
                     pointStart: 1
                 }]
@@ -301,7 +309,7 @@
                 },
                 plotOptions: {
                     area: {
-                    fillOpacity: 0.5
+                    fillOpacity: 0.25
                     }
                 },
                 credits: {
@@ -312,7 +320,7 @@
                     pointFormat: 'Publicación {point.x} => {point.y} comentarios'
                 },
                 series: [{
-                    name: 'Cantidad comentarios',
+                    name: 'Comentarios',
                     showInLegend: false,
                     color:'#2e09d3',
                     data: [{% for l in etiquetadas.listaInfoPublicacionesEtiquetadas%}{{l.comentarios}}, {%endfor%}],

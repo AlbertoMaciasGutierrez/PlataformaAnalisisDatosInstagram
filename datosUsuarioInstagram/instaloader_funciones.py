@@ -7,11 +7,12 @@ PASS = 'juliogamer0423'
 INSTAGRAM = 'https://www.instagram.com/'
 POST = 'p/'
 
-try:
-    L =Instaloader()
-    L.login(USER,PASS)
-except:
-    print('Error al iniciar sesión en la cuenta de instagram')
+
+L =Instaloader()
+#L.login(USER,PASS)                            #Loguearse
+#L.save_session_to_file()                      #Guardar sesión en archivo para no tener que volver a loguearnos
+L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del inicio de sesión anterior. Descomentar y comentar las dos líneas de arriba cuando esté guardada la sesión
+
 
 ##--------------------------------------------------------------------------##
 ##----------------------------Clase para los Posts--------------------------##
@@ -20,14 +21,27 @@ except:
 #Clase para introducir este tipo de objetos en la lista
 class PostClass:
  
-    def __init__(self, likes, comentarios, fecha, url):
+    def __init__(self, likes, comentarios, tipo, fecha, url):
+        self.likes = likes
+        self.comentarios = comentarios
+        self.tipo = tipo
+        self.fecha = fecha
+        self.url = url
+ 
+    def __repr__(self):
+        return '{' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+
+class PostClassVideo:
+ 
+    def __init__(self, reproducciones, likes, comentarios, fecha, url):
+        self.reproducciones = reproducciones
         self.likes = likes
         self.comentarios = comentarios
         self.fecha = fecha
         self.url = url
  
     def __repr__(self):
-        return '{' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+        return '{'+ str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
 
 
 
@@ -90,8 +104,8 @@ def obtenerComentariosLikesPosts(profile):
     #mediaPublicacionesDia = 0
 
     contador = 0                    #Número de publicaciones mostradas
-
     contadorPublicaciones = 0
+    tipo_publicacion = ''
 
     for post in publicaciones:
         
@@ -108,7 +122,12 @@ def obtenerComentariosLikesPosts(profile):
         mediaComentarios += post.comments
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoPostRecientes.append(PostClass(post.likes, post.comments, fecha_publicacion, url_post))
+
+        if(post.typename == 'GraphImage'): tipo_publicacion ='Imagen'
+        elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
+        else: tipo_publicacion ='Sidecar'
+        
+        listaInfoPostRecientes.append(PostClass(post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 
@@ -144,6 +163,7 @@ def obtenerComentariosLikesVideos(profile):
 
     mediaLikes = 0
     mediaComentarios = 0
+    mediaVisualizaciones = 0
 
     contador = 0                    #Número de publicaciones mostradas
 
@@ -162,20 +182,23 @@ def obtenerComentariosLikesVideos(profile):
 
         mediaLikes += post.likes
         mediaComentarios += post.comments
+        mediaVisualizaciones += post.video_view_count
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoVideos.append(PostClass(post.likes, post.comments, fecha_publicacion, url_post))
+        listaInfoVideos.append(PostClassVideo(post.video_view_count ,post.likes, post.comments, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 
     if(contadorPublicaciones !=0):
         mediaLikes = round(mediaLikes/contadorPublicaciones,2)
         mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
+        mediaVisualizaciones = round(mediaVisualizaciones/contadorPublicaciones,2)
         
     context ={
         'listaInfoVideos': listaInfoVideos,
         'mediaLikesVideos': mediaLikes,
         'mediaComentariosVideos': mediaComentarios,
+        'mediaVisualizacionesVideos': mediaVisualizaciones,
     }
 
     return context
@@ -192,8 +215,9 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile):
     mediaComentarios = 0
 
     contador = 0                    #Número de publicaciones mostradas
-
     contadorPublicaciones = 0
+
+    tipo_publicacion =''
 
     for post in publicaciones:
         
@@ -210,7 +234,12 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile):
         mediaComentarios += post.comments
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoPublicacionesEtiquetadas.append(PostClass(post.likes, post.comments, fecha_publicacion, url_post))
+
+        if(post.typename == 'GraphImage'): tipo_publicacion ='Imagen'
+        elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
+        else: tipo_publicacion ='Sidecar'
+
+        listaInfoPublicacionesEtiquetadas.append(PostClass(post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 
