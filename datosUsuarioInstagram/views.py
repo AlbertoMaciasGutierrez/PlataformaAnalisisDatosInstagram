@@ -11,7 +11,7 @@ from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
 from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm, ContactoForm
+from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm, ContactoForm, BusquedaUsuarioForm, ActualizacionBusquedaUsuarioForm
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -55,7 +55,9 @@ def renderizarContacto(request):
 @login_required
 @require_http_methods(["GET"])
 def obtenerInformacionCuenta(request,IDusuario):
-    
+    objetoUsuarioID = get_object_or_404(DatosBusquedaUsuario, IDcuenta = IDusuario)
+    objetoUsuarioID = objetoUsuarioID.__dict__                   #Convertimos el objeto a diccionario para pasarlo al template
+    del objetoUsuarioID['_state']                                #Borramos esta clave innecesaria del diccionario
     return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datosUsuario)
 
 
@@ -66,17 +68,55 @@ def bucadorCuentas(request):
     queryset = request.GET.get("Buscar")
     #print(queryset) 
 
-    if queryset: 
-        context = informacionCuenta(queryset)
+    if queryset:
+        context = {}
+        context['IDcuenta'] = queryset 
+        context.update(informacionCuenta(queryset))
 
         if context == None:
+            del context['IDcuenta']
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
         else:
-            context['IDcuenta'] = queryset
             datosUsuario.update(context)
+            #Para guardar los datos dentro de la base de datos y posteriormente usarlos
+            rellenarFormularioCuentas(request,context)
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
 
+    elif (queryset == ''):
+        buscado = True
+        return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado})
+
     return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
+
+
+@login_required
+@require_http_methods(["GET","POST","UPDATE"])
+def rellenarFormularioCuentas(request,context):
+    #Arreglar esto para introducir estos datos dentro de la base de datos
+    diccionario_datos = {}
+    diccionario_datos.update(context)
+    del diccionario_datos['listaInfoPostRecientes']
+    del diccionario_datos['listaInfoVideos']
+    del diccionario_datos['listaInfoPublicacionesEtiquetadas']
+    #---------------------------------------------------------------------#
+    form = BusquedaUsuarioForm(diccionario_datos)
+    print(diccionario_datos)
+    
+    #Añadimos nueva busqueda de usuarios a la base de datos y si ya está actualizamos todos sus datos excepto el IDusuario
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Busqueda añadida correctamente')    
+    else:                                                                                  
+        objetoUsuarioID = get_object_or_404(DatosBusquedaUsuario, IDcuenta = context['IDcuenta'])
+        #Arreglar esto para introducir estos datos dentro de la base de datos
+        dicionario_datos_actualizacion = {}
+        dicionario_datos_actualizacion.update(diccionario_datos)
+        del dicionario_datos_actualizacion['IDcuenta']
+        #---------------------------------------------------------------------#
+        form = ActualizacionBusquedaUsuarioForm(dicionario_datos_actualizacion, instance = objetoUsuarioID)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Busqueda actualizada correctamente') 
 
 
 

@@ -1,6 +1,6 @@
 <script type="application/javascript">
 
-    {%if posts.listaInfoPostRecientes%}
+    {%if listaInfoPostRecientes%}
         Highcharts.chart('container-likes', {
             chart: {
                 type: 'area'
@@ -48,7 +48,7 @@
                 name: 'Likes',
                 showInLegend: false,
                 color:'#e70000',
-                data: [{% for l in posts.listaInfoPostRecientes%}{{l.likes}}, {%endfor%}],
+                data: [{% for l in listaInfoPostRecientes%}{{l.likes}}, {%endfor%}],
                 pointStart: 1
             }]
             });
@@ -100,14 +100,14 @@
                 name: 'Comentarios',
                 showInLegend: false,
                 color:'#2e09d3',
-                data: [{% for l in posts.listaInfoPostRecientes%}{{l.comentarios}}, {%endfor%}],
+                data: [{% for l in listaInfoPostRecientes%}{{l.comentarios}}, {%endfor%}],
                 pointStart: 1
             }]
             });
     {%endif%}
         
 
-    {%if videos.listaInfoVideos%}
+    {%if listaInfoVideos%}
         Highcharts.chart('container-likes-videos', {
             chart: {
                 type: 'area'
@@ -156,14 +156,14 @@
                     name: 'Visualizaciones',
                     showInLegend: false,
                     color:'#00e68e',
-                    data: [{% for l in videos.listaInfoVideos%}{{l.reproducciones}}, {%endfor%}],
+                    data: [{% for l in listaInfoVideos%}{{l.reproducciones}}, {%endfor%}],
                     pointStart: 1
                 },
                 {
                     name: 'Likes',
                     showInLegend: false,
                     color:'#e70000',
-                    data: [{% for l in videos.listaInfoVideos%}{{l.likes}}, {%endfor%}],
+                    data: [{% for l in listaInfoVideos%}{{l.likes}}, {%endfor%}],
                     pointStart: 1
                 }]
             });
@@ -215,7 +215,7 @@
                 name: 'Comentarios',
                 showInLegend: false,
                 color:'#2e09d3',
-                data: [{% for l in videos.listaInfoVideos%}{{l.comentarios}}, {%endfor%}],
+                data: [{% for l in listaInfoVideos%}{{l.comentarios}}, {%endfor%}],
                 pointStart: 1
             }]
             });
@@ -223,7 +223,7 @@
 
 
 
-    {%if etiquetadas.listaInfoPublicacionesEtiquetadas%}
+    {%if listaInfoPublicacionesEtiquetadas%}
             Highcharts.chart('container-likes-etiquetadas', {
                 chart: {
                     type: 'area'
@@ -271,7 +271,7 @@
                     name: 'Likes',
                     showInLegend: false,
                     color:'#e70000',
-                    data: [{% for l in etiquetadas.listaInfoPublicacionesEtiquetadas%}{{l.likes}}, {%endfor%}],
+                    data: [{% for l in listaInfoPublicacionesEtiquetadas%}{{l.likes}}, {%endfor%}],
                     pointStart: 1
                 }]
                 });
@@ -323,7 +323,7 @@
                     name: 'Comentarios',
                     showInLegend: false,
                     color:'#2e09d3',
-                    data: [{% for l in etiquetadas.listaInfoPublicacionesEtiquetadas%}{{l.comentarios}}, {%endfor%}],
+                    data: [{% for l in listaInfoPublicacionesEtiquetadas%}{{l.comentarios}}, {%endfor%}],
                     pointStart: 1
                 }]
                 });

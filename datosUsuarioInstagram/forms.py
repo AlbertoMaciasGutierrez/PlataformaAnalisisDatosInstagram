@@ -5,7 +5,7 @@ from django import forms
 from cuentas.models import Usuario
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
-from .models import IDSesionUsuario, Contacto
+from .models import IDSesionUsuario, Contacto, DatosBusquedaUsuario
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 
@@ -87,3 +87,14 @@ class ContactoForm(forms.ModelForm):
     mensaje = forms.CharField(label ='', widget= forms.Textarea(attrs={'class':'form-control',
                                                                         'rows':6,
                                                                         'placeholder': "Mensaje",}), required=True)
+
+
+class BusquedaUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = DatosBusquedaUsuario
+        fields = '__all__'
+
+class ActualizacionBusquedaUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = DatosBusquedaUsuario
+        exclude = ['IDcuenta']

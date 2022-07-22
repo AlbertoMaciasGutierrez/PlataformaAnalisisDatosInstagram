@@ -1,9 +1,10 @@
+from asyncio.windows_events import NULL
 from sre_constants import IN
 from instaloader import Instaloader, Profile
 import traceback
 
-USER = 'instaanalysistfg'
-PASS = 'juliogamer0423'
+#USER = 'instaanalysistfg'
+#PASS = 'juliogamer0423'
 INSTAGRAM = 'https://www.instagram.com/'
 POST = 'p/'
 
@@ -57,16 +58,11 @@ def informacionCuenta(cuenta):
         profile = Profile.from_username(L.context, cuenta)
 
         context = {}
-
-        context_publicaciones= obtenerComentariosLikesPosts(profile)
-        context_videos = obtenerComentariosLikesVideos(profile)
-        context_publicaciones_etiquetadas = obtenerComentariosLikesPublicacionesEtiquetadas(profile)
-
-        context['posts'] = context_publicaciones
-        context['videos'] = context_videos
-        context['etiquetadas'] = context_publicaciones_etiquetadas
         
         url_perfil = INSTAGRAM + profile.username + '/'
+
+
+
 
         datos = {
         "Nombre": profile.full_name,
@@ -78,11 +74,23 @@ def informacionCuenta(cuenta):
         "Publicaciones": profile.mediacount,
         "Biografia": profile.biography,
         "Foto_perfil":profile.profile_pic_url,
-        "Website":profile.external_url,
         "Videos": profile.igtvcount,
         }
+        context.update(datos)
+        #Para poder almacenar este campo dentro de la base de datos
+        if (profile.external_url == None):
+            context.update({"Website":''})
+            print(context['Website'])
+        else:
+            context.update({"Website":profile.external_url})
 
-        context['info'] = datos
+        context_publicaciones= obtenerComentariosLikesPosts(profile)
+        context_videos = obtenerComentariosLikesVideos(profile)
+        context_publicaciones_etiquetadas = obtenerComentariosLikesPublicacionesEtiquetadas(profile)
+
+        context.update(context_publicaciones)
+        context.update(context_videos)
+        context.update(context_publicaciones_etiquetadas)
 
 
         return context

@@ -30,11 +30,10 @@
                 <div class="card-body text-left" style="color:white">
                     <h3 class="card-text font-weinght-bold"> {{IDcuenta}}</h3>
                     <p>
-                    {% if info.Nombre != None %}
-                        <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Nombre}}</b> </i></h6>
-                    {% endif %}
+                    <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{Nombre}}</b> </i></h6>
+                    
                     <h6 class="card-text font-weinght-bold">Verificado: &nbsp;&nbsp;                     
-                        {%if info.Usuario_verificado%}
+                        {%if Usuario_verificado%}
                             <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
                         {%else%}
                             <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
@@ -42,7 +41,7 @@
                     </h6>
 
                     <h6 class="card-text font-weinght-bold">Usuario Privado: &nbsp;&nbsp; 
-                        {%if info.Usuario_privado%}
+                        {%if Usuario_privado%}
                             <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
                         {%else%}
                             <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
@@ -50,36 +49,34 @@
                     </h6>
 
                     <h6 class="card-text font-weinght-bold">Cuenta de negocios: &nbsp;&nbsp; 
-                        {%if info.Cuenta_negocios%}
+                        {%if Cuenta_negocios%}
                             <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
                         {%else%}
                             <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
                         {%endif%}
                     </h6>
 
-                    <h6 class="card-text font-weinght-bold">Popularidad: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Popularidad}}</b> </i></h6>
-                    <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Publicaciones}}</b> </i></h6>
-                    <h6 class="card-text font-weinght-bold">Vídeos: &nbsp;&nbsp; <i class="font-italic"> <b>{{info.Videos}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Popularidad: &nbsp;&nbsp; <i class="font-italic"> <b>{{Popularidad}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Publicaciones: &nbsp;&nbsp; <i class="font-italic"> <b>{{Publicaciones}}</b> </i></h6>
+                    <h6 class="card-text font-weinght-bold">Vídeos: &nbsp;&nbsp; <i class="font-italic"> <b>{{Videos}}</b> </i></h6>
                     
 
-                    {% if info.Biografia != None %}
-                        <h6 class="card-text font-weinght-bold">Biografía: &nbsp;&nbsp; </h6>
-                        <p class="font-italic"> <i>{{info.Biografia}}</i> </p>
-                    {% endif %}
+                    <h6 class="card-text font-weinght-bold">Biografía: &nbsp;&nbsp; </h6>
+                    <p class="font-italic"> <i>{{Biografia}}</i> </p>
 
-                    <h6 class="card-text font-weinght-bold">Foto de Perfil: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{info.Foto_perfil}}"> Link </a></h6>
-                    {% if info.Website != None %}
-                        <h6 class="card-text font-weinght-bold">Website: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{info.Website}}"> {{info.Website}} </a></h6>
+                    <h6 class="card-text font-weinght-bold">Foto de Perfil: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{Foto_perfil}}"> Link </a></h6>
+                    {% if Website != '' %}
+                        <h6 class="card-text font-weinght-bold">Website: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{Website}}"> {{Website}} </a></h6>
                     {% endif %}
                     <br>
-                    <a type="button" class="btn btn-info"  target="_blank" href="{{info.Perfil}}">
+                    <a type="button" class="btn btn-info"  target="_blank" href="{{Perfil}}">
                         Acceder a su Instagram
                     </a>            
                 </div>
 
             </div>
 
-            {%if posts.listaInfoPostRecientes%}
+            {%if listaInfoPostRecientes%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
                         <div class="card-body text-left" style="color:white">
@@ -98,7 +95,7 @@
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {%for l in posts.listaInfoPostRecientes %}
+                                    {%for l in listaInfoPostRecientes %}
                                         <tr>
                                             <td class="text-center" style="font-size: x-small;">
                                                 {{l.likes}}
@@ -125,7 +122,7 @@
                 </div>
             {%endif%}
 
-            {%if videos.listaInfoVideos%}
+            {%if listaInfoVideos%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-10 col-xl-12 col-sm-12 pt-5 mt-3">
                         <div class="card-body text-left" style="color:white">
@@ -144,7 +141,7 @@
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {%for l in videos.listaInfoVideos %}
+                                    {%for l in listaInfoVideos %}
                                         <tr>
                                             <td class="text-center" style="font-size: x-small;">
                                                 {{l.likes}}
@@ -171,7 +168,7 @@
                 </div>
             {%endif%}
 
-            {%if etiquetadas.listaInfoPublicacionesEtiquetadas%}
+            {%if listaInfoPublicacionesEtiquetadas%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
                         <div class="card-body text-left" style="color:white">
@@ -190,7 +187,7 @@
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {%for l in etiquetadas.listaInfoPublicacionesEtiquetadas %}
+                                    {%for l in listaInfoPublicacionesEtiquetadas %}
                                         <tr>
                                             <td class="text-center" style="font-size: x-small;">
                                                 {{l.likes}}
@@ -219,7 +216,7 @@
         </div>
 
         <div class="col-12 col-md-12 col-lg-10 col-xl-6 col-sm-12">
-            {%if posts.listaInfoPostRecientes%}
+            {%if listaInfoPostRecientes%}
                 <div class="row d-flex justify-content-between">
                     <div class="col">
                         <br><br>
@@ -237,16 +234,16 @@
             
                         <div id ="container-likes"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{posts.mediaLikesPostRecientes}} </i>  &nbsp;likes de media </h6>
+                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{mediaLikesPostRecientes}} </i>  &nbsp;likes de media </h6>
                         <br><br><br>    
                         <div id ="container-comentarios"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i> {{posts.mediaComentariosPostRecientes}} </i>  &nbsp;comentarios de media </h6>
+                        <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i> {{mediaComentariosPostRecientes}} </i>  &nbsp;comentarios de media </h6>
                     </div>
                 </div>
             {%endif%}
 
-            {%if videos.listaInfoVideos%}
+            {%if listaInfoVideos%}
                 <div class="row d-flex justify-content-between">
                     <div class="col">
                         <br><br><br><br>
@@ -255,17 +252,17 @@
             
                         <div id ="container-likes-videos"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{videos.mediaVisualizacionesVideos}} </i>  &nbsp;visualizaciones de media </h6>
-                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{videos.mediaLikesVideos}} </i>  &nbsp;likes de media </h6>
+                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{mediaVisualizacionesVideos}} </i>  &nbsp;visualizaciones de media </h6>
+                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{mediaLikesVideos}} </i>  &nbsp;likes de media </h6>
                         <br><br><br>    
                         <div id ="container-comentarios-videos"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i> {{videos.mediaComentariosVideos}} </i>  &nbsp;comentarios de media </h6>
+                        <h6 class="card-text font-weinght-bold pb-4" style="color:white"><i> {{mediaComentariosVideos}} </i>  &nbsp;comentarios de media </h6>
                     </div>
                 </div>
             {%endif%}
 
-            {%if etiquetadas.listaInfoPublicacionesEtiquetadas%}
+            {%if listaInfoPublicacionesEtiquetadas%}
                 <div class="row d-flex justify-content-between">
                     <div class="col">
                         <br><br><br><br>
@@ -274,11 +271,11 @@
             
                         <div id ="container-likes-etiquetadas"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{etiquetadas.mediaLikesPublicacionesEtiquetadas}} </i>  &nbsp;likes de media </h6>
+                        <h6 class="card-text font-weinght-bold" style="color:white"><i> {{mediaLikesPublicacionesEtiquetadas}} </i>  &nbsp;likes de media </h6>
                         <br><br><br>    
                         <div id ="container-comentarios-etiquetadas"></div>
                         <br>
-                        <h6 class="card-text font-weinght-bold " style="color:white"><i> {{etiquetadas.mediaComentariosPublicacionesEtiquetadas}} </i>  &nbsp;comentarios de media </h6>
+                        <h6 class="card-text font-weinght-bold " style="color:white"><i> {{mediaComentariosPublicacionesEtiquetadas}} </i>  &nbsp;comentarios de media </h6>
                     </div>
                 </div>
             {%endif%}

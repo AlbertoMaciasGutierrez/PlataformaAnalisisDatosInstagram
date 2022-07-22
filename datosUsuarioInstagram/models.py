@@ -26,3 +26,33 @@ class Contacto(models.Model):
     
     def __str__(self):
         return self.nombre
+
+
+class DatosBusquedaUsuario(models.Model):
+    IDcuenta = models.CharField(primary_key=True, max_length=100)
+    Nombre = models.TextField(blank=True)
+    Usuario_verificado = models.BooleanField()
+    Popularidad = models.IntegerField()
+    Perfil = models.TextField()
+    Usuario_privado = models.BooleanField()
+    Cuenta_negocios = models.BooleanField()
+    Publicaciones = models.IntegerField()
+    Biografia = models.TextField(blank=True)
+    Foto_perfil = models.TextField(blank=True)
+    Videos = models.IntegerField()
+    Website = models.TextField(null=True, blank=True)
+    #POST
+    mediaLikesPostRecientes = models.FloatField()
+    mediaComentariosPostRecientes = models.FloatField()
+    #VIDEOS
+    mediaLikesVideos = models.FloatField()
+    mediaComentariosVideos = models.FloatField()
+    mediaVisualizacionesVideos = models.FloatField()
+    #ETIQUETADAS
+    mediaLikesPublicacionesEtiquetadas = models.FloatField()
+    mediaComentariosPublicacionesEtiquetadas = models.FloatField()
+    
+
+    def __str__(self):
+        return self.IDcuenta
+
