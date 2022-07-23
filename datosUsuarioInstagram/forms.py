@@ -5,7 +5,7 @@ from django import forms
 from cuentas.models import Usuario
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
-from .models import IDSesionUsuario, Contacto, DatosBusquedaUsuario
+from .models import *
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 
@@ -94,7 +94,17 @@ class BusquedaUsuarioForm(forms.ModelForm):
         model = DatosBusquedaUsuario
         fields = '__all__'
 
-class ActualizacionBusquedaUsuarioForm(forms.ModelForm):
+class BusquedaUsuarioPostForm(forms.ModelForm):
     class Meta:
-        model = DatosBusquedaUsuario
-        exclude = ['IDcuenta']
+        model = DatosPostBusquedaUsuario
+        fields = '__all__'
+
+class BusquedaUsuarioVideosForm(forms.ModelForm):
+    class Meta:
+        model = DatosVideosBusquedaUsuario
+        fields = '__all__'
+
+class BusquedaUsuarioEtiquetadasForm(forms.ModelForm):
+    class Meta:
+        model = DatosEtiquetadasBusquedaUsuario
+        fields = '__all__'

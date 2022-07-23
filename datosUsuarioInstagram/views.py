@@ -11,14 +11,13 @@ from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
 from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, LoginForm, IDSesionForm, IDSesionUpdateForm, ContactoForm, BusquedaUsuarioForm, ActualizacionBusquedaUsuarioForm
+from .forms import *
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView
 
 
-datosUsuario = {}  #Diccionario global para pasar los datos del usuario a los templates en obtenerInformacionCuenta
 datosHashtag = {}  #Diccionario global para pasar los datos del hashtag a los templates en obtenerInformacionHashtag         
 
 
@@ -58,7 +57,12 @@ def obtenerInformacionCuenta(request,IDusuario):
     objetoUsuarioID = get_object_or_404(DatosBusquedaUsuario, IDcuenta = IDusuario)
     objetoUsuarioID = objetoUsuarioID.__dict__                   #Convertimos el objeto a diccionario para pasarlo al template
     del objetoUsuarioID['_state']                                #Borramos esta clave innecesaria del diccionario
-    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=datosUsuario)
+
+    objetoUsuarioID['listaInfoPostRecientes'] = DatosPostBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+    objetoUsuarioID['listaInfoVideos'] = DatosVideosBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+    objetoUsuarioID['listaInfoPublicacionesEtiquetadas'] = DatosEtiquetadasBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+
+    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=objetoUsuarioID)
 
 
 @login_required
@@ -77,7 +81,6 @@ def bucadorCuentas(request):
             del context['IDcuenta']
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
         else:
-            datosUsuario.update(context)
             #Para guardar los datos dentro de la base de datos y posteriormente usarlos
             rellenarFormularioCuentas(request,context)
             return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
@@ -90,34 +93,48 @@ def bucadorCuentas(request):
 
 
 @login_required
-@require_http_methods(["GET","POST","UPDATE"])
+@require_http_methods(["GET","POST","DELETE"])
 def rellenarFormularioCuentas(request,context):
-    #Arreglar esto para introducir estos datos dentro de la base de datos
+
     diccionario_datos = {}
     diccionario_datos.update(context)
     del diccionario_datos['listaInfoPostRecientes']
     del diccionario_datos['listaInfoVideos']
     del diccionario_datos['listaInfoPublicacionesEtiquetadas']
-    #---------------------------------------------------------------------#
-    form = BusquedaUsuarioForm(diccionario_datos)
-    print(diccionario_datos)
-    
-    #Añadimos nueva busqueda de usuarios a la base de datos y si ya está actualizamos todos sus datos excepto el IDusuario
-    if form.is_valid():
-        form.save()
-        messages.success(request, 'Busqueda añadida correctamente')    
-    else:                                                                                  
-        objetoUsuarioID = get_object_or_404(DatosBusquedaUsuario, IDcuenta = context['IDcuenta'])
-        #Arreglar esto para introducir estos datos dentro de la base de datos
-        dicionario_datos_actualizacion = {}
-        dicionario_datos_actualizacion.update(diccionario_datos)
-        del dicionario_datos_actualizacion['IDcuenta']
-        #---------------------------------------------------------------------#
-        form = ActualizacionBusquedaUsuarioForm(dicionario_datos_actualizacion, instance = objetoUsuarioID)
+
+    #Si existe la busqueda la borramos y la volvemos a añadir y si no solamente la añadimos
+    try:
+        objetoUsuarioID = DatosBusquedaUsuario.objects.get(IDcuenta = context['IDcuenta'])
+        objetoUsuarioID.delete()
+        form = BusquedaUsuarioForm(diccionario_datos)
         if form.is_valid():
             form.save()
             messages.success(request, 'Busqueda actualizada correctamente') 
 
+    except:
+        form = BusquedaUsuarioForm(diccionario_datos)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Busqueda añadida correctamente')
+
+    #Añadimos los correspondientes post, videos y post etiquetados a la base de datos 
+    for lista in context['listaInfoPostRecientes']:
+        form = BusquedaUsuarioPostForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
+                                        'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url})
+        if form.is_valid():
+            form.save()
+
+    for lista in context['listaInfoVideos']:
+        form = BusquedaUsuarioVideosForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
+                                                'reproducciones': lista.reproducciones, 'fecha': lista.fecha, 'url': lista.url})
+        if form.is_valid():
+            form.save()
+
+    for lista in context['listaInfoPublicacionesEtiquetadas']:
+        form = BusquedaUsuarioEtiquetadasForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
+                                                'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url})
+        if form.is_valid():
+            form.save()
 
 
 ##-----------------------------------------------------------------------##

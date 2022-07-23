@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from sre_constants import IN
 from instaloader import Instaloader, Profile
 import traceback
@@ -21,28 +20,30 @@ L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del ini
 
 #Clase para introducir este tipo de objetos en la lista
 class PostClass:
- 
-    def __init__(self, likes, comentarios, tipo, fecha, url):
+
+    def __init__(self,cuentaID, likes, comentarios, tipo, fecha, url):
+        self.cuentaID = cuentaID
         self.likes = likes
         self.comentarios = comentarios
         self.tipo = tipo
         self.fecha = fecha
         self.url = url
- 
+
     def __repr__(self):
-        return '{' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+        return '{' + str(self.cuentaID) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.tipo + ', ' + self.fecha + ', '+ self.url +'}'
 
 class PostClassVideo:
- 
-    def __init__(self, reproducciones, likes, comentarios, fecha, url):
+
+    def __init__(self,cuentaID, reproducciones, likes, comentarios, fecha, url):
+        self.cuentaID = cuentaID
         self.reproducciones = reproducciones
         self.likes = likes
         self.comentarios = comentarios
         self.fecha = fecha
         self.url = url
- 
+
     def __repr__(self):
-        return '{'+ str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+        return '{' + str(self.cuentaID) + ', ' + str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
 
 
 
@@ -60,9 +61,6 @@ def informacionCuenta(cuenta):
         context = {}
         
         url_perfil = INSTAGRAM + profile.username + '/'
-
-
-
 
         datos = {
         "Nombre": profile.full_name,
@@ -84,9 +82,9 @@ def informacionCuenta(cuenta):
         else:
             context.update({"Website":profile.external_url})
 
-        context_publicaciones= obtenerComentariosLikesPosts(profile)
-        context_videos = obtenerComentariosLikesVideos(profile)
-        context_publicaciones_etiquetadas = obtenerComentariosLikesPublicacionesEtiquetadas(profile)
+        context_publicaciones= obtenerComentariosLikesPosts(profile,cuenta)
+        context_videos = obtenerComentariosLikesVideos(profile,cuenta)
+        context_publicaciones_etiquetadas = obtenerComentariosLikesPublicacionesEtiquetadas(profile,cuenta)
 
         context.update(context_publicaciones)
         context.update(context_videos)
@@ -101,7 +99,7 @@ def informacionCuenta(cuenta):
 
 
 
-def obtenerComentariosLikesPosts(profile):
+def obtenerComentariosLikesPosts(profile,cuenta):
     
     publicaciones = profile.get_posts()               #muestra las publicaciones de la cuenta                    
     
@@ -135,7 +133,7 @@ def obtenerComentariosLikesPosts(profile):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
         
-        listaInfoPostRecientes.append(PostClass(post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
+        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 
@@ -163,7 +161,7 @@ def obtenerComentariosLikesPosts(profile):
 
 
 
-def obtenerComentariosLikesVideos(profile):
+def obtenerComentariosLikesVideos(profile, cuenta):
     
     publicaciones = profile.get_igtv_posts()               #muestra los vídeos de la cuenta                    
     
@@ -193,7 +191,7 @@ def obtenerComentariosLikesVideos(profile):
         mediaVisualizaciones += post.video_view_count
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoVideos.append(PostClassVideo(post.video_view_count ,post.likes, post.comments, fecha_publicacion, url_post))
+        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 
@@ -213,7 +211,7 @@ def obtenerComentariosLikesVideos(profile):
 
 
 
-def obtenerComentariosLikesPublicacionesEtiquetadas(profile):
+def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
     
     publicaciones = profile.get_tagged_posts()              #muestra publicaciones en las que está etiquetada dicha cuenta                   
     
@@ -247,7 +245,7 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
 
-        listaInfoPublicacionesEtiquetadas.append(PostClass(post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
+        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
         contadorPublicaciones+=1
 
 

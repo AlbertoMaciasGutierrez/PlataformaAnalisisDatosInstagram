@@ -56,3 +56,40 @@ class DatosBusquedaUsuario(models.Model):
     def __str__(self):
         return self.IDcuenta
 
+
+class DatosPostBusquedaUsuario(models.Model):
+    cuentaID = models.ForeignKey(DatosBusquedaUsuario, on_delete=models.CASCADE)
+    likes= models.IntegerField()
+    comentarios = models.IntegerField()
+    tipo = models.CharField(max_length=20)
+    fecha = models.CharField(max_length=20)
+    url = models.TextField()
+
+    def __str__(self):
+        return f" {self.cuentaID} - {self.tipo} - {self.fecha}"
+
+
+class DatosVideosBusquedaUsuario(models.Model):
+    cuentaID = models.ForeignKey(DatosBusquedaUsuario, on_delete=models.CASCADE)
+    reproducciones = models.IntegerField()
+    likes= models.IntegerField()
+    comentarios = models.IntegerField()
+    fecha = models.CharField(max_length=20)
+    url = models.TextField()
+
+    def __str__(self):
+        return f" {self.cuentaID} - {self.fecha}"
+
+
+class DatosEtiquetadasBusquedaUsuario(models.Model):
+    cuentaID = models.ForeignKey(DatosBusquedaUsuario, on_delete=models.CASCADE)
+    likes= models.IntegerField()
+    comentarios = models.IntegerField()
+    tipo = models.CharField(max_length=20)
+    fecha = models.CharField(max_length=20)
+    url = models.TextField()
+
+    def __str__(self):
+        return f" {self.cuentaID} - {self.tipo} - {self.fecha}"
+
+
