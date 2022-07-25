@@ -1,4 +1,3 @@
-from sre_constants import IN
 from instaloader import Instaloader, Profile
 import traceback
 
@@ -118,12 +117,6 @@ def obtenerComentariosLikesPosts(profile,cuenta):
         contador +=1
         if (contador > 20): break             #Cantidad de publicaciones a mostrar como máximo
 
-        dia_publicacion = str(post.date_local.day)
-        mes_publicacion = str(post.date_local.month)
-        anio_publicacion = str(post.date_local.year)
-
-        fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
-
         mediaLikes += post.likes
         mediaComentarios += post.comments
 
@@ -133,7 +126,7 @@ def obtenerComentariosLikesPosts(profile,cuenta):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
         
-        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
+        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post))
         contadorPublicaciones+=1
 
 
@@ -180,18 +173,12 @@ def obtenerComentariosLikesVideos(profile, cuenta):
         contador +=1
         if (contador > 20): break             #Cantidad de videos a mostrar como máximo
 
-        dia_publicacion = str(post.date_local.day)
-        mes_publicacion = str(post.date_local.month)
-        anio_publicacion = str(post.date_local.year)
-
-        fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
-
         mediaLikes += post.likes
         mediaComentarios += post.comments
         mediaVisualizaciones += post.video_view_count
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, fecha_publicacion, url_post))
+        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, post.date_local, url_post))
         contadorPublicaciones+=1
 
 
@@ -230,12 +217,6 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
         contador +=1
         if (contador > 20): break             #Cantidad de publicaciones a mostrar como máximo
 
-        dia_publicacion = str(post.date_local.day)
-        mes_publicacion = str(post.date_local.month)
-        anio_publicacion = str(post.date_local.year)
-
-        fecha_publicacion = dia_publicacion + "/" + mes_publicacion + "/" + anio_publicacion
-
         mediaLikes += post.likes
         mediaComentarios += post.comments
 
@@ -245,7 +226,7 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
 
-        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, fecha_publicacion, url_post))
+        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post))
         contadorPublicaciones+=1
 
 

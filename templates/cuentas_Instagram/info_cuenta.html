@@ -90,7 +90,7 @@
                                         <th onclick="sortTable(0, 'int','myTable')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTable')" style="color:black; font-size: small;">Comentarios</th>
                                         <th style="color:black; font-size: small;">Tipo</th>
-                                        <th style="color:black; font-size: small;">Fecha</th>
+                                        <th onclick="sortTable(3, 'date','myTable')" style="color:black; font-size: small;">Fecha</th>
                                         <th style="color:black; font-size: small;">Link</th>
                                     </tr>
                                 </thead>
@@ -107,7 +107,7 @@
                                                 {{l.tipo}}
                                             </td>
                                             <td class="text-center" style="font-size: xx-small;">
-                                                {{l.fecha}}
+                                                {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-center">
                                                 <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
@@ -136,7 +136,7 @@
                                         <th onclick="sortTable(0, 'int','myTableVideos')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTableVideos')" style="color:black; font-size: small; ">Comentarios</th>
                                         <th onclick="sortTable(2, 'int','myTableVideos')" style="color:black; font-size: small; ">Visualizaciones</th>
-                                        <th style="color:black; font-size: small; ">Fecha</th>
+                                        <th onclick="sortTable(3, 'date','myTableVideos')" style="color:black; font-size: small;">Fecha</th>
                                         <th style="color:black; font-size: small; ">Link</th>
                                     </tr>
                                 </thead>
@@ -153,7 +153,7 @@
                                                 {{l.reproducciones}}
                                             </td>
                                             <td class="text-center" style="font-size: xx-small;">
-                                                {{l.fecha}}
+                                                {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-center">
                                                 <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
@@ -182,7 +182,7 @@
                                         <th onclick="sortTable(0, 'int','myTableEtiquetadas')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTableEtiquetadas')" style="color:black; font-size: small;">Comentarios</th>
                                         <th style="color:black; font-size: small;">Tipo</th>
-                                        <th style="color:black; font-size: small;">Fecha</th>
+                                        <th onclick="sortTable(3, 'date','myTableEtiquetadas')" style="color:black; font-size: small;">Fecha</th>
                                         <th style="color:black; font-size: small;">Link</th>
                                     </tr>
                                 </thead>
@@ -199,7 +199,7 @@
                                                 {{l.tipo}}
                                             </td>
                                             <td class="text-center" style="font-size: xx-small;">
-                                                {{l.fecha}}
+                                                {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-center">
                                                 <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
@@ -312,6 +312,7 @@
       switching = true;
       //Set the sorting direction to ascending:
       dir = "asc";
+
      
       /*Make a loop that will continue until no switching has been done:*/
       while (switching) {
@@ -325,6 +326,16 @@
           /*Get the two elements you want to compare, one from current row and one from the next:*/
           x = rows[i].getElementsByTagName("TD")[n];
           y = rows[i + 1].getElementsByTagName("TD")[n];
+          /*Para comparar fechas*/
+          if(type =="date"){
+            /* Convertimos a String la variables x e y, dividimos y las convertimos en fechas*/
+            var fecha1_aux = x.innerHTML.split("/");
+            var fecha1 = new Date(parseInt(fecha1_aux[2]),parseInt(fecha1_aux[1]),parseInt(fecha1_aux[0]));
+            var fecha2_aux = y.innerHTML.split("/");
+            var fecha2 = new Date(parseInt(fecha2_aux[2]),parseInt(fecha2_aux[1]),parseInt(fecha2_aux[0]));
+          }
+         
+         
           /*check if the two rows should switch place, based on the direction, asc or desc:*/
           if (dir == "asc") {
             if ((type=="int" && parseFloat(x.innerHTML) > parseFloat(y.innerHTML))) {
@@ -332,12 +343,22 @@
               shouldSwitch= true;
               break;
             }
+            else if ((type=="date" && fecha1 > fecha2)) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch= true;
+                break;
+              } 
           } else if (dir == "desc") {
             if ((type=="int" && parseFloat(x.innerHTML) < parseFloat(y.innerHTML))) {
               //if so, mark as a switch and break the loop:
               shouldSwitch = true;
               break;
             }
+            else if ((type=="date" && fecha1 < fecha2)) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch= true;
+                break;
+              }
           }
         }
         if (shouldSwitch) {

@@ -1,6 +1,3 @@
-from os import device_encoding
-from sqlite3 import Timestamp
-from tabnanny import verbose
 from django.db import models
 from cuentas.models import Usuario
 from django.utils import timezone
@@ -62,7 +59,7 @@ class DatosPostBusquedaUsuario(models.Model):
     likes= models.IntegerField()
     comentarios = models.IntegerField()
     tipo = models.CharField(max_length=20)
-    fecha = models.CharField(max_length=20)
+    fecha = models.DateTimeField()
     url = models.TextField()
 
     def __str__(self):
@@ -74,7 +71,7 @@ class DatosVideosBusquedaUsuario(models.Model):
     reproducciones = models.IntegerField()
     likes= models.IntegerField()
     comentarios = models.IntegerField()
-    fecha = models.CharField(max_length=20)
+    fecha = models.DateTimeField()
     url = models.TextField()
 
     def __str__(self):
@@ -86,7 +83,7 @@ class DatosEtiquetadasBusquedaUsuario(models.Model):
     likes= models.IntegerField()
     comentarios = models.IntegerField()
     tipo = models.CharField(max_length=20)
-    fecha = models.CharField(max_length=20)
+    fecha = models.DateTimeField()
     url = models.TextField()
 
     def __str__(self):
