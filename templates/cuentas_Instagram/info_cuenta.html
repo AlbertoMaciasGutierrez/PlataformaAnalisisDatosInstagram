@@ -65,9 +65,17 @@
                     <p class="font-italic"> <i>{{Biografia}}</i> </p>
 
                     <h6 class="card-text font-weinght-bold">Foto de Perfil: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{Foto_perfil}}"> Link </a></h6>
+
+                    {% if listaInfoPostRecientes or listaInfoVideos or listaInfoPublicacionesEtiquetadas %}
+                        <h6 class="card-text font-weinght-bold">Highlights: &nbsp;&nbsp; 
+                            <a class="font-italic" href="{%url 'obtenerHighlightsCuenta' IDcuenta%}" aria-hidden="true">Información</a>
+                        </h6>
+                    {% endif %}
+
                     {% if Website != '' %}
                         <h6 class="card-text font-weinght-bold">Website: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{Website}}"> {{Website}} </a></h6>
                     {% endif %}
+                    <br>
                     <br>
                     <a type="button" class="btn btn-info"  target="_blank" href="{{Perfil}}">
                         Acceder a su Instagram

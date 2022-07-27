@@ -1,10 +1,12 @@
 from instaloader import Instaloader, Profile
 import traceback
 
-#USER = 'instaanalysistfg'
-#PASS = 'juliogamer0423'
+USER = 'instaanalysistfg'
+PASS = 'juliogamer0423'
 INSTAGRAM = 'https://www.instagram.com/'
 POST = 'p/'
+HIGHLIGHT = 'stories/highlights/'
+
 
 
 L =Instaloader()
@@ -29,7 +31,7 @@ class PostClass:
         self.url = url
 
     def __repr__(self):
-        return '{' + str(self.cuentaID) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.tipo + ', ' + self.fecha + ', '+ self.url +'}'
+        return '{' + str(self.cuentaID) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.tipo + ', ' + str(self.fecha) + ', '+ self.url +'}'
 
 class PostClassVideo:
 
@@ -42,8 +44,18 @@ class PostClassVideo:
         self.url = url
 
     def __repr__(self):
-        return '{' + str(self.cuentaID) + ', ' + str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.fecha + ', '+ self.url +'}'
+        return '{' + str(self.cuentaID) + ', ' + str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + str(self.fecha) + ', '+ self.url +'}'
 
+class StoryClass:
+
+    def __init__(self, tipo, fecha, duracion, url):
+        self.tipo = tipo
+        self.fecha = fecha
+        self.duracion = duracion
+        self.url = url
+
+    def __repr__(self):
+        return '{' + self.tipo +  ', ' + str(self.fecha) + ', ' + str(self.duracion) +  ', '+ self.url +'}'
 
 
 
@@ -72,6 +84,7 @@ def informacionCuenta(cuenta):
         "Biografia": profile.biography,
         "Foto_perfil":profile.profile_pic_url,
         "Videos": profile.igtvcount,
+        "ID_usuario": profile.userid,
         }
         context.update(datos)
         #Para poder almacenar este campo dentro de la base de datos
@@ -229,7 +242,6 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
         listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post))
         contadorPublicaciones+=1
 
-
     if(contadorPublicaciones !=0):
         mediaLikes = round(mediaLikes/contadorPublicaciones,2)
         mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
@@ -241,3 +253,64 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
     }
 
     return context
+
+
+##----------------------------------------------------------------------##
+##-------------------------Highlights de perfil-------------------------##
+##----------------------------------------------------------------------##
+
+def informacionHightlightsCuenta(IdentificadorCuenta):
+    try:
+        context = {}
+
+        contadorHighlights = 0
+        contadorSalida = 0                                                #Contador para dejar de buscar historias de highlights
+        
+        for highlights in L.get_highlights(IdentificadorCuenta):          #Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos
+            contadorHighlights += 1
+            listaHistoriasDestacadas = []
+            numeroImagenes = 0
+            numeroVideos = 0
+
+            url_post = INSTAGRAM + HIGHLIGHT + str(highlights.unique_id) + '/'
+
+            datos = {
+            "titulo": highlights.title,
+            "numero_historias": highlights.itemcount,                  
+            "foto_portada": highlights.cover_url,  
+            "url": url_post,
+            }
+            context[contadorHighlights] = datos
+            for historia in highlights.get_items():
+                contadorSalida += 1
+
+                if(historia.typename == 'GraphStoryVideo'): 
+                    tipo_publicacion ='Video'
+                    numeroVideos += 1
+                    #url_story = historia.video_url                 #A la hora de conseguir la URL de la imagen, da error
+                    duracion = historia._node['video_duration']                  
+                else: 
+                    tipo_publicacion ='Imagen'
+                    numeroImagenes += 1
+                    #url_story = historia.url                       #A la hora de conseguir la URL de la imagen, da error
+                    duracion = 5                  
+
+                url_story ='No funciona'
+                listaHistoriasDestacadas.append(StoryClass(tipo_publicacion, historia.date_local, duracion, url_story))
+
+            context[contadorHighlights]['numeroImagenes'] = numeroImagenes
+            context[contadorHighlights]['numeroVideos'] = numeroVideos
+            context[contadorHighlights]['listaHistoriasDestacadas'] = listaHistoriasDestacadas
+
+            if(contadorSalida >= 200): break                   #Dejamos de buscar cuando llevemos 200 historias
+
+
+        if (contadorHighlights == 0):                          #Si no tiene historias destacadas no devolvemos diccionario
+            return None                          
+        else: 
+            context['contadorHighlights'] = contadorHighlights
+            return context
+
+    except Exception as e: 
+        traceback.print_exc()
+        return None

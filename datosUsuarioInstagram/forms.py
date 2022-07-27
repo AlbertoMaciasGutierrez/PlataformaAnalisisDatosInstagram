@@ -108,3 +108,25 @@ class BusquedaUsuarioEtiquetadasForm(forms.ModelForm):
     class Meta:
         model = DatosEtiquetadasBusquedaUsuario
         fields = '__all__'
+
+class BusquedaUsuarioIDusuarioForm(forms.ModelForm):
+    class Meta:
+        model = IdentificadorUsuario
+        fields = '__all__'
+#'''
+class HighlightForm(forms.ModelForm):
+    class Meta:
+        model = DatosHighlight
+        fields = '__all__'
+
+class HighlightStoryForm(forms.ModelForm):
+    class Meta:
+        model = DatosStoryHighlight
+        fields = '__all__' 
+
+class ContadorHighlightsForm(forms.ModelForm):
+    class Meta:
+        model = ContadorHighlights
+        fields = '__all__' 
+
+#'''

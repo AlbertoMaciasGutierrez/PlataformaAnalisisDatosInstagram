@@ -25,6 +25,8 @@ urlpatterns = [
     #Cuentas Instagram
     path('analisisInsta/buscadorCuenta/', views.bucadorCuentas, name="buscadorCuentas"),
     path('analisisInsta/buscadorCuenta/busqueda/<IDusuario>/', views.obtenerInformacionCuenta, name="obtenerInformacionCuenta"),
+    #Highlights
+    path('analisisInsta/buscadorCuenta/busqueda/highlights/<IDusuario>/', views.obtenerHighlightsCuenta, name="obtenerHighlightsCuenta"),
 
     #Hashtag Instagram
     path('analisisInsta/buscadorHashtag/', views.bucadorHashtag, name="buscadorHashtag"),

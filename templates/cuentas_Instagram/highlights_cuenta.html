@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Highlights Usuario Instagram {% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<div class ="container-fluid ">
+    <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+        <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
+            <h2 class="font-weinght-bold text-center">Highlights</h2>
+            <h4 class="font-weinght-bold text-center">{{contadorHighlights}} highlights</h4>
+            <h4 class="font-weinght-bold text-center">{{1.titulo}} {{2.titulo}} {{3.titulo}}</h4>
+            {%for l in 1.listaHistoriasDestacadas %}
+                <i>{{l.tipo}}</i>
+            {%endfor%}
+            
+            
+        </div>
+    </div>
+    
+
+</div>
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+{% endblock %}
