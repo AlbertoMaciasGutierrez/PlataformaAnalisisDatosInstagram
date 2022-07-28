@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
 from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta
+from datosUsuarioInstagram.utils import HihglightClass, StoryClass
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
@@ -152,75 +153,74 @@ def rellenarFormularioCuentas(request,context):
 ##----------------------------HIGHLIGHTS-------------------------##
 ##---------------------------------------------------------------##
 #'''
+
 @login_required
 @require_http_methods(["GET"])
 def obtenerHighlightsCuenta(request,IDusuario):
     identificadorCuenta = get_object_or_404(IdentificadorUsuario, cuentaID = IDusuario) 
-    
-    #highlights = informacionHightlightsCuenta(identificadorCuenta.usuarioID)
     highlights = actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta.usuarioID)
-    
+    highlights['IDcuenta'] = IDusuario
 
     return render(request, os.path.join("cuentas_Instagram", "highlights_cuenta.html"), context = highlights)
 
 
 
 @login_required
-@require_http_methods(["GET","POST","DELETE"])
+@require_http_methods(["GET","POST"])
 def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
     #Si existen los highlights los devolvemos como diccionario y si no hacemos la búsqueda y lo añadimos
     try:
         contadorHighlights = ContadorHighlights.objects.get(cuentaID = IDusuario)
         highlights = {'contadorHighlights': contadorHighlights.contadorHighlights}
 
-        contador = 0                                                          #Contador para crear la estructura del diccionario
+        objetosHighlights = DatosHighlight.objects.filter(cuentaID = IDusuario)
+        
+        listaHighlightsIntermedia = []
 
-        objetosHightlights = DatosHighlight.objects.filter(cuentaID = IDusuario)
-        for destacados in objetosHightlights:
-            datosHighlight = destacados                                             #Convertimos el objeto a diccionario para pasarlo al template
-            datosHighlight = datosHighlight.__dict__
-            #print(datosHighlight)
-            del datosHighlight['_state']                                           #Borramos esta clave innecesaria del diccionario
+        for destacados in objetosHighlights:
+            listaHistoriasDestacadas = []
 
-            if (contador < contadorHighlights.contadorHighlights):
-                contador += 1
-                highlights[contador] = datosHighlight
+            objetosStoriesHighlight = DatosStoryHighlight.objects.filter(highlight = destacados.identificador_highlight_usuario)
+
+            for historia in objetosStoriesHighlight:
+                listaHistoriasDestacadas.append((StoryClass(historia.tipo, historia.fecha, historia.duracion, historia.url)))
+
+            listaHighlightsIntermedia.append(HihglightClass(destacados.titulo, destacados.numero_historias, destacados.foto_portada, destacados.url, destacados.numeroImagenes, destacados.numeroVideos, listaHistoriasDestacadas))
             
-            objetosStories = DatosStoryHighlight.objects.filter(highlight = destacados.identificador_highlight_usuario)
-            #print(objetosStories)
-            highlights[contador]['listaHistoriasDestacadas'] = DatosStoryHighlight.objects.filter(highlight = destacados.identificador_highlight_usuario)
             
+        highlights['destacados'] = listaHighlightsIntermedia
         messages.success(request, 'Highlights cargados correctamente')
         return highlights
 #'''
     except:
         highlights = informacionHightlightsCuenta(identificadorCuenta)
 
-        form = ContadorHighlightsForm({'cuentaID': IDusuario, 'contadorHighlights': highlights['contadorHighlights']})
-        if form.is_valid():
-            form.save()
-            print('Contador añadido')
-
-        for c in range(1,highlights['contadorHighlights'] + 1):
-            diccionario_datos = {'cuentaID': IDusuario}
-            idetificador_highlight = IDusuario + '-' + highlights[c]['titulo']
-            diccionario_datos['identificador_highlight_usuario'] = idetificador_highlight
-            diccionario_datos.update(highlights[c])
-            del diccionario_datos['listaHistoriasDestacadas']
-            form = HighlightForm(diccionario_datos)
+        if highlights == None:
+            dicionarioVacio = {}
+            return dicionarioVacio
+        else:
+            form = ContadorHighlightsForm({'cuentaID': IDusuario, 'contadorHighlights': highlights['contadorHighlights']})
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Highlight añadido correctamente')
+                print('Contador añadido')
 
-                #objetoHighlight = DatosHighlight.objects.get(titulo = diccionario_datos['titulo'])                                #Obtenemos el pk del objeto highlight que acabamos de introducir en la BD
+            for lista in highlights['destacados']:
+                idetificador_highlight = IDusuario + '-' + lista.titulo
+                form = HighlightForm({'cuentaID': IDusuario, 'identificador_highlight_usuario': idetificador_highlight, 'titulo': lista.titulo, 'numero_historias': lista.numero_historias, 
+                                        'foto_portada': lista.foto_portada, 'url': lista.url,'numeroImagenes': lista.numeroImagenes, 'numeroVideos': lista.numeroVideos})
+                if form.is_valid():
+                    form.save()
+                    #messages.success(request, 'Highlight añadido correctamente')
 
-                for historia in highlights[c]['listaHistoriasDestacadas']:
-                    form = HighlightStoryForm({'highlight' : idetificador_highlight , 'tipo': historia.tipo, 'fecha': historia.fecha,          
-                                                'duracion': historia.duracion, 'url': historia.url})
-                    if form.is_valid():
-                        form.save()
-                        #print('Historia añadida correctamente')
-        #messages.success(request, 'Highlights añadidos correctamente')
+                    for historia in lista.listaHistoriasDestacadas:
+                        form = HighlightStoryForm({'highlight' : idetificador_highlight , 'tipo': historia.tipo, 'fecha': historia.fecha,          
+                                                    'duracion': historia.duracion, 'url': historia.url})
+                        if form.is_valid():
+                            form.save()
+                            #print('Historia añadida correctamente')
+
+
+        messages.success(request, 'Highlights añadidos correctamente')
         return highlights
 
 #'''

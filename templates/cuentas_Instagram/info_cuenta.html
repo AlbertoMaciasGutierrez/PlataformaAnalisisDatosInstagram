@@ -9,15 +9,6 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-    <style>
-        .resaltar {
-            cursor: pointer;
-            background-color: #00c271af;
-            color: crimson;
-        }
-
-    </style>
-
 {% endblock %}
 
 {% block content %}
@@ -27,8 +18,8 @@
         <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
             <div class="row d-flex justify-content-between">
 
-                <div class="card-body text-left" style="color:white">
-                    <h3 class="card-text font-weinght-bold"> {{IDcuenta}}</h3>
+                <div class="card-body text-left" style="color:white"> 
+                    <h3 class="card-text font-weinght-bold"> <b> {{IDcuenta}} </b></h3>
                     <p>
                     <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{Nombre}}</b> </i></h6>
                     
@@ -296,95 +287,8 @@
 
 
 {% block JavaScript%}
-<script>
-    $(document).ready(() => {
-        $('th').each(function(columna) {
-            $(this).hover(function() {
-                $(this).addClass('resaltar');
-            }, function() {
-                $(this).removeClass('resaltar');
-            });
 
-            });
-        });
-    /**
-     * Funcion para ordenar una tabla... tiene que recibir el numero de columna a
-     * ordenar y el tipo de orden
-     * @param int n
-     * @param str type - ['str'|'int']
-     */
-    function sortTable(n,type,idTable) {
-      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-     
-      table = document.getElementById(idTable);
-      switching = true;
-      //Set the sorting direction to ascending:
-      dir = "asc";
-
-     
-      /*Make a loop that will continue until no switching has been done:*/
-      while (switching) {
-        //start by saying: no switching is done:
-        switching = false;
-        rows = table.rows;
-        /*Loop through all table rows (except the first, which contains table headers):*/
-        for (i = 1; i < (rows.length - 1); i++) {
-          //start by saying there should be no switching:
-          shouldSwitch = false;
-          /*Get the two elements you want to compare, one from current row and one from the next:*/
-          x = rows[i].getElementsByTagName("TD")[n];
-          y = rows[i + 1].getElementsByTagName("TD")[n];
-          /*Para comparar fechas*/
-          if(type =="date"){
-            /* Convertimos a String la variables x e y, dividimos y las convertimos en fechas*/
-            var fecha1_aux = x.innerHTML.split("/");
-            var fecha1 = new Date(parseInt(fecha1_aux[2]),parseInt(fecha1_aux[1]),parseInt(fecha1_aux[0]));
-            var fecha2_aux = y.innerHTML.split("/");
-            var fecha2 = new Date(parseInt(fecha2_aux[2]),parseInt(fecha2_aux[1]),parseInt(fecha2_aux[0]));
-          }
-         
-         
-          /*check if the two rows should switch place, based on the direction, asc or desc:*/
-          if (dir == "asc") {
-            if ((type=="int" && parseFloat(x.innerHTML) > parseFloat(y.innerHTML))) {
-              //if so, mark as a switch and break the loop:
-              shouldSwitch= true;
-              break;
-            }
-            else if ((type=="date" && fecha1 > fecha2)) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch= true;
-                break;
-              } 
-          } else if (dir == "desc") {
-            if ((type=="int" && parseFloat(x.innerHTML) < parseFloat(y.innerHTML))) {
-              //if so, mark as a switch and break the loop:
-              shouldSwitch = true;
-              break;
-            }
-            else if ((type=="date" && fecha1 < fecha2)) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch= true;
-                break;
-              }
-          }
-        }
-        if (shouldSwitch) {
-          /*If a switch has been marked, make the switch and mark that a switch has been done:*/
-          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-          //Each time a switch is done, increase this count by 1:
-          switchcount ++;
-        } else {
-          /*If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.*/
-          if (switchcount == 0 && dir == "asc") {
-            dir = "desc";
-            switching = true;
-          }
-        }
-      }
-    }
-    </script>
-
+    {% include "ordenar_tablas.html" %}
     {% include "graficos.html" %}
+
 {% endblock%}

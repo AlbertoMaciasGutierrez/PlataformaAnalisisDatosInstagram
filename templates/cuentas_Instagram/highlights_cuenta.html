@@ -8,26 +8,85 @@
 
 {% block content %}
 
-<div class ="container-fluid ">
-    <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
-        <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
-            <h2 class="font-weinght-bold text-center">Highlights</h2>
-            <h4 class="font-weinght-bold text-center">{{contadorHighlights}} highlights</h4>
-            <h4 class="font-weinght-bold text-center">{{1.titulo}} {{2.titulo}} {{3.titulo}}</h4>
-            {%for l in 1.listaHistoriasDestacadas %}
-                <i>{{l.tipo}}</i>
-            {%endfor%}
-            
-            
+    {%if contadorHighlights%}
+
+    <div class="container-lg">
+        <div class="row d-flex justify-content-between p-1 pb-5 mt-3 mb-5 row-md-6 row-xl-6 row-sm-6" style="background-color: #161616">
+            <div class = "container">
+                <div class="col-12 col-md-10 col-lg-6 col-xl-6 col-sm-12">
+                    <div class="row d-flex justify-content-between">
+                        <div class="card-body text-left" style="color:white">
+                            <h3 class="card-text font-weinght-bold"> <b>{{IDcuenta}}</b></h3>
+                            <p>
+                            <h6 class="card-text font-weinght-bold">Highlights: &nbsp;&nbsp; <i class="font-italic"> <b>{{contadorHighlights}}</b> </i></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <div class = "container">
+                    <div class="row d-flex justify-content-between">
+                        {%for d in destacados %}
+                        <div class = "col-12 col-md-8 col-lg-6 col-xl-6 col-sm-9 pb-4">
+                                <div class="card-body text-left" style="color:white">
+                                    <h4 class="card-text font-weinght-bold"><i class="font-italic"> <b>{{d.titulo}}</b> </i> </h4>
+                                    <p>
+                                    <h6 class="card-text font-weinght-bold">Historias: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numero_historias}}</b> </i> </h6>
+                                    <h6 class="card-text font-weinght-bold">Imagenes: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroImagenes}}</b> </i> </h6>
+                                    <h6 class="card-text font-weinght-bold">Videos: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroVideos}}</b> </i> </h6>
+                                    <h6 class="card-text font-weinght-bold">Foto de portada: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.foto_portada}}"> Link </a></h6>
+                                    <h6 class="card-text font-weinght-bold">Highlight: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.url}}"> Acceder </a></h6>
+                                </div>
+
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-borderless table-sm" id="{{d.titulo}}" style="max-width: 20rem; min-width: 5rem;">
+                                        <thead class=" text-center table-success">
+                                            <tr>
+                                                <th onclick="sortTable(0, 'float','{{d.titulo}}')" style="color:black; font-size: small;">Duracion</th>
+                                                <th style="color:black; font-size: small;">Tipo</th>
+                                                <th onclick="sortTable(2, 'date','{{d.titulo}}')" style="color:black; font-size: small;">Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in d.listaHistoriasDestacadas %}
+                                                <tr>
+                                                    <td class="text-center" style="font-size: x-small;">
+                                                        {{l.duracion}}
+                                                    </td>
+                                                    <td class="text-center" style="font-size: x-small;">
+                                                        {{l.tipo}}
+                                                    </td>
+                                                    <td class="text-center" style="font-size: xx-small;">
+                                                        {{l.fecha|date:"d/m/Y"}}
+                                                    </td> 
+                                                </tr>
+                                            {%endfor%}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {%else%}
+    <div class ="container-fluid ">
+        <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+            <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
+                <p>La cuenta "{{IDcuenta}}" no tiene historias destacadas</p>
+            </div>
         </div>
     </div>
-    
 
-</div>
+    {%endif%}
 
 {% endblock %}
 
 
 {% block JavaScript%}
+
+    {% include "ordenar_tablas.html" %}
 
 {% endblock %}

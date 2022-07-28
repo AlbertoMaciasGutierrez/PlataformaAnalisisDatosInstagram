@@ -1,5 +1,6 @@
 from instaloader import Instaloader, Profile
 import traceback
+from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, StoryClass
 
 USER = 'instaanalysistfg'
 PASS = 'juliogamer0423'
@@ -14,48 +15,6 @@ L =Instaloader()
 #L.save_session_to_file()                      #Guardar sesión en archivo para no tener que volver a loguearnos
 L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del inicio de sesión anterior. Descomentar y comentar las dos líneas de arriba cuando esté guardada la sesión
 
-
-##--------------------------------------------------------------------------##
-##----------------------------Clase para los Posts--------------------------##
-##--------------------------------------------------------------------------##
-
-#Clase para introducir este tipo de objetos en la lista
-class PostClass:
-
-    def __init__(self,cuentaID, likes, comentarios, tipo, fecha, url):
-        self.cuentaID = cuentaID
-        self.likes = likes
-        self.comentarios = comentarios
-        self.tipo = tipo
-        self.fecha = fecha
-        self.url = url
-
-    def __repr__(self):
-        return '{' + str(self.cuentaID) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + self.tipo + ', ' + str(self.fecha) + ', '+ self.url +'}'
-
-class PostClassVideo:
-
-    def __init__(self,cuentaID, reproducciones, likes, comentarios, fecha, url):
-        self.cuentaID = cuentaID
-        self.reproducciones = reproducciones
-        self.likes = likes
-        self.comentarios = comentarios
-        self.fecha = fecha
-        self.url = url
-
-    def __repr__(self):
-        return '{' + str(self.cuentaID) + ', ' + str(self.reproducciones) + ', ' + str(self.likes) + ', ' + str(self.comentarios) + ', ' + str(self.fecha) + ', '+ self.url +'}'
-
-class StoryClass:
-
-    def __init__(self, tipo, fecha, duracion, url):
-        self.tipo = tipo
-        self.fecha = fecha
-        self.duracion = duracion
-        self.url = url
-
-    def __repr__(self):
-        return '{' + self.tipo +  ', ' + str(self.fecha) + ', ' + str(self.duracion) +  ', '+ self.url +'}'
 
 
 
@@ -265,6 +224,8 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
 
         contadorHighlights = 0
         contadorSalida = 0                                                #Contador para dejar de buscar historias de highlights
+
+        listaHighlightIntermedia = []
         
         for highlights in L.get_highlights(IdentificadorCuenta):          #Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos
             contadorHighlights += 1
@@ -274,13 +235,6 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
 
             url_post = INSTAGRAM + HIGHLIGHT + str(highlights.unique_id) + '/'
 
-            datos = {
-            "titulo": highlights.title,
-            "numero_historias": highlights.itemcount,                  
-            "foto_portada": highlights.cover_url,  
-            "url": url_post,
-            }
-            context[contadorHighlights] = datos
             for historia in highlights.get_items():
                 contadorSalida += 1
 
@@ -293,21 +247,19 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
                     tipo_publicacion ='Imagen'
                     numeroImagenes += 1
                     #url_story = historia.url                       #A la hora de conseguir la URL de la imagen, da error
-                    duracion = 5                  
+                    duracion = 5.0                  
 
                 url_story ='No funciona'
                 listaHistoriasDestacadas.append(StoryClass(tipo_publicacion, historia.date_local, duracion, url_story))
 
-            context[contadorHighlights]['numeroImagenes'] = numeroImagenes
-            context[contadorHighlights]['numeroVideos'] = numeroVideos
-            context[contadorHighlights]['listaHistoriasDestacadas'] = listaHistoriasDestacadas
+            listaHighlightIntermedia.append(HihglightClass(highlights.title, highlights.itemcount, highlights.cover_url, url_post, numeroImagenes, numeroVideos, listaHistoriasDestacadas))
 
             if(contadorSalida >= 200): break                   #Dejamos de buscar cuando llevemos 200 historias
 
-
         if (contadorHighlights == 0):                          #Si no tiene historias destacadas no devolvemos diccionario
             return None                          
-        else: 
+        else:
+            context['destacados'] = listaHighlightIntermedia
             context['contadorHighlights'] = contadorHighlights
             return context
 
