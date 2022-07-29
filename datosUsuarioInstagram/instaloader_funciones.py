@@ -1,4 +1,4 @@
-from instaloader import Instaloader, Profile
+from instaloader import Instaloader, Profile, TopSearchResults
 import traceback
 from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, StoryClass
 
@@ -21,6 +21,23 @@ L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del ini
 ##--------------------------------------------------------------------##
 ##-------------------------Busqueda de perfil-------------------------##
 ##--------------------------------------------------------------------##
+
+def buscadorPerfil(queryset):
+    contador = 0
+    listaPerfiles = []
+    diccionarioPerfiles = {}
+
+    for perfil in TopSearchResults(L.context,queryset).get_profiles():
+        contador += 1
+        listaPerfiles.append(perfil.username)
+
+    diccionarioPerfiles = {
+    'contador': contador,
+    'listaPerfiles': listaPerfiles
+    }
+
+    return diccionarioPerfiles
+
 
 def informacionCuenta(cuenta):
     try:
@@ -266,3 +283,24 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
     except Exception as e: 
         traceback.print_exc()
         return None
+
+
+##---------------------------------------------------------------------##
+##-------------------------Busqueda de hashtag-------------------------##
+##---------------------------------------------------------------------##
+
+def buscadorHashtag(queryset):
+    contador = 0
+    listaHashtags = []
+    diccionarioHashtags = {}
+
+    for hashtag in TopSearchResults(L.context,queryset).get_hashtag_strings():
+        contador += 1
+        listaHashtags.append(hashtag)
+
+    diccionarioHashtags = {
+    'contador': contador,
+    'listaHashtags': listaHashtags
+    }
+
+    return diccionarioHashtags

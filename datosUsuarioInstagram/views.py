@@ -4,7 +4,7 @@ from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
-from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag
 from datosUsuarioInstagram.utils import HihglightClass, StoryClass
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
@@ -50,55 +50,12 @@ def renderizarContacto(request):
 ##-------------------------------------------------------------##
 ##----------------------------USUARIOS-------------------------##
 ##-------------------------------------------------------------##
-
-
-
-
-@login_required
-@require_http_methods(["GET"])
-def obtenerInformacionCuenta(request,IDusuario):
-    objetoUsuarioID = get_object_or_404(DatosBusquedaUsuario, IDcuenta = IDusuario)
-    objetoUsuarioID = objetoUsuarioID.__dict__                   #Convertimos el objeto a diccionario para pasarlo al template
-    del objetoUsuarioID['_state']                                #Borramos esta clave innecesaria del diccionario
-
-    objetoUsuarioID['listaInfoPostRecientes'] = DatosPostBusquedaUsuario.objects.filter(cuentaID = IDusuario)
-    objetoUsuarioID['listaInfoVideos'] = DatosVideosBusquedaUsuario.objects.filter(cuentaID = IDusuario)
-    objetoUsuarioID['listaInfoPublicacionesEtiquetadas'] = DatosEtiquetadasBusquedaUsuario.objects.filter(cuentaID = IDusuario)
-
-    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=objetoUsuarioID)
-
-
-@login_required
-@require_http_methods(["GET"])
-def bucadorCuentas(request):
-
-    queryset = request.GET.get("Buscar")
-    #print(queryset) 
-
-    if queryset:
-        context = {}
-        context['IDcuenta'] = queryset
-        info = informacionCuenta(queryset)
-
-        if info == None:
-            del context['IDcuenta']
-            return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
-        else:
-            #Para guardar los datos dentro de la base de datos y posteriormente usarlos
-            context.update(info)
-            rellenarFormularioCuentas(request,context)
-            return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=context )
-
-    elif (queryset == ''):
-        buscado = True
-        return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado})
-
-    return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
-
-
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
-def rellenarFormularioCuentas(request,context):
+def addCuentasBaseDatos(request,IDusuario):
+    context = {}
+    context = informacionCuenta(IDusuario)
+    context['IDcuenta'] = IDusuario
 
     diccionario_datos = {}
     diccionario_datos.update(context)
@@ -107,21 +64,12 @@ def rellenarFormularioCuentas(request,context):
     del diccionario_datos['listaInfoVideos']
     del diccionario_datos['listaInfoPublicacionesEtiquetadas']
 
-    #Si existe la busqueda la borramos y la volvemos a añadir y si no solamente la añadimos
-    try:
-        objetoUsuarioID = DatosBusquedaUsuario.objects.get(IDcuenta = context['IDcuenta'])
-        objetoUsuarioID.delete()
-        form = BusquedaUsuarioForm(diccionario_datos)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Busqueda actualizada correctamente') 
+    form = BusquedaUsuarioForm(diccionario_datos)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Busqueda actualizada correctamente')
 
-    except:
-        form = BusquedaUsuarioForm(diccionario_datos)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Busqueda añadida correctamente')
-
+    
     #Añadimos los correspondientes post, videos y post etiquetados a la base de datos 
     for lista in context['listaInfoPostRecientes']:
         form = BusquedaUsuarioPostForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
@@ -145,8 +93,74 @@ def rellenarFormularioCuentas(request,context):
     form = BusquedaUsuarioIDusuarioForm({'cuentaID': context['IDcuenta'], 'usuarioID': context['ID_usuario']})
     if form.is_valid():
         form.save()
+    
+    return context
 
 
+@login_required
+@require_http_methods(["GET"])
+def actualizarCuentasBaseDatos(request,IDusuario):
+    
+    try:
+        objetoUsuarioID = DatosBusquedaUsuario.objects.get(IDcuenta = IDusuario)
+
+        #Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
+        diferencia_timer = timezone.now() - objetoUsuarioID.timer
+        minutos = diferencia_timer.seconds/60
+        
+        if(minutos >= 3):
+            #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
+            objetoUsuarioID.delete()
+            context = addCuentasBaseDatos(request,IDusuario)
+            
+            return context
+
+        else:
+            #Recuperamos los datos de la base de datos y los retornamos en forma de diccionario
+            objetoUsuarioID = objetoUsuarioID.__dict__                   #Convertimos el objeto a diccionario para pasarlo al template
+            del objetoUsuarioID['_state']                                #Borramos esta clave innecesaria del diccionario
+
+            objetoUsuarioID['listaInfoPostRecientes'] = DatosPostBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+            objetoUsuarioID['listaInfoVideos'] = DatosVideosBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+            objetoUsuarioID['listaInfoPublicacionesEtiquetadas'] = DatosEtiquetadasBusquedaUsuario.objects.filter(cuentaID = IDusuario)
+
+            return objetoUsuarioID
+
+
+    except:
+        #Realizamos la búsqueda, introducimos los datos en la base de datos y los devolvemos
+        context = addCuentasBaseDatos(request,IDusuario)
+        
+        return context
+
+
+
+
+@login_required
+@require_http_methods(["GET"])
+def obtenerInformacionCuenta(request,IDusuario):
+
+    info = actualizarCuentasBaseDatos(request,IDusuario)
+    
+    return render(request, os.path.join("cuentas_Instagram", "info_cuenta.html"),context=info)
+
+
+@login_required
+@require_http_methods(["GET"])
+def bucadorCuentas(request):
+
+    queryset = request.GET.get("Buscar")
+    #print(queryset) 
+
+    if queryset:
+        info = buscadorPerfil(queryset)
+        return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=info )
+
+    elif (queryset == ''):
+        buscado = True
+        return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado})
+
+    return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
 
 
 ##---------------------------------------------------------------##
@@ -225,9 +239,9 @@ def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
 
 #'''
 
-##-----------------------------------------------------------------------##
-##----------------------------INSTAGRAMHASHTAG---------------------------##
-##-----------------------------------------------------------------------##
+##---------------------------------------------------------------##
+##----------------------------HASHTAGS---------------------------##
+##---------------------------------------------------------------##
 
 @login_required
 @require_http_methods(["GET"])
@@ -251,17 +265,14 @@ def bucadorHashtag(request):
     #print(queryset) 
 
     if queryset: 
-        context = informacionHashtag(queryset)
+        info = buscadorHashtag(queryset)
+        return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=info)
 
-        if context == None:
-            return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=context )
-        else:
-            context['Hashtag'] = queryset
-            datosHashtag.update(context)
-            return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=context )
+    elif (queryset == ''):
+        buscado = True
+        return render(request, os.path.join("hashtag", "buscador_hashtag.html"),{'buscado':buscado})
 
     return render(request, os.path.join("hashtag", "buscador_hashtag.html"))
-
 
 
 ##--------------------------------------------------------------------##

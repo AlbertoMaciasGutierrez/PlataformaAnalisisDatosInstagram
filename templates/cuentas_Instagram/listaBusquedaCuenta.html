@@ -11,10 +11,14 @@
 <div class ="container-fluid ">
     <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
         <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
-            {%if IDcuenta %}
-                <a href="{% url 'obtenerInformacionCuenta' IDcuenta %}">{{IDcuenta}}</a>
+            {%if contador != 0 %}
+                <ul class="list-unstyled">
+                    {%for perfil in listaPerfiles%}
+                        <li class="pl-3"><a href="{% url 'obtenerInformacionCuenta' perfil %}">{{perfil}}</a></li>
+                    {%endfor%}
+                </ul>
             {%else%}
-                <p>Cuenta no encontrada</p>
+                <p>Perfil no encontrado</p>
             {%endif%}
         </div>
     </div>

@@ -52,6 +52,8 @@ class DatosBusquedaUsuario(models.Model):
     #ETIQUETADAS
     mediaLikesPublicacionesEtiquetadas = models.FloatField()
     mediaComentariosPublicacionesEtiquetadas = models.FloatField()
+    #TEMPORIZADOR
+    timer = models.DateTimeField(auto_now_add=True)
     
 
     def __str__(self):
@@ -102,7 +104,7 @@ class DatosEtiquetadasBusquedaUsuario(models.Model):
 ##------------------------------------------------------------------------##
 
 class IdentificadorUsuario(models.Model):
-    cuentaID = models.ForeignKey(DatosBusquedaUsuario, on_delete=models.CASCADE)
+    cuentaID = models.OneToOneField(DatosBusquedaUsuario, on_delete=models.CASCADE)
     usuarioID = models.IntegerField()
 
     def __str__(self):
@@ -113,7 +115,7 @@ class IdentificadorUsuario(models.Model):
 
 #'''
 class ContadorHighlights(models.Model):
-    cuentaID = models.ForeignKey(DatosBusquedaUsuario, on_delete=models.CASCADE)
+    cuentaID = models.OneToOneField(DatosBusquedaUsuario, on_delete=models.CASCADE)
     contadorHighlights = models.IntegerField()
 
     def __str__(self):
