@@ -18,9 +18,11 @@
         <div class="col-12 col-md-10 col-lg-8 col-xl-6 col-sm-12">
             <div class="row d-flex justify-content-between">
 
-                <div class="card-body text-left" style="color:white"> 
-                    <h3 class="card-text font-weinght-bold"> <b> {{IDcuenta}} </b></h3>
-                    <p>
+                <div class="card-body text-left" style="color:white">
+                    <img src="{% static 'img/perfil_instagram/images.png' %}" class="rounded-circle" width="100" height="100">
+                    <br> 
+                    <h3 class="card-text font-weinght-bold"><b> {{IDcuenta}} </b></h3>
+                    <br>
                     <h6 class="card-text font-weinght-bold">Nombre: &nbsp;&nbsp; <i class="font-italic"> <b>{{Nombre}}</b> </i></h6>
                     
                     <h6 class="card-text font-weinght-bold">Verificado: &nbsp;&nbsp;                     
@@ -59,7 +61,7 @@
 
                     {% if listaInfoPostRecientes or listaInfoVideos or listaInfoPublicacionesEtiquetadas %}
                         <h6 class="card-text font-weinght-bold">Highlights: &nbsp;&nbsp; 
-                            <a class="font-italic" href="{%url 'obtenerHighlightsCuenta' IDcuenta%}" aria-hidden="true">Información</a>
+                            <a class="font-italic" target="_blank" href="{%url 'obtenerHighlightsCuenta' IDcuenta%}" aria-hidden="true">Información</a>
                         </h6>
                     {% endif %}
 
@@ -75,20 +77,18 @@
 
             </div>
 
+
             {%if listaInfoPostRecientes%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
-                        <div class="card-body text-left" style="color:white">
-                            <h6 class="card-text font-weinght-bold">Últimas publicaciones </h6>
-                        </div>
-
+                        <h6 class="card-text font-weinght-bold" style="color:white" >Últimas publicaciones </h6>
                         <div class = "table-responsive-sm ">
-                            <table class="table table-dark table-striped table-borderless table-sm" id="myTable" style="max-width: 20rem; min-width: 5rem;">
-                                <thead class=" text-center table-success">
+                            <table class="table table-dark table-striped table-bordered table-sm" id="myTable" >
+                                <thead class=" text-left table-success">
                                     <tr>
                                         <th onclick="sortTable(0, 'int','myTable')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTable')" style="color:black; font-size: small;">Comentarios</th>
-                                        <th style="color:black; font-size: small;">Tipo</th>
+                                        <th onclick="sortTable(2, 'str','myTable')" style="color:black; font-size: small;">Tipo</th>
                                         <th onclick="sortTable(3, 'date','myTable')" style="color:black; font-size: small;">Fecha</th>
                                         <th style="color:black; font-size: small;">Link</th>
                                     </tr>
@@ -96,20 +96,20 @@
                                 <tbody >
                                     {%for l in listaInfoPostRecientes %}
                                         <tr>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.likes}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.comentarios}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.tipo}}
                                             </td>
-                                            <td class="text-center" style="font-size: xx-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
-                                            <td class="text-center">
-                                                <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                            <td class="text-left">
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}
@@ -124,13 +124,10 @@
             {%if listaInfoVideos%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-10 col-xl-12 col-sm-12 pt-5 mt-3">
-                        <div class="card-body text-left" style="color:white">
-                            <h6 class="card-text font-weinght-bold"> Últimos vídeos </h6>
-                        </div>
-
+                        <h6 class="card-text font-weinght-bold" style="color:white"> Últimos vídeos </h6>
                         <div class = "table-responsive-sm ">
-                            <table class="table table-dark table-striped table-borderless table-sm"  id="myTableVideos" style="max-width: 20rem; min-width: 5rem;">
-                                <thead class=" text-center table-success">
+                            <table class="table table-dark table-striped table-bordered table-sm"  id="myTableVideos" >
+                                <thead class=" text-left table-success">
                                     <tr>
                                         <th onclick="sortTable(0, 'int','myTableVideos')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTableVideos')" style="color:black; font-size: small; ">Comentarios</th>
@@ -142,20 +139,20 @@
                                 <tbody >
                                     {%for l in listaInfoVideos %}
                                         <tr>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.likes}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.comentarios}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.reproducciones}}
                                             </td>
-                                            <td class="text-center" style="font-size: xx-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
-                                            <td class="text-center">
-                                                <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                            <td class="text-left">
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}
@@ -170,17 +167,14 @@
             {%if listaInfoPublicacionesEtiquetadas%}
                 <div class="row d-flex justify-content-between">
                     <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
-                        <div class="card-body text-left" style="color:white">
-                            <h6 class="card-text font-weinght-bold"> Últimas publicaciones etiquetadas </h6>
-                        </div>
-
+                        <h6 class="card-text font-weinght-bold" style="color:white"> Últimas publicaciones etiquetadas </h6>
                         <div class = "table-responsive-sm ">
-                            <table class="table table-dark table-striped table-borderless table-sm"  id="myTableEtiquetadas" style="max-width: 20rem; min-width: 5rem;">
-                                <thead class=" text-center table-success">
+                            <table class="table table-dark table-striped table-bordered table-sm"  id="myTableEtiquetadas" >
+                                <thead class=" text-left table-success">
                                     <tr>
                                         <th onclick="sortTable(0, 'int','myTableEtiquetadas')" style="color:black; font-size: small;">Likes</th>
                                         <th onclick="sortTable(1, 'int','myTableEtiquetadas')" style="color:black; font-size: small;">Comentarios</th>
-                                        <th style="color:black; font-size: small;">Tipo</th>
+                                        <th onclick="sortTable(2, 'str','myTableEtiquetadas')" style="color:black; font-size: small;">Tipo</th>
                                         <th onclick="sortTable(3, 'date','myTableEtiquetadas')" style="color:black; font-size: small;">Fecha</th>
                                         <th style="color:black; font-size: small;">Link</th>
                                     </tr>
@@ -188,20 +182,20 @@
                                 <tbody >
                                     {%for l in listaInfoPublicacionesEtiquetadas %}
                                         <tr>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.likes}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.comentarios}}
                                             </td>
-                                            <td class="text-center" style="font-size: x-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.tipo}}
                                             </td>
-                                            <td class="text-center" style="font-size: xx-small;">
+                                            <td class="text-left" style="font-size: x-small;">
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
-                                            <td class="text-center">
-                                                <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                            <td class="text-left">
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}

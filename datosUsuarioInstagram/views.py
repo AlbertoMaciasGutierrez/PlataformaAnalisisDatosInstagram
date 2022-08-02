@@ -4,7 +4,7 @@ from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
-from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost
 from datosUsuarioInstagram.utils import HihglightClass, StoryClass
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
@@ -50,6 +50,7 @@ def renderizarContacto(request):
 ##-------------------------------------------------------------##
 ##----------------------------USUARIOS-------------------------##
 ##-------------------------------------------------------------##
+
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
 def addCuentasBaseDatos(request,IDusuario):
@@ -73,19 +74,19 @@ def addCuentasBaseDatos(request,IDusuario):
     #Añadimos los correspondientes post, videos y post etiquetados a la base de datos 
     for lista in context['listaInfoPostRecientes']:
         form = BusquedaUsuarioPostForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
-                                        'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url})
+                                        'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url, 'shortcode': lista.shortcode})
         if form.is_valid():
             form.save()
 
     for lista in context['listaInfoVideos']:
         form = BusquedaUsuarioVideosForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
-                                                'reproducciones': lista.reproducciones, 'fecha': lista.fecha, 'url': lista.url})
+                                                'reproducciones': lista.reproducciones, 'fecha': lista.fecha, 'url': lista.url, 'shortcode': lista.shortcode})
         if form.is_valid():
             form.save()
 
     for lista in context['listaInfoPublicacionesEtiquetadas']:
         form = BusquedaUsuarioEtiquetadasForm({'cuentaID': context['IDcuenta'], 'likes': lista.likes, 'comentarios': lista.comentarios, 
-                                                'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url})
+                                                'tipo': lista.tipo, 'fecha': lista.fecha, 'url': lista.url, 'shortcode': lista.shortcode})
         if form.is_valid():
             form.save()
 
@@ -108,7 +109,7 @@ def actualizarCuentasBaseDatos(request,IDusuario):
         diferencia_timer = timezone.now() - objetoUsuarioID.timer
         minutos = diferencia_timer.seconds/60
         
-        if(minutos >= 3):
+        if(minutos >= 50):
             #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
             objetoUsuarioID.delete()
             context = addCuentasBaseDatos(request,IDusuario)
@@ -161,6 +162,22 @@ def bucadorCuentas(request):
         return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado})
 
     return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
+
+
+##---------------------------------------------------------##
+##----------------------------POST-------------------------##
+##---------------------------------------------------------##
+
+login_required
+@require_http_methods(["GET"])
+def obtenerInformacionPost(request,IdentificadorPost):
+
+    info = informacionPost(IdentificadorPost)
+
+    return render(request, os.path.join("publicacion", "info_post.html"),context=info)
+
+
+
 
 
 ##---------------------------------------------------------------##

@@ -1,9 +1,11 @@
-from instaloader import Instaloader, Profile, TopSearchResults
+from multiprocessing import context
+from instaloader import Instaloader, Profile, TopSearchResults, Post
 import traceback
-from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, StoryClass
+from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, SidecarPostClass, StoryClass, UsuarioMaxComentariosClass, ComentarioMaxLikesClass
+from time import monotonic
 
 USER = 'instaanalysistfg'
-PASS = 'juliogamer0423'
+PASS = 'juliogamer0404'
 INSTAGRAM = 'https://www.instagram.com/'
 POST = 'p/'
 HIGHLIGHT = 'stories/highlights/'
@@ -115,7 +117,7 @@ def obtenerComentariosLikesPosts(profile,cuenta):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
         
-        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post))
+        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
 
@@ -167,7 +169,7 @@ def obtenerComentariosLikesVideos(profile, cuenta):
         mediaVisualizaciones += post.video_view_count
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, post.date_local, url_post))
+        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
 
@@ -215,7 +217,7 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
         elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
         else: tipo_publicacion ='Sidecar'
 
-        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post))
+        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
     if(contadorPublicaciones !=0):
@@ -231,6 +233,129 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
     return context
 
 
+##-------------------------------------------------------------##
+##-------------------------Publicación-------------------------##
+##-------------------------------------------------------------##
+
+def informacionPost(IdentificadorPost):
+    try:
+        post = Post.from_shortcode(L.context, IdentificadorPost)
+
+        context = {}
+
+        if(post.typename == 'GraphImage'):
+            tipo_publicacion ='Imagen'
+            listaPostSidecar = []
+        elif(post.typename == 'GraphVideo'): 
+            tipo_publicacion ='Video'
+            listaPostSidecar = []
+        else: 
+            tipo_publicacion ='Sidecar'
+            listaPostSidecar = obtenerPostSidecar(post)
+
+        url_post = INSTAGRAM + POST + post.shortcode + '/'
+
+        context = {
+            'titulo': post.pcaption,
+            'subtitulo': post.caption,
+            'likes': post.likes,
+            'comentarios': post.comments,
+            'tipo': tipo_publicacion,
+            'fecha': post.date_local,
+            'propietario': post.owner_username,
+            'numero_publicaciones': post.mediacount,
+            'patrocinado': post.is_sponsored,
+            'post_fijado': post.is_pinned,
+            'shortcode': post.shortcode,
+            'url': url_post,
+            'listaPostSidecar': listaPostSidecar,
+        }
+
+        if(post.location == None):
+            context['ubicacion'] = ''
+        else:
+            context['ubicacion'] = post.location.name
+
+        if(post.is_video):
+            context['duracion'] = post.video_duration
+        else:
+            context['duracion'] = ''
+
+        context['listaHastagsSustitulo'] = post.caption_hashtags
+        context['listaMecionesSustitulo'] = post.caption_mentions
+        context['listaPatrocinadoresPost'] = post.sponsor_users
+        context['listaUsuariosEtiquetados'] = post.tagged_users
+
+        context['comentarioMaxPopular'], context['usuarioMaxComenta'] = obtenerComentariosMasPopulares(post)
+
+        return context
+
+    except Exception as e: 
+        traceback.print_exc()
+        return None
+
+def obtenerPostSidecar(post):
+    lista = []
+    contador = 0
+    for p in post.get_sidecar_nodes():
+        contador += 1
+        if(p.is_video):
+            tipo = 'Video'
+            url = p.video_url
+        else:
+            tipo = 'Imagen'
+            url = p.display_url
+
+        lista.append(SidecarPostClass(contador,tipo,url))
+
+    return lista
+
+def obtenerComentariosMasPopulares(post):
+    contador = 0
+    diccionarioComentariosUsuarios = {}
+    comienzo = monotonic()                               #Temporizador para parar la ejecución si hay muchos comentarios
+
+    for c in post.get_comments():
+        contador+=1
+        fin = monotonic()
+        tiempoTranscurrido = fin - comienzo
+        #Temporizador de 30 segundos
+        if(tiempoTranscurrido > 30):
+            break
+
+        if(contador == 1):
+            comentarioMaxLikes = ComentarioMaxLikesClass(c.owner.username, c.created_at_utc, c.likes_count, c.text) 
+            maxComentarios = UsuarioMaxComentariosClass(c.owner.username,1)
+        elif(comentarioMaxLikes.likes < c.likes_count):
+            comentarioMaxLikes = ComentarioMaxLikesClass(c.owner.username, c.created_at_utc, c.likes_count, c.text)
+        
+        if( c.owner.username in diccionarioComentariosUsuarios):
+            diccionarioComentariosUsuarios[c.owner.username] = diccionarioComentariosUsuarios[c.owner.username] + 1
+            if(diccionarioComentariosUsuarios.get(c.owner.username) > maxComentarios.comentarios):
+                maxComentarios = UsuarioMaxComentariosClass(c.owner.username,diccionarioComentariosUsuarios[c.owner.username])
+        else:
+            diccionarioComentariosUsuarios[c.owner.username] = 1
+
+            
+        for a in c.answers:
+            contador += 1
+            if(comentarioMaxLikes.likes < a.likes_count):
+                comentarioMaxLikes = ComentarioMaxLikesClass(a.owner.username, a.created_at_utc, a.likes_count, a.text)
+
+            if( a.owner.username in diccionarioComentariosUsuarios):
+                diccionarioComentariosUsuarios[a.owner.username] = diccionarioComentariosUsuarios[a.owner.username] + 1
+                if(diccionarioComentariosUsuarios.get(a.owner.username) > maxComentarios.comentarios):
+                    maxComentarios = UsuarioMaxComentariosClass(a.owner.username,diccionarioComentariosUsuarios[a.owner.username])
+            else:
+                diccionarioComentariosUsuarios[a.owner.username] = 1
+            
+
+    if (tiempoTranscurrido > 30):
+        return '',''
+    else:
+        return comentarioMaxLikes, maxComentarios
+        
+
 ##----------------------------------------------------------------------##
 ##-------------------------Highlights de perfil-------------------------##
 ##----------------------------------------------------------------------##
@@ -243,12 +368,20 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
         contadorSalida = 0                                                #Contador para dejar de buscar historias de highlights
 
         listaHighlightIntermedia = []
+
+        comienzo = monotonic()                                            #Temporizador para parar la ejecución si hay muchas historias
         
         for highlights in L.get_highlights(IdentificadorCuenta):          #Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos
             contadorHighlights += 1
             listaHistoriasDestacadas = []
             numeroImagenes = 0
             numeroVideos = 0
+
+            fin = monotonic()
+            tiempoTranscurrido = fin - comienzo
+            #Temporizador de 30 segundos
+            if(tiempoTranscurrido > 30):
+                break
 
             url_post = INSTAGRAM + HIGHLIGHT + str(highlights.unique_id) + '/'
 
@@ -270,8 +403,6 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
                 listaHistoriasDestacadas.append(StoryClass(tipo_publicacion, historia.date_local, duracion, url_story))
 
             listaHighlightIntermedia.append(HihglightClass(highlights.title, highlights.itemcount, highlights.cover_url, url_post, numeroImagenes, numeroVideos, listaHistoriasDestacadas))
-
-            if(contadorSalida >= 200): break                   #Dejamos de buscar cuando llevemos 200 historias
 
         if (contadorHighlights == 0):                          #Si no tiene historias destacadas no devolvemos diccionario
             return None                          

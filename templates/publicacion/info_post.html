@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Publicación{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+    {%if shortcode%}
+
+    <div class="container-lg">
+        <div class="row d-flex justify-content-between p-1 pb-5 mt-3 mb-5 row-md-6 row-xl-6 row-sm-6" style="background-color: #161616">
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 col-sm-12">
+                    <div class="row d-flex justify-content-between">
+                        <div class="card-body text-left" style="color:white">
+                            <img src="{% static 'img/post_instagram/post.png' %}" width="100" height="100">
+                            <br> 
+                            <h3 class="card-text font-weinght-bold"> <b>{{titulo}}</b></h3>
+                            <br>
+                            <h6 class="card-text font-weinght-bold">Propietario: &nbsp;&nbsp; <i class="font-italic"> <b>{{propietario}}</b> </i> </h6>
+                            <h6 class="card-text font-weinght-bold">Likes: &nbsp;&nbsp; <i class="font-italic"> <b>{{likes}}</b> </i> </h6>
+                            <h6 class="card-text font-weinght-bold">Comentarios: &nbsp;&nbsp; <i class="font-italic"> <b>{{comentarios}}</b> </i> </h6>
+                            <h6 class="card-text font-weinght-bold">Tipo: &nbsp;&nbsp; <i class="font-italic"> <b>{{tipo}}</b> </i> </h6>
+                            {%if tipo == 'Video'%}
+                                <h6 class="card-text font-weinght-bold">Duración: &nbsp;&nbsp; <i class="font-italic"> <b>{{duracion}} ''</b> </i> </h6>
+                            {%endif%}
+                            {%if ubicacion != ''%}
+                                <h6 class="card-text font-weinght-bold">Ubicación: &nbsp;&nbsp; <i class="font-italic"> <b>{{ubicacion}}</b> </i> </h6>
+                            {%endif%}
+                            <h6 class="card-text font-weinght-bold">Publicación patrocinada: &nbsp;&nbsp;                     
+                                {%if patrocinado%}
+                                    <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                                {%else%}
+                                    <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                                {%endif%}
+                            </h6>
+                            <h6 class="card-text font-weinght-bold">Publicación fijada: &nbsp;&nbsp;                     
+                                {%if post_fijado%}
+                                    <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                                {%else%}
+                                    <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                                {%endif%}
+                            </h6>
+                            
+                            <h6 class= "card-text font-weinght-bold">Fecha: &nbsp;&nbsp; <i class="font-italic"> <b>{{fecha|date:"d/m/Y"}}</b> </i> </h6>
+                            <h6 class="card-text font-weinght-bold">Shortcode: &nbsp;&nbsp; <i class="font-italic"> <b>{{shortcode}}</b> </i> </h6>
+                            {%if subtitulo%}
+                                <h6 class="card-text font-weinght-bold">Subtítulo: </h6>
+                                <p class="font-italic"> <i>{{subtitulo}}</i> </p>
+                            {%endif%}
+                            <br>
+                            <br>
+                            <a type="button" class="btn btn-info"  target="_blank" href="{{url}}">
+                                Ver publicación
+                            </a>  
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 col-sm-12">
+                    <div class="row d-flex justify-content-between">
+                        <div class="card-body text-left" style="color:white">
+                            <br>
+                            {% if tipo == 'Sidecar' %}
+                                <h6 class="card-text font-weinght-bold"> Fotos y videos </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-bordered table-sm"  id="tablaSidecar" >
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th onclick="sortTable(0, 'int','tablaSidecar')" style="color:black; font-size: small;">Publicación</th>
+                                                <th onclick="sortTable(1, 'str','tablaSidecar')" style="color:black; font-size: small;">Tipo</th>
+                                                <th style="color:black; font-size: small;">Ver</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in listaPostSidecar %}
+                                                <tr>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        {{l.numero}}
+                                                    </td>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        {{l.tipo}}
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <a type="button" target="_blank" href="{{l.url}}"><span class="fa fa-link " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                    </td>  
+                                                </tr>
+                                            {%endfor%}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+
+                            {% endif %}
+                            {%if comentarioMaxPopular != ''%}
+                                <h6 class="card-text font-weinght-bold"> Comentario con más likes </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-bordered table-sm">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th style="color:black; font-size: small;">Usuario</th>
+                                                <th style="color:black; font-size: small;">Likes</th>
+                                                <th style="color:black; font-size: small;">Fecha</th>
+                                                <th style="color:black; font-size: small;" >Comentario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            <tr>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{comentarioMaxPopular.propietario}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{comentarioMaxPopular.likes}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{comentarioMaxPopular.fecha|date:"d/m/Y"}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{comentarioMaxPopular.text}}
+                                                </td>  
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                                <h6 class="card-text font-weinght-bold">Usuario que más comenta</h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-bordered table-sm">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th style="color:black; font-size: small;">Usuario</th>
+                                                <th style="color:black; font-size: small;" >Comentarios</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            <tr>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{usuarioMaxComenta.nombre}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{usuarioMaxComenta.comentarios}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                            {% endif %}
+                            {%if listaHastagsSustitulo%}
+                                <h6 class="card-text font-weinght-bold">Hashtags en subtitulo </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-bordered table-sm">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th style="color:black; font-size: small;">Hashtag</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in listaHastagsSustitulo%}
+                                                <tr>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        #{{l}} &nbsp;  
+                                                    </td>
+                                                </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                            {%endif%}
+                            {%if listaMecionesSustitulo%}
+                                <h6 class="card-text font-weinght-bold">Menciones en subtitulo </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-bordered table-sm" id="tablaMencionesSustitulo">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th onclick="sortTable(0, 'str','tablaMencionesSustitulo')" style="color:black; font-size: small;">Usuario</th>
+                                                <th style="color:black; font-size: small;">Buscar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in listaMecionesSustitulo%}
+                                                <tr>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        {{l}} &nbsp;  
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <a type="button" target="_blank" href="{% url 'obtenerInformacionCuenta' l %}"><span class="fa fa-search " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                    </td>  
+                                                </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                            {%endif%}
+                            {%if listaPatrocinadoresPost%}
+                                <h6 class="card-text font-weinght-bold">Patrocinadores </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-bordered table-sm" id="tablaPatrocinadores">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th onclick="sortTable(0, 'str','tablaPatrocinadores')" style="color:black; font-size: small;">Patrocinador</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in listaPatrocinadoresPost%}
+                                                <tr>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        {{l}} &nbsp;  
+                                                    </td>
+                                                </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                            {%endif%}
+                            {%if listaUsuariosEtiquetados%}
+                                <h6 class="card-text font-weinght-bold">Usuarios etiquetados </h6>
+                                <div class = "table-responsive-sm ">
+                                    <table class="table table-dark table-striped table-bordered table-sm" id="tablaUsuariosEtiquetados">
+                                        <thead class=" text-left table-success">
+                                            <tr>
+                                                <th onclick="sortTable(0, 'str','tablaUsuariosEtiquetados')" style="color:black; font-size: small;">Usuario</th>
+                                                <th style="color:black; font-size: small;">Buscar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {%for l in listaUsuariosEtiquetados%}
+                                                <tr>
+                                                    <td class="text-left" style="font-size: x-small;">
+                                                        {{l}} &nbsp;  
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <a type="button" target="_blank" href="{% url 'obtenerInformacionCuenta' l %}"><span class="fa fa-search " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                    </td>  
+                                                </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                            {%endif%}
+
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+    </div>
+    {%else%}
+    <div class ="container-fluid ">
+        <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+            <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
+                <p>Post no encontrado</p>
+            </div>
+        </div>
+    </div>
+
+    {%endif%}
+
+{% endblock %}
+
+
+{% block JavaScript%}
+
+    {% include "ordenar_tablas.html" %}
+
+{% endblock %}

@@ -67,6 +67,7 @@ class DatosPostBusquedaUsuario(models.Model):
     tipo = models.CharField(max_length=20)
     fecha = models.DateTimeField()
     url = models.TextField()
+    shortcode = models.CharField(max_length=100)
 
     def __str__(self):
         return f" {self.cuentaID} - {self.tipo} - {self.fecha}"
@@ -79,6 +80,7 @@ class DatosVideosBusquedaUsuario(models.Model):
     comentarios = models.IntegerField()
     fecha = models.DateTimeField()
     url = models.TextField()
+    shortcode = models.CharField(max_length=100)
 
     def __str__(self):
         return f" {self.cuentaID} - {self.fecha}"
@@ -91,12 +93,14 @@ class DatosEtiquetadasBusquedaUsuario(models.Model):
     tipo = models.CharField(max_length=20)
     fecha = models.DateTimeField()
     url = models.TextField()
+    shortcode = models.CharField(max_length=100)
 
     def __str__(self):
         return f" {self.cuentaID} - {self.tipo} - {self.fecha}"
 
     class Meta:
         verbose_name = "Datos post etiquetados busqueda de usuario"
+
 
 
 ##------------------------------------------------------------------------##

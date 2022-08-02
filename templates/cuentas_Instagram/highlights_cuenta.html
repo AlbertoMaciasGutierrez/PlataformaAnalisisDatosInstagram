@@ -16,6 +16,8 @@
                 <div class="col-12 col-md-10 col-lg-6 col-xl-6 col-sm-12">
                     <div class="row d-flex justify-content-between">
                         <div class="card-body text-left" style="color:white">
+                            <img src="{% static 'img/highlight_instagram/highlight.png' %}" class="rounded-circle" width="100" height="100">
+                            <br> 
                             <h3 class="card-text font-weinght-bold"> <b>{{IDcuenta}}</b></h3>
                             <p>
                             <h6 class="card-text font-weinght-bold">Highlights: &nbsp;&nbsp; <i class="font-italic"> <b>{{contadorHighlights}}</b> </i></h6>
@@ -39,24 +41,24 @@
                                 </div>
 
                                 <div class = "table-responsive-sm ">
-                                    <table class="table table-dark table-striped table-borderless table-sm" id="{{d.titulo}}" style="max-width: 20rem; min-width: 5rem;">
-                                        <thead class=" text-center table-success">
+                                    <table class="table table-dark table-striped table-bordered table-sm" id="{{d.titulo}}" >
+                                        <thead class=" text-left table-success">
                                             <tr>
                                                 <th onclick="sortTable(0, 'float','{{d.titulo}}')" style="color:black; font-size: small;">Duracion</th>
-                                                <th style="color:black; font-size: small;">Tipo</th>
+                                                <th onclick="sortTable(1, 'str','{{d.titulo}}')" style="color:black; font-size: small;">Tipo</th>
                                                 <th onclick="sortTable(2, 'date','{{d.titulo}}')" style="color:black; font-size: small;">Fecha</th>
                                             </tr>
                                         </thead>
                                         <tbody >
                                             {%for l in d.listaHistoriasDestacadas %}
                                                 <tr>
-                                                    <td class="text-center" style="font-size: x-small;">
+                                                    <td class="text-left" style="font-size: x-small;">
                                                         {{l.duracion}}
                                                     </td>
-                                                    <td class="text-center" style="font-size: x-small;">
+                                                    <td class="text-left" style="font-size: x-small;">
                                                         {{l.tipo}}
                                                     </td>
-                                                    <td class="text-center" style="font-size: xx-small;">
+                                                    <td class="text-left" style="font-size: x-small;">
                                                         {{l.fecha|date:"d/m/Y"}}
                                                     </td> 
                                                 </tr>
