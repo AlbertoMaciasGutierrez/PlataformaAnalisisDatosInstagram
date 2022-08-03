@@ -33,6 +33,7 @@ urlpatterns = [
     path('analisisInsta/buscadorHashtag/busqueda/<Hashtag>/', views.obtenerInformacionHashtag, name="obtenerInformacionHashtag"),
 
     #Post Instagram
+    path('analisisInsta/buscadorPost/', views.buscadorPublicacion, name="buscadorPost"),
     path('analisisInsta/buscadorPost/busqueda/<IdentificadorPost>/', views.obtenerInformacionPost, name="obtenerInformacionPublicacion"),
 
 

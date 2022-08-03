@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Busqueda Cuentas {% endblock %}
+{% block title %}Busqueda Posts {% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -11,14 +11,12 @@
 <div class ="container-fluid ">
     <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
         <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
-            {%if contador != 0 %}
+            {%if nombre%}
                 <ul class="list-unstyled">
-                    {%for perfil in listaPerfiles%}
-                        <li class="pl-3"><a href="{% url 'obtenerInformacionCuenta' perfil %}">{{perfil}}</a></li>
-                    {%endfor%}
+                    <li class="pl-3"><a href="{% url 'obtenerInformacionPublicacion' shortcode %}">{{nombre}}</a></li>
                 </ul>
             {%else%}
-                <p>Perfil no encontrado</p>
+                <p>Publicación no encontrada</p>
             {%endif%}
         </div>
     </div>

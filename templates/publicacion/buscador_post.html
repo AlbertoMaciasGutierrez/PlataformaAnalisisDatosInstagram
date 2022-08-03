@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Buscador Usuario Instagram{% endblock %}
+{% block title %}Buscador Post Instagram{% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -11,15 +11,15 @@
 <div class ="container-fluid ">
     <div class="row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
         <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
-            <h2 class="font-weinght-bold text-center">Buscador de cuentas de Instagram </h2>
+            <h2 class="font-weinght-bold text-center">Buscador de publicaciones de Instagram </h2>
             
         </div>
     </div>
-
+    
     {% include "buscador.html" %}
     
     {% if buscado %}
-    <p class="font-weinght-bold text-center" style="color:#f80000">Introduzca un nombre de usuario de Instagram</p>
+        <p class="font-weinght-bold text-center" style="color:#f80000">Introduzca el shortcode de la publicación de Instagram</p>
     {% endif %}
 
     <div class="row d-flex justify-content-center pt-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >

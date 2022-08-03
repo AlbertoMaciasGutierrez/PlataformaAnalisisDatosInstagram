@@ -43,8 +43,6 @@ def buscadorPerfil(queryset):
 
 def informacionCuenta(cuenta):
     try:
-
-
         profile = Profile.from_username(L.context, cuenta)
 
         context = {}
@@ -237,6 +235,22 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
 ##-------------------------Publicación-------------------------##
 ##-------------------------------------------------------------##
 
+def buscadorPost(queryset):
+    try:
+        post = Post.from_shortcode(L.context, queryset)
+
+        diccionarioPost = {
+        'nombre': post.pcaption,
+        'shortcode': post.shortcode
+        }
+
+        return diccionarioPost
+
+    except Exception as e: 
+        traceback.print_exc()
+        return ''
+
+
 def informacionPost(IdentificadorPost):
     try:
         post = Post.from_shortcode(L.context, IdentificadorPost)
@@ -314,6 +328,7 @@ def obtenerComentariosMasPopulares(post):
     contador = 0
     diccionarioComentariosUsuarios = {}
     comienzo = monotonic()                               #Temporizador para parar la ejecución si hay muchos comentarios
+    maxComentarios = comentarioMaxLikes = tiempoTranscurrido = 0
 
     for c in post.get_comments():
         contador+=1

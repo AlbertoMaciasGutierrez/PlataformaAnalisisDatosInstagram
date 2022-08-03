@@ -15,12 +15,8 @@
             
         </div>
     </div>
-    <div class="row d-flex justify-content-center p-1 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12">
-            <form class="form-inline px-1 " method ="GET">
-                <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar" name="Buscar" id="Buscar">
-                <button id="boton" class="btn btn-outline-success my-2 my-sm-0" type="submit"> Buscar </button> 
-            </form>
-    </div>
+
+    {% include "buscador.html" %}
 
     {% if buscado %}
     <p class="font-weinght-bold text-center" style="color:#f80000">Introduzca un Hashtag de Instagram</p>

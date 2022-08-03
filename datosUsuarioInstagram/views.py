@@ -1,10 +1,9 @@
-from multiprocessing import context
 import os
 from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
-from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost, buscadorPost
 from datosUsuarioInstagram.utils import HihglightClass, StoryClass
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
@@ -18,7 +17,7 @@ from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView
 
 
-datosHashtag = {}  #Diccionario global para pasar los datos del hashtag a los templates en obtenerInformacionHashtag         
+
 
 
 @login_required
@@ -168,6 +167,25 @@ def bucadorCuentas(request):
 ##----------------------------POST-------------------------##
 ##---------------------------------------------------------##
 
+@login_required
+@require_http_methods(["GET"])
+def buscadorPublicacion(request):
+
+    queryset = request.GET.get("Buscar")
+    #print(queryset) 
+
+    if queryset:
+        info = buscadorPost(queryset)
+        return render(request, os.path.join("publicacion", "listaBusquedaPost.html"),context=info )
+
+    elif (queryset == ''):
+        buscado = True
+        return render(request, os.path.join("publicacion", "buscador_post.html"),{'buscado':buscado})
+
+    return render(request, os.path.join("publicacion", "buscador_post.html"))
+
+
+
 login_required
 @require_http_methods(["GET"])
 def obtenerInformacionPost(request,IdentificadorPost):
@@ -263,15 +281,8 @@ def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
 @login_required
 @require_http_methods(["GET"])
 def obtenerInformacionHashtag(request,Hashtag):
-    
-    #Hacemos una lista con los likes para los gráficos
-    likes = []
-    for l in datosHashtag['listaInfoPosts']:
-        likes.append(l.likes)
-        
-    datosHashtag['likes'] = likes
 
-    return render(request, os.path.join("hashtag", "info_hashtag.html"),context=datosHashtag)
+    return render(request, os.path.join("hashtag", "info_hashtag.html"))
 
 
 @login_required

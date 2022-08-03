@@ -4,6 +4,10 @@
 {% block title %}Highlights Usuario Instagram {% endblock %}
 
 {% block head %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -28,47 +32,54 @@
 
                 <div class = "container">
                     <div class="row d-flex justify-content-between">
+                        <div class = "col-12 col-md-8 col-lg-6 col-xl-6 col-sm-9 pb-4">
+                            <div id ="container-historias-highlights"></div>
+                        </div>
+                        <div class = "col-12 col-md-8 col-lg-6 col-xl-6 col-sm-9 pb-4">
+                            <div id ="container-imagenes-videos"></div>
+                        </div>
                         {%for d in destacados %}
                         <div class = "col-12 col-md-8 col-lg-6 col-xl-6 col-sm-9 pb-4">
-                                <div class="card-body text-left" style="color:white">
-                                    <h4 class="card-text font-weinght-bold"><i class="font-italic"> <b>{{d.titulo}}</b> </i> </h4>
-                                    <p>
-                                    <h6 class="card-text font-weinght-bold">Historias: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numero_historias}}</b> </i> </h6>
-                                    <h6 class="card-text font-weinght-bold">Imagenes: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroImagenes}}</b> </i> </h6>
-                                    <h6 class="card-text font-weinght-bold">Videos: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroVideos}}</b> </i> </h6>
-                                    <h6 class="card-text font-weinght-bold">Foto de portada: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.foto_portada}}"> Link </a></h6>
-                                    <h6 class="card-text font-weinght-bold">Highlight: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.url}}"> Acceder </a></h6>
-                                </div>
+                            <div class="card-body text-left" style="color:white">
+                                <h4 class="card-text font-weinght-bold"><i class="font-italic"> <b>{{d.titulo}}</b> </i> </h4>
+                                <p>
+                                <h6 class="card-text font-weinght-bold">Historias: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numero_historias}}</b> </i> </h6>
+                                <h6 class="card-text font-weinght-bold">Imagenes: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroImagenes}}</b> </i> </h6>
+                                <h6 class="card-text font-weinght-bold">Videos: &nbsp;&nbsp; <i class="font-italic"> <b>{{d.numeroVideos}}</b> </i> </h6>
+                                <h6 class="card-text font-weinght-bold">Foto de portada: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.foto_portada}}"> Link </a></h6>
+                                <h6 class="card-text font-weinght-bold">Highlight: &nbsp;&nbsp; <a class="font-italic" target="_blank" href="{{d.url}}"> Acceder </a></h6>
+                            </div>
 
-                                <div class = "table-responsive-sm ">
-                                    <table class="table table-dark table-striped table-bordered table-sm" id="{{d.titulo}}" >
-                                        <thead class=" text-left table-success">
+                            <div class = "table-responsive-sm ">
+                                <table class="table table-dark table-striped table-bordered table-sm" id="{{d.titulo}}" >
+                                    <thead class=" text-left table-success">
+                                        <tr>
+                                            <th onclick="sortTable(0, 'float','{{d.titulo}}')" style="color:black; font-size: small;">Duracion</th>
+                                            <th onclick="sortTable(1, 'str','{{d.titulo}}')" style="color:black; font-size: small;">Tipo</th>
+                                            <th onclick="sortTable(2, 'date','{{d.titulo}}')" style="color:black; font-size: small;">Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        {%for l in d.listaHistoriasDestacadas %}
                                             <tr>
-                                                <th onclick="sortTable(0, 'float','{{d.titulo}}')" style="color:black; font-size: small;">Duracion</th>
-                                                <th onclick="sortTable(1, 'str','{{d.titulo}}')" style="color:black; font-size: small;">Tipo</th>
-                                                <th onclick="sortTable(2, 'date','{{d.titulo}}')" style="color:black; font-size: small;">Fecha</th>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{l.duracion}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{l.tipo}}
+                                                </td>
+                                                <td class="text-left" style="font-size: x-small;">
+                                                    {{l.fecha|date:"d/m/Y"}}
+                                                </td> 
                                             </tr>
-                                        </thead>
-                                        <tbody >
-                                            {%for l in d.listaHistoriasDestacadas %}
-                                                <tr>
-                                                    <td class="text-left" style="font-size: x-small;">
-                                                        {{l.duracion}}
-                                                    </td>
-                                                    <td class="text-left" style="font-size: x-small;">
-                                                        {{l.tipo}}
-                                                    </td>
-                                                    <td class="text-left" style="font-size: x-small;">
-                                                        {{l.fecha|date:"d/m/Y"}}
-                                                    </td> 
-                                                </tr>
-                                            {%endfor%}
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        {%endfor%}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         {% endfor %}
+                        
                     </div>
                 </div>
             </div>
@@ -90,5 +101,107 @@
 {% block JavaScript%}
 
     {% include "ordenar_tablas.html" %}
+
+    <script type="application/javascript">
+        
+            Highcharts.chart('container-imagenes-videos', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Desglose de historias destacadas'
+                },
+                subtitle: {
+                    text: '*{{IDcuenta}}, últimos {{contadorHighlights}} highlights',
+                    align: 'right',
+                    verticalAlign: 'bottom'
+                },
+                xAxis: {
+                    categories: [{%for d in destacados %} "{{d.titulo}}",{%endfor%}],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Historias',
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ' historias'
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    y: -5,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Imagenes',
+                    color: '#0095cf',
+                    showInLegend: true,
+                    data: [ {%for d in destacados %} {{d.numeroImagenes}},{%endfor%}],
+                },{
+                    name: 'Videos',
+                    color:'#00e68e',
+                    showInLegend: true,
+                    data: [ {%for d in destacados %} {{d.numeroVideos}}, {%endfor%}],
+                }]
+            });
+
+
+            Highcharts.chart('container-historias-highlights', {
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45
+                    }
+                },
+                title: {
+                    text: 'Comparativa de historias destacadas'
+                },
+                subtitle: {
+                    text: '*{{IDcuenta}}, últimos {{contadorHighlights}} highlights',
+                    align: 'right',
+                    verticalAlign: 'bottom'
+                },
+                plotOptions: {
+                    pie: {
+                        innerSize: 100,
+                        depth: 45
+                    }
+                },
+                series: [{
+                    name: 'Historias',
+                    data: [
+                        {%for d in destacados %}
+                            ['{{d.titulo}}', {{d.numero_historias}}],
+                        {%endfor%}
+                        
+                    ]
+                }]
+            });
+        
+    </script>
 
 {% endblock %}
