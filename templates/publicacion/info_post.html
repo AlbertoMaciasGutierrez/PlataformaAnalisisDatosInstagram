@@ -4,6 +4,13 @@
 {% block title %}Publicación{% endblock %}
 
 {% block head %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -64,6 +71,9 @@
                         <div class="card-body text-left" style="color:white">
                             <br>
                             {% if tipo == 'Sidecar' %}
+                                <div id = "container-imagenes-videos"></div>
+                                <br>
+                                <br>
                                 <h6 class="card-text font-weinght-bold"> Fotos y videos </h6>
                                 <div class = "table-responsive-sm ">
                                     <table class="table table-dark table-striped table-bordered table-sm"  id="tablaSidecar" >
@@ -74,7 +84,7 @@
                                                 <th style="color:black; font-size: small;">Ver</th>
                                             </tr>
                                         </thead>
-                                        <tbody >
+                                        <tbody>
                                             {%for l in listaPostSidecar %}
                                                 <tr>
                                                     <td class="text-left" style="font-size: x-small;">
@@ -270,5 +280,6 @@
 {% block JavaScript%}
 
     {% include "ordenar_tablas.html" %}
+    {% include "graficos/graficos_info_post.html" %}
 
 {% endblock %}

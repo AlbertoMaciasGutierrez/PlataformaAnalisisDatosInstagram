@@ -45,13 +45,20 @@ class DatosBusquedaUsuario(models.Model):
     #POST
     mediaLikesPostRecientes = models.FloatField()
     mediaComentariosPostRecientes = models.FloatField()
+    numeroImagenesPostRecientes = models.IntegerField()
+    numeroVideosPostRecientes = models.IntegerField()
+    numeroSidecarsPostRecientes = models.IntegerField()
     #VIDEOS
     mediaLikesVideos = models.FloatField()
     mediaComentariosVideos = models.FloatField()
     mediaVisualizacionesVideos = models.FloatField()
+    numeroVideos = models.IntegerField()
     #ETIQUETADAS
     mediaLikesPublicacionesEtiquetadas = models.FloatField()
     mediaComentariosPublicacionesEtiquetadas = models.FloatField()
+    numeroImagenesPublicacionesEtiquetadas = models.IntegerField()
+    numeroVideosPublicacionesEtiquetadas = models.IntegerField()
+    numeroSidecarsPublicacionesEtiquetadas = models.IntegerField()
     #TEMPORIZADOR
     timer = models.DateTimeField(auto_now_add=True)
     

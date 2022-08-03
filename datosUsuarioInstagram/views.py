@@ -104,10 +104,9 @@ def actualizarCuentasBaseDatos(request,IDusuario):
     try:
         objetoUsuarioID = DatosBusquedaUsuario.objects.get(IDcuenta = IDusuario)
 
-        #Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
         diferencia_timer = timezone.now() - objetoUsuarioID.timer
         minutos = diferencia_timer.seconds/60
-        
+        #Si hay una diferencia de 10 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
         if(minutos >= 50):
             #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
             objetoUsuarioID.delete()
@@ -176,7 +175,10 @@ def buscadorPublicacion(request):
 
     if queryset:
         info = buscadorPost(queryset)
-        return render(request, os.path.join("publicacion", "listaBusquedaPost.html"),context=info )
+        if(info == None):
+            return render(request, os.path.join("publicacion", "listaBusquedaPost.html"))
+        else:
+            return render(request, os.path.join("publicacion", "listaBusquedaPost.html"),context=info )
 
     elif (queryset == ''):
         buscado = True

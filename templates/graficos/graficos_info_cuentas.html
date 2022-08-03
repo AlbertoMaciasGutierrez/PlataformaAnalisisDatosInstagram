@@ -15,10 +15,9 @@
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 100,
-                y: 70,
+                y: 25,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor:
@@ -46,7 +45,7 @@
             },
             series: [{
                 name: 'Likes',
-                showInLegend: false,
+                showInLegend: true,
                 color:'#e70000',
                 data: [{% for l in listaInfoPostRecientes%}{{l.likes}}, {%endfor%}],
                 pointStart: 1
@@ -67,10 +66,9 @@
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 100,
-                y: 70,
+                y: 25,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor:
@@ -98,7 +96,7 @@
             },
             series: [{
                 name: 'Comentarios',
-                showInLegend: false,
+                showInLegend: true,
                 color:'#2e09d3',
                 data: [{% for l in listaInfoPostRecientes%}{{l.comentarios}}, {%endfor%}],
                 pointStart: 1
@@ -122,10 +120,9 @@
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 100,
-                y: 70,
+                y: 25,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor:
@@ -136,7 +133,7 @@
             },
             yAxis: {
                 title: {
-                text: 'Likes'
+                text: 'Likes y Visualizaciones'
                 }
             },
             plotOptions: {
@@ -154,14 +151,14 @@
             series: [
                 {
                     name: 'Visualizaciones',
-                    showInLegend: false,
+                    showInLegend: true,
                     color:'#00e68e',
                     data: [{% for l in listaInfoVideos%}{{l.reproducciones}}, {%endfor%}],
                     pointStart: 1
                 },
                 {
                     name: 'Likes',
-                    showInLegend: false,
+                    showInLegend: true,
                     color:'#e70000',
                     data: [{% for l in listaInfoVideos%}{{l.likes}}, {%endfor%}],
                     pointStart: 1
@@ -182,10 +179,9 @@
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 100,
-                y: 70,
+                y: 25,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor:
@@ -213,7 +209,7 @@
             },
             series: [{
                 name: 'Comentarios',
-                showInLegend: false,
+                showInLegend: true,
                 color:'#2e09d3',
                 data: [{% for l in listaInfoVideos%}{{l.comentarios}}, {%endfor%}],
                 pointStart: 1
@@ -238,10 +234,9 @@
                 },
                 legend: {
                     layout: 'vertical',
-                    align: 'left',
+                    align: 'right',
                     verticalAlign: 'top',
-                    x: 100,
-                    y: 70,
+                    y: 25,
                     floating: true,
                     borderWidth: 1,
                     backgroundColor:
@@ -269,7 +264,7 @@
                 },
                 series: [{
                     name: 'Likes',
-                    showInLegend: false,
+                    showInLegend: true,
                     color:'#e70000',
                     data: [{% for l in listaInfoPublicacionesEtiquetadas%}{{l.likes}}, {%endfor%}],
                     pointStart: 1
@@ -290,10 +285,9 @@
                 },
                 legend: {
                     layout: 'vertical',
-                    align: 'left',
+                    align: 'right',
                     verticalAlign: 'top',
-                    x: 100,
-                    y: 70,
+                    y: 25,
                     floating: true,
                     borderWidth: 1,
                     backgroundColor:
@@ -321,7 +315,7 @@
                 },
                 series: [{
                     name: 'Comentarios',
-                    showInLegend: false,
+                    showInLegend: true,
                     color:'#2e09d3',
                     data: [{% for l in listaInfoPublicacionesEtiquetadas%}{{l.comentarios}}, {%endfor%}],
                     pointStart: 1
@@ -329,5 +323,77 @@
                 });
 
         {%endif%}
+
+
+    {%if listaInfoPostRecientes or listaInfoVideos or listaInfoPublicacionesEtiquetadas %}
+        Highcharts.chart('container-imagenes-videos-sidecars', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Desglose de publicaciones'
+            },
+            subtitle: {
+                text: '*{{IDcuenta}}, publicaciones',
+                align: 'right',
+                verticalAlign: 'bottom'
+            },
+            xAxis: {
+                categories: [{%if listaInfoPostRecientes%} "Publicaciones recientes", {%endif%} {%if listaInfoVideos%} "Vídeos", {%endif%} {%if listaInfoPublicacionesEtiquetadas%} "Publicaciones etiquetadas" {%endif%}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Publicaciones',
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' publicaciones'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                verticalAlign: 'top',
+                y: -5,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor:
+                    Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Imagenes',
+                color: '#0095cf',
+                showInLegend: true,
+                data: [{%if listaInfoPostRecientes%} {{numeroImagenesPostRecientes}}, {%endif%} {%if listaInfoVideos%} 0, {%endif%} {%if listaInfoPublicacionesEtiquetadas%} {{numeroImagenesPublicacionesEtiquetadas}} {%endif%}],
+            },{
+                name: 'Videos',
+                color:'#00e68e',
+                showInLegend: true,
+                data: [{%if listaInfoPostRecientes%} {{numeroVideosPostRecientes}}, {%endif%} {%if listaInfoVideos%} {{numeroVideos}}, {%endif%} {%if listaInfoPublicacionesEtiquetadas%} {{numeroVideosPublicacionesEtiquetadas}} {%endif%}],
+            },{
+                name: 'Sidecars',
+                color:'#f7a902',
+                showInLegend: true,
+                data: [{%if listaInfoPostRecientes%} {{numeroSidecarsPostRecientes}}, {%endif%} {%if listaInfoVideos%} 0, {%endif%} {%if listaInfoPublicacionesEtiquetadas%} {{numeroSidecarsPublicacionesEtiquetadas}} {%endif%}],
+            }]
+        });
+    {%endif%}
 
     </script>

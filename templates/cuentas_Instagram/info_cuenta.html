@@ -77,10 +77,15 @@
 
             </div>
 
+            <div class="row d-flex justify-content-between">
+                <div class = "col-12 col-md-8 col-xl-12 col-sm-12 pt-5 mt-3">
+                    <div id ="container-imagenes-videos-sidecars"></div>
+                </div>
+            </div>
 
             {%if listaInfoPostRecientes%}
                 <div class="row d-flex justify-content-between">
-                    <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
+                    <div class = "col-12 col-md-8 col-xl-12 col-sm-12 pt-5 mt-3">
                         <h6 class="card-text font-weinght-bold" style="color:white" >Últimas publicaciones </h6>
                         <div class = "table-responsive-sm ">
                             <table class="table table-dark table-striped table-bordered table-sm" id="myTable" >
@@ -90,7 +95,7 @@
                                         <th onclick="sortTable(1, 'int','myTable')" style="color:black; font-size: small;">Comentarios</th>
                                         <th onclick="sortTable(2, 'str','myTable')" style="color:black; font-size: small;">Tipo</th>
                                         <th onclick="sortTable(3, 'date','myTable')" style="color:black; font-size: small;">Fecha</th>
-                                        <th style="color:black; font-size: small;">Link</th>
+                                        <th style="color:black; font-size: small;">Buscar</th>
                                     </tr>
                                 </thead>
                                 <tbody >
@@ -109,7 +114,7 @@
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-left">
-                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-search " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}
@@ -133,7 +138,7 @@
                                         <th onclick="sortTable(1, 'int','myTableVideos')" style="color:black; font-size: small; ">Comentarios</th>
                                         <th onclick="sortTable(2, 'int','myTableVideos')" style="color:black; font-size: small; ">Visualizaciones</th>
                                         <th onclick="sortTable(3, 'date','myTableVideos')" style="color:black; font-size: small;">Fecha</th>
-                                        <th style="color:black; font-size: small; ">Link</th>
+                                        <th style="color:black; font-size: small; ">Buscar</th>
                                     </tr>
                                 </thead>
                                 <tbody >
@@ -152,7 +157,7 @@
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-left">
-                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-search " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}
@@ -166,7 +171,7 @@
 
             {%if listaInfoPublicacionesEtiquetadas%}
                 <div class="row d-flex justify-content-between">
-                    <div class = "col-12 col-md-8 col-xl-12 col-sm-9 pt-5 mt-3">
+                    <div class = "col-12 col-md-8 col-xl-12 col-sm-12 pt-5 mt-3">
                         <h6 class="card-text font-weinght-bold" style="color:white"> Últimas publicaciones etiquetadas </h6>
                         <div class = "table-responsive-sm ">
                             <table class="table table-dark table-striped table-bordered table-sm"  id="myTableEtiquetadas" >
@@ -176,7 +181,7 @@
                                         <th onclick="sortTable(1, 'int','myTableEtiquetadas')" style="color:black; font-size: small;">Comentarios</th>
                                         <th onclick="sortTable(2, 'str','myTableEtiquetadas')" style="color:black; font-size: small;">Tipo</th>
                                         <th onclick="sortTable(3, 'date','myTableEtiquetadas')" style="color:black; font-size: small;">Fecha</th>
-                                        <th style="color:black; font-size: small;">Link</th>
+                                        <th style="color:black; font-size: small;">Buscar</th>
                                     </tr>
                                 </thead>
                                 <tbody >
@@ -195,7 +200,7 @@
                                                 {{l.fecha|date:"d/m/Y"}}
                                             </td> 
                                             <td class="text-left">
-                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-instagram " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
+                                                <a type="button" target="_blank" href="{% url 'obtenerInformacionPublicacion' l.shortcode %}"><span class="fa fa-search " aria-hidden="true"  style="color: #00ccff9f;"></span></a>
                                             </td>  
                                         </tr>
                                     {%endfor%}
@@ -212,19 +217,7 @@
             {%if listaInfoPostRecientes%}
                 <div class="row d-flex justify-content-between">
                     <div class="col">
-                        <br><br>
-                        <form>
-                            <select name="Gráficos" class="custom-select">
-                            <option selected>Elegir tipo de gráfico</option>
-                            <option value="area">Área</option>
-                            <option value="barras">Barras</option>
-                            <option value="Otro">Otro</option>
-                            </select>
-                        </form>
-                        <br><br>
-                        
-                        {#Añadir más tipos de gráficos#}
-            
+                        <br><br><br> 
                         <div id ="container-likes"></div>
                         <br>
                         <h6 class="card-text font-weinght-bold" style="color:white"><i> {{mediaLikesPostRecientes}} </i>  &nbsp;likes de media </h6>
@@ -283,6 +276,6 @@
 {% block JavaScript%}
 
     {% include "ordenar_tablas.html" %}
-    {% include "graficos.html" %}
+    {% include "graficos/graficos_info_cuentas.html" %}
 
 {% endblock%}

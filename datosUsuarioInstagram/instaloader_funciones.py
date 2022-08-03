@@ -1,4 +1,3 @@
-from multiprocessing import context
 from instaloader import Instaloader, Profile, TopSearchResults, Post
 import traceback
 from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, SidecarPostClass, StoryClass, UsuarioMaxComentariosClass, ComentarioMaxLikesClass
@@ -101,6 +100,8 @@ def obtenerComentariosLikesPosts(profile,cuenta):
     contadorPublicaciones = 0
     tipo_publicacion = ''
 
+    numeroSidecars = numeroVideos = numeroImagenes = 0
+
     for post in publicaciones:
         
         contador +=1
@@ -111,11 +112,21 @@ def obtenerComentariosLikesPosts(profile,cuenta):
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
 
-        if(post.typename == 'GraphImage'): tipo_publicacion ='Imagen'
-        elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
-        else: tipo_publicacion ='Sidecar'
+        if(post.typename == 'GraphImage'): 
+            tipo_publicacion ='Imagen'
+            numeroImagenes +=1 
+        elif(post.typename == 'GraphVideo'): 
+            tipo_publicacion ='Video'
+            numeroVideos +=1 
+        else: 
+            tipo_publicacion ='Sidecar'
+            numeroSidecars +=1 
         
-        listaInfoPostRecientes.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
+        #Para evitar que haya likes negativos
+        if(post.likes < 0): likes = 0
+        else: likes = post.likes
+
+        listaInfoPostRecientes.append(PostClass(cuenta, likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
 
@@ -123,19 +134,14 @@ def obtenerComentariosLikesPosts(profile,cuenta):
         mediaLikes = round(mediaLikes/contadorPublicaciones,2)
         mediaComentarios = round(mediaComentarios/contadorPublicaciones,2)
         
-        #Para calcular la media de publicaciones al día
-        """fecha1 = datetime.now()
-        fecha2 = datetime.strptime(likesComentarios[-1][2],'%d/%m/%Y')
-        diferenciaDias = (fecha1-fecha2) /timedelta(days =1)
-        mediaPublicacionesDia = round(contadorPublicaciones/ diferenciaDias,5)"""
-
-    
 
     context ={
         'listaInfoPostRecientes': listaInfoPostRecientes,
         'mediaLikesPostRecientes': mediaLikes,
         'mediaComentariosPostRecientes': mediaComentarios,
-        #'mediaPublicacionesDia': mediaPublicacionesDia
+        'numeroImagenesPostRecientes': numeroImagenes,
+        'numeroVideosPostRecientes': numeroVideos,
+        'numeroSidecarsPostRecientes': numeroSidecars,
     }
 
     return context
@@ -166,8 +172,12 @@ def obtenerComentariosLikesVideos(profile, cuenta):
         mediaComentarios += post.comments
         mediaVisualizaciones += post.video_view_count
 
+        #Para evitar que haya likes negativos
+        if(post.likes < 0): likes = 0
+        else: likes = post.likes
+
         url_post = INSTAGRAM + POST + post.shortcode + '/'
-        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, post.likes, post.comments, post.date_local, url_post, post.shortcode))
+        listaInfoVideos.append(PostClassVideo(cuenta, post.video_view_count, likes, post.comments, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
 
@@ -181,6 +191,7 @@ def obtenerComentariosLikesVideos(profile, cuenta):
         'mediaLikesVideos': mediaLikes,
         'mediaComentariosVideos': mediaComentarios,
         'mediaVisualizacionesVideos': mediaVisualizaciones,
+        'numeroVideos': contadorPublicaciones,
     }
 
     return context
@@ -198,8 +209,9 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
 
     contador = 0                    #Número de publicaciones mostradas
     contadorPublicaciones = 0
-
     tipo_publicacion =''
+
+    numeroSidecars = numeroVideos = numeroImagenes = 0
 
     for post in publicaciones:
         
@@ -211,11 +223,21 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
 
-        if(post.typename == 'GraphImage'): tipo_publicacion ='Imagen'
-        elif(post.typename == 'GraphVideo'): tipo_publicacion ='Video'
-        else: tipo_publicacion ='Sidecar'
+        if(post.typename == 'GraphImage'): 
+            tipo_publicacion ='Imagen'
+            numeroImagenes +=1 
+        elif(post.typename == 'GraphVideo'): 
+            tipo_publicacion ='Video'
+            numeroVideos +=1 
+        else: 
+            tipo_publicacion ='Sidecar'
+            numeroSidecars +=1 
 
-        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, post.likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
+        #Para evitar que haya likes negativos
+        if(post.likes < 0): likes = 0
+        else: likes = post.likes
+
+        listaInfoPublicacionesEtiquetadas.append(PostClass(cuenta, likes, post.comments, tipo_publicacion, post.date_local, url_post, post.shortcode))
         contadorPublicaciones+=1
 
     if(contadorPublicaciones !=0):
@@ -226,6 +248,9 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
         'listaInfoPublicacionesEtiquetadas': listaInfoPublicacionesEtiquetadas,
         'mediaLikesPublicacionesEtiquetadas': mediaLikes,
         'mediaComentariosPublicacionesEtiquetadas': mediaComentarios,
+        'numeroImagenesPublicacionesEtiquetadas': numeroImagenes,
+        'numeroVideosPublicacionesEtiquetadas': numeroVideos,
+        'numeroSidecarsPublicacionesEtiquetadas': numeroSidecars,
     }
 
     return context
@@ -248,7 +273,7 @@ def buscadorPost(queryset):
 
     except Exception as e: 
         traceback.print_exc()
-        return ''
+        return None
 
 
 def informacionPost(IdentificadorPost):
@@ -256,6 +281,7 @@ def informacionPost(IdentificadorPost):
         post = Post.from_shortcode(L.context, IdentificadorPost)
 
         context = {}
+        numeroImagenes = numeroVideos = 0
 
         if(post.typename == 'GraphImage'):
             tipo_publicacion ='Imagen'
@@ -265,7 +291,7 @@ def informacionPost(IdentificadorPost):
             listaPostSidecar = []
         else: 
             tipo_publicacion ='Sidecar'
-            listaPostSidecar = obtenerPostSidecar(post)
+            listaPostSidecar, numeroVideos, numeroImagenes = obtenerPostSidecar(post)
 
         url_post = INSTAGRAM + POST + post.shortcode + '/'
 
@@ -283,6 +309,8 @@ def informacionPost(IdentificadorPost):
             'shortcode': post.shortcode,
             'url': url_post,
             'listaPostSidecar': listaPostSidecar,
+            'numeroVideos': numeroVideos,
+            'numeroImagenes': numeroImagenes,
         }
 
         if(post.location == None):
@@ -311,18 +339,21 @@ def informacionPost(IdentificadorPost):
 def obtenerPostSidecar(post):
     lista = []
     contador = 0
+    numeroVideos = numeroImagenes = 0
     for p in post.get_sidecar_nodes():
         contador += 1
         if(p.is_video):
+            numeroVideos += 1
             tipo = 'Video'
             url = p.video_url
         else:
+            numeroImagenes += 1
             tipo = 'Imagen'
             url = p.display_url
 
         lista.append(SidecarPostClass(contador,tipo,url))
 
-    return lista
+    return lista, numeroVideos, numeroImagenes
 
 def obtenerComentariosMasPopulares(post):
     contador = 0

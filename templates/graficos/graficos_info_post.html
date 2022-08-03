@@ -1,0 +1,50 @@
+<script type="application/javascript">
+    {% if tipo == 'Sidecar' %}
+        Highcharts.chart('container-imagenes-videos', {
+            chart: {
+                type: 'pie',
+                options3d: {
+                    enabled: true,
+                    alpha: 45
+                }
+            },
+            title: {
+                text: 'Comparativa de publicación Sidecar'
+            },
+            subtitle: {
+                text: '*{{propietario}}, {{numero_publicaciones}} imagenes y videos',
+                align: 'right',
+                verticalAlign: 'bottom'
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}: {point.y}'
+                    }
+                },
+                pie: {
+                    innerSize: 100,
+                    depth: 45
+                }
+            },
+            series: [{
+                name: 'Publicación',
+                data: [
+                        {
+                            name: 'Imágenes',
+                            color: '#0095cf',
+                            y: {{numeroImagenes}},
+                        },{
+                            name: 'Vídeos',
+                            color: '#00e68e',
+                            y: {{numeroVideos}},
+                        },
+                ]
+            }]
+        });
+    {%endif%}
+</script>

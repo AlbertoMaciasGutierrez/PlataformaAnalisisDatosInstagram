@@ -1,0 +1,145 @@
+<script type="application/javascript">
+        
+    Highcharts.chart('container-imagenes-videos', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Desglose de historias destacadas'
+        },
+        subtitle: {
+            text: '*{{IDcuenta}}, últimos {{contadorHighlights}} highlights',
+            align: 'right',
+            verticalAlign: 'bottom'
+        },
+        xAxis: {
+            categories: [{%for d in destacados %} "{{d.titulo}}",{%endfor%}],
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Historias',
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            valueSuffix: ' historias'
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            y: -5,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor:
+                Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+            shadow: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Imágenes',
+            color: '#0095cf',
+            showInLegend: true,
+            data: [ {%for d in destacados %} {{d.numeroImagenes}},{%endfor%}],
+        },{
+            name: 'Vídeos',
+            color:'#00e68e',
+            showInLegend: true,
+            data: [ {%for d in destacados %} {{d.numeroVideos}}, {%endfor%}],
+        }]
+    });
+
+    Highcharts.chart('container-historias-highlights', {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45
+            }
+        },
+        title: {
+            text: 'Comparativa de historias destacadas'
+        },
+        subtitle: {
+            text: '*{{IDcuenta}}, últimos {{contadorHighlights}} highlights',
+            align: 'right',
+            verticalAlign: 'bottom'
+        },
+        credits: {
+            enabled: false
+        },
+        accessibility: {
+            announceNewData: {
+                enabled: true
+            },
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y}'
+                }
+            },
+            pie: {
+                innerSize: 100,
+                depth: 45
+            }
+        },
+        series: [{
+            name: 'Historias',
+            data: [
+                {%for d in destacados %}
+                    {
+                        name: "{{d.titulo}}", 
+                        y: {{d.numero_historias}},
+                        drilldown: "{{d.titulo}}"
+                    },
+                {%endfor%}
+                
+            ]
+        }],
+        drilldown: {
+            series: [
+                {%for d in destacados %}
+                    {
+                        name: "{{d.titulo}}",
+                        id: "{{d.titulo}}",
+                        data: [
+                            {
+                                name: "Imágenes",
+                                y:{{d.numeroImagenes}},
+                                color:'#0095cf'
+                            },
+                            {
+                                name: "Vídeos",
+                                y: {{d.numeroVideos}},
+                                color:'#00e68e'
+                            }
+                        ]
+                    },
+
+                    
+                {%endfor%}
+            ]
+        }
+    });
+
+</script>
