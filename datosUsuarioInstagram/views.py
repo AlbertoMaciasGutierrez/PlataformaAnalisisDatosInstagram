@@ -167,6 +167,164 @@ def bucadorCuentas(request):
 ##---------------------------------------------------------##
 
 @login_required
+@require_http_methods(["GET","POST","DELETE"])
+def addPublicacionesBaseDatos(request,IdentificadorPost):
+    context = {}
+    context = informacionPost(IdentificadorPost)
+
+    diccionario_datos = {}
+    diccionario_datos.update(context)
+    del diccionario_datos['listaPostSidecar']
+    del diccionario_datos['listaHastagsSustitulo']
+    del diccionario_datos['listaMecionesSustitulo']
+    del diccionario_datos['listaPatrocinadoresPost']
+    del diccionario_datos['listaUsuariosEtiquetados']
+    del diccionario_datos['comentarioMaxPopular']
+    del diccionario_datos['usuarioMaxComenta']
+
+    form = BusquedaPostForm(diccionario_datos)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Busqueda actualizada correctamente')
+
+    #Añadimos comentario com más likes y usuario que más comenta en el post
+    if((context['comentarioMaxPopular'] != '') and (context['usuarioMaxComenta'] != '')):
+        form = ComentarioMaxLikesPostForm({'shortcode': IdentificadorPost, 'propietario': context['comentarioMaxPopular'].propietario, 
+                                            'fecha': context['comentarioMaxPopular'].fecha, 'likes': context['comentarioMaxPopular'].likes, 
+                                            'text': context['comentarioMaxPopular'].text})
+        if form.is_valid():
+            form.save()
+
+        form = UsuarioMaxComentariosPostForm({'shortcode': IdentificadorPost, 'nombre': context['usuarioMaxComenta'].nombre, 
+                                            'comentarios': context['usuarioMaxComenta'].comentarios})
+        if form.is_valid():
+            form.save()
+
+    #Añadimos post sidecar, hashtags y menciones en subtitulo, patrocinadores y usuarios etiquetados en el post
+    for lista in context['listaPostSidecar']:
+        form = PostSidecarForm({'shortcode': IdentificadorPost, 'numero':lista.numero , 'tipo': lista.tipo, 
+                                'url': lista.url})
+        if form.is_valid():
+            form.save()
+
+    for lista in context['listaHastagsSustitulo']:
+        form = HashtagsSubtituloPostForm({'shortcode': IdentificadorPost, 'hashtag':lista})
+        if form.is_valid():
+            form.save()
+    
+    for lista in context['listaMecionesSustitulo']:
+        form = MencionesSubtituloPostForm({'shortcode': IdentificadorPost, 'mencion':lista})
+        if form.is_valid():
+            form.save()
+    
+    for lista in context['listaPatrocinadoresPost']:
+        form = PatrocinadoresPostForm({'shortcode': IdentificadorPost, 'patrocinador':lista})
+        if form.is_valid():
+            form.save()
+    
+    for lista in context['listaUsuariosEtiquetados']:
+        form = UsuariosEtiquetadosPostForm({'shortcode': IdentificadorPost, 'usuario':lista})
+        if form.is_valid():
+            form.save()
+
+    
+    return context
+
+
+@login_required
+@require_http_methods(["GET"])
+def actualizarPublicacionesBaseDatos(request,IdentificadorPost):
+    
+    try:
+        objetodentificadorPost = DatosPost.objects.get(shortcode = IdentificadorPost)
+
+        diferencia_timer = timezone.now() - objetodentificadorPost.timer
+        minutos = diferencia_timer.seconds/60
+        #Si hay una diferencia de 10 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
+        if(minutos >= 10):
+            #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
+            objetodentificadorPost.delete()
+            context = addPublicacionesBaseDatos(request,IdentificadorPost)
+            
+            return context
+
+        else:
+            #Recuperamos los datos de la base de datos y los retornamos en forma de diccionario
+            objetodentificadorPost = objetodentificadorPost.__dict__                   #Convertimos el objeto a diccionario para pasarlo al template
+            del objetodentificadorPost['_state']                                #Borramos esta clave innecesaria del diccionario
+
+            if(objetodentificadorPost['tipo'] == 'Sidecar'):
+                objetodentificadorPost['listaPostSidecar'] = PostSidecar.objects.filter(shortcode = IdentificadorPost)
+            
+            try:
+                objeto= HashtagsSubtituloPost.objects.filter(shortcode = IdentificadorPost)
+                lista = []
+                for obj in objeto:
+                    lista.append(obj.hashtag)
+                objetodentificadorPost['listaHastagsSustitulo'] = lista
+            except:
+                objetodentificadorPost['listaHastagsSustitulo'] = []
+
+            try:
+                objeto= MencionesSubtituloPost.objects.filter(shortcode = IdentificadorPost)
+                lista = []
+                for obj in objeto:
+                    lista.append(obj.mencion)
+                objetodentificadorPost['listaMecionesSustitulo'] = lista
+            except:
+                objetodentificadorPost['listaMecionesSustitulo'] = []
+
+            try:
+                objeto= PatrocinadoresPost.objects.filter(shortcode = IdentificadorPost)
+                lista = []
+                for obj in objeto:
+                    lista.append(obj.patrocinador)
+                objetodentificadorPost['listaPatrocinadoresPost'] = lista
+            except:
+                objetodentificadorPost['listaPatrocinadoresPost'] = []
+
+            try:
+                objeto= UsuariosEtiquetadosPost.objects.filter(shortcode = IdentificadorPost)
+                lista = []
+                for obj in objeto:
+                    lista.append(obj.usuario)
+                objetodentificadorPost['listaUsuariosEtiquetados'] = lista
+            except:
+                objetodentificadorPost['listaUsuariosEtiquetados'] = []
+
+            try:
+                objetodentificadorPost['comentarioMaxPopular'] = ComentarioMaxLikesPost.objects.get(shortcode = IdentificadorPost)
+            except:
+                objetodentificadorPost['comentarioMaxPopular'] = ''
+
+            try:
+                objetodentificadorPost['usuarioMaxComenta'] = UsuarioMaxComentariosPost.objects.get(shortcode = IdentificadorPost)
+            except:
+                objetodentificadorPost['usuarioMaxComenta'] = ''
+
+
+            return objetodentificadorPost
+
+
+    except:
+        #Realizamos la búsqueda, introducimos los datos en la base de datos y los devolvemos
+        context = addPublicacionesBaseDatos(request,IdentificadorPost)
+        
+        return context
+
+
+login_required
+@require_http_methods(["GET"])
+def obtenerInformacionPost(request,IdentificadorPost):
+
+    #info = informacionPost(IdentificadorPost)
+
+    info = actualizarPublicacionesBaseDatos(request,IdentificadorPost)
+
+    return render(request, os.path.join("publicacion", "info_post.html"),context=info)
+
+
+@login_required
 @require_http_methods(["GET"])
 def buscadorPublicacion(request):
 
@@ -188,13 +346,6 @@ def buscadorPublicacion(request):
 
 
 
-login_required
-@require_http_methods(["GET"])
-def obtenerInformacionPost(request,IdentificadorPost):
-
-    info = informacionPost(IdentificadorPost)
-
-    return render(request, os.path.join("publicacion", "info_post.html"),context=info)
 
 
 

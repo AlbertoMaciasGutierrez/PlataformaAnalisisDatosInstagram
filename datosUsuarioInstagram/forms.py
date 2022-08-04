@@ -130,3 +130,43 @@ class ContadorHighlightsForm(forms.ModelForm):
         fields = '__all__' 
 
 #'''
+
+class BusquedaPostForm(forms.ModelForm):
+    class Meta:
+        model = DatosPost
+        fields = '__all__' 
+
+class ComentarioMaxLikesPostForm(forms.ModelForm):
+    class Meta:
+        model = ComentarioMaxLikesPost
+        fields = '__all__' 
+
+class UsuarioMaxComentariosPostForm(forms.ModelForm):
+    class Meta:
+        model = UsuarioMaxComentariosPost
+        fields = '__all__' 
+
+class PostSidecarForm(forms.ModelForm):
+    class Meta:
+        model = PostSidecar
+        fields = '__all__' 
+
+class HashtagsSubtituloPostForm(forms.ModelForm):
+    class Meta:
+        model = HashtagsSubtituloPost
+        fields = '__all__' 
+
+class MencionesSubtituloPostForm(forms.ModelForm):
+    class Meta:
+        model = MencionesSubtituloPost
+        fields = '__all__' 
+
+class PatrocinadoresPostForm(forms.ModelForm):
+    class Meta:
+        model = PatrocinadoresPost
+        fields = '__all__' 
+
+class UsuariosEtiquetadosPostForm(forms.ModelForm):
+    class Meta:
+        model = UsuariosEtiquetadosPost
+        fields = '__all__' 

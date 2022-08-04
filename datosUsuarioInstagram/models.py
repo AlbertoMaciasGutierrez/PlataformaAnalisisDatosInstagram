@@ -168,3 +168,119 @@ class DatosStoryHighlight(models.Model):
         
 #'''
 
+
+
+##----------------------------------------------------------------------##
+##-------------------------Busqueda de publicación----------------------##
+##----------------------------------------------------------------------##
+
+class DatosPost(models.Model):
+    shortcode = models.CharField(primary_key=True, max_length=100)
+    likes = models.IntegerField()
+    comentarios = models.IntegerField()
+    tipo = models.CharField(max_length=20)
+    fecha = models.DateTimeField()
+    propietario = models.CharField(max_length=100)
+    numero_publicaciones = models.IntegerField()
+    patrocinado = models.BooleanField()
+    post_fijado = models.BooleanField()
+    url = models.TextField()
+    #SIDECAR
+    numeroVideos = models.IntegerField()
+    numeroImagenes = models.IntegerField()
+
+    titulo = models.CharField(max_length=100, blank=True)
+    subtitulo = models.TextField(blank=True)
+    ubicacion = models.CharField(blank=True, max_length=100)
+    duracion = models.FloatField()
+    #TEMPORIZADOR
+    timer = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.shortcode
+
+class ComentarioMaxLikesPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    propietario = models.CharField(max_length=100)
+    fecha = models.DateTimeField()
+    likes = models.IntegerField()
+    text = models.TextField()
+
+    def __str__(self):
+        return f" {self.shortcode} - {self.propietario} -  {self.likes} - {self.fecha} "
+
+    class Meta:
+        verbose_name = "Comentario con más likes en publicación"
+        verbose_name_plural = "Comentarios con más likes en publicaciones"
+
+
+class UsuarioMaxComentariosPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
+    comentarios = models.IntegerField()
+
+    def __str__(self):
+        return f" {self.shortcode} - {self.nombre} -  {self.comentarios}"
+
+    class Meta:
+        verbose_name = "Usuario que más comenta en publicación"
+        verbose_name_plural = "Usuarios que más comentan en publicaciones"
+
+class PostSidecar(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    numero = models.IntegerField()
+    tipo = models.CharField(max_length=20)
+    url = models.TextField()
+
+    def __str__(self):
+        return f" {self.shortcode} - {self.tipo} -  {self.numero}"
+
+    class Meta:
+        verbose_name = "Publicación Sidecar"
+        verbose_name_plural = "Publicaciones Sidecar"
+
+
+class HashtagsSubtituloPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    hashtag = models.CharField(max_length=100)
+
+    def __str__(self):
+            return f" {self.shortcode} - {self.hashtag}"
+
+    class Meta:
+        verbose_name = "Hashtags en subtítulo de publicación"
+        verbose_name_plural = "Hashtags en subtítulos de publicación"
+
+class MencionesSubtituloPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    mencion = models.CharField(max_length=100)
+
+    def __str__(self):
+            return f" {self.shortcode} - {self.mencion}"
+
+    class Meta:
+        verbose_name = "Menciones en subtítulo de publicación"
+        verbose_name_plural = "Menciones en subtítulos de publicaciones"
+
+class PatrocinadoresPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    patrocinador = models.CharField(max_length=100)
+
+    def __str__(self):
+            return f" {self.shortcode} - {self.patrocinador}"
+
+    class Meta:
+        verbose_name = "Patrocinadores en publicación"
+        verbose_name_plural = "Patrocinadores en publicaciones"
+
+
+class UsuariosEtiquetadosPost(models.Model):
+    shortcode = models.ForeignKey(DatosPost, on_delete=models.CASCADE)
+    usuario = models.CharField(max_length=100)
+
+    def __str__(self):
+            return f" {self.shortcode} - {self.usuario}"
+
+    class Meta:
+        verbose_name = "Usuarios etiquetados en publicación"
+        verbose_name_plural = "Usuarios etiquetados en publicaciones"

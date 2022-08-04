@@ -12,4 +12,13 @@ admin.site.register(IdentificadorUsuario)
 admin.site.register(ContadorHighlights)
 admin.site.register(DatosHighlight)
 admin.site.register(DatosStoryHighlight)
-
+#'''
+admin.site.register(DatosPost)
+admin.site.register(ComentarioMaxLikesPost)
+admin.site.register(UsuarioMaxComentariosPost)
+admin.site.register(PostSidecar)
+admin.site.register(HashtagsSubtituloPost)
+admin.site.register(MencionesSubtituloPost)
+admin.site.register(PatrocinadoresPost)
+admin.site.register(UsuariosEtiquetadosPost)
+#'''

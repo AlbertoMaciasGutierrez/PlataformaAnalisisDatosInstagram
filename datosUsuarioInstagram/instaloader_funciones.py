@@ -296,8 +296,7 @@ def informacionPost(IdentificadorPost):
         url_post = INSTAGRAM + POST + post.shortcode + '/'
 
         context = {
-            'titulo': post.pcaption,
-            'subtitulo': post.caption,
+            'shortcode': post.shortcode,
             'likes': post.likes,
             'comentarios': post.comments,
             'tipo': tipo_publicacion,
@@ -306,12 +305,21 @@ def informacionPost(IdentificadorPost):
             'numero_publicaciones': post.mediacount,
             'patrocinado': post.is_sponsored,
             'post_fijado': post.is_pinned,
-            'shortcode': post.shortcode,
             'url': url_post,
             'listaPostSidecar': listaPostSidecar,
             'numeroVideos': numeroVideos,
             'numeroImagenes': numeroImagenes,
         }
+
+        if(post.pcaption == None):
+            context['titulo'] = ''
+        else:
+            context['titulo'] = post.pcaption
+        
+        if(post.caption == None):
+            context['subtitulo'] = ''
+        else:
+            context['subtitulo'] = post.caption
 
         if(post.location == None):
             context['ubicacion'] = ''
@@ -321,7 +329,7 @@ def informacionPost(IdentificadorPost):
         if(post.is_video):
             context['duracion'] = post.video_duration
         else:
-            context['duracion'] = ''
+            context['duracion'] = 0
 
         context['listaHastagsSustitulo'] = post.caption_hashtags
         context['listaMecionesSustitulo'] = post.caption_mentions
@@ -396,7 +404,7 @@ def obtenerComentariosMasPopulares(post):
                 diccionarioComentariosUsuarios[a.owner.username] = 1
             
 
-    if (tiempoTranscurrido > 30):
+    if ((tiempoTranscurrido > 30) or (contador == 0)):
         return '',''
     else:
         return comentarioMaxLikes, maxComentarios
