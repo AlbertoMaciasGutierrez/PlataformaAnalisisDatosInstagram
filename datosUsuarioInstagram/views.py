@@ -589,19 +589,22 @@ class RegistroUsuario(CreateView):
         password = form.cleaned_data.get('password1')
         usuario = authenticate(username=usuario, password=password)
         login(self.request, usuario)
-        # messages.success(request, "Registro completado correctamente")
         return redirect('/analisisInsta')
-
-    #Pasamos una nueva variable al Template base.html   #QUITAR ESTO PARA LA PRÓXIMA
-    def get_context_data(self, **kwargs):
-        context = super(RegistroUsuario, self).get_context_data(**kwargs)
-        #context['boton_activado'] = False                                      #Si boton_activado es verdadero el botón del buscador funciona, si es falso no
-        return context    
-
 
 
 class LoginUsuario(LoginView):
     template_name = 'registration/login.html'
     form_class = LoginForm
 
+
+@login_required
+@require_http_methods(["GET", "POST", "DELETE"])
+def eliminarUsuario(request):
+    if (request.POST):
+        print("Eliminamos cuenta")
+        usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
+        usuarioActual.delete()
+        return redirect ('/login')
+
+    return render(request, os.path.join("registration", "delete.html"))
 

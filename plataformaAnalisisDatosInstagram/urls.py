@@ -42,7 +42,9 @@ urlpatterns = [
     path('analisisInsta/cuentasScraping/usar/<int:pk>', views.CuentaScrapingUsar.as_view(), name="cuentasScrapearInstagram_usar"),
     path('analisisInsta/cuentasScraping/eliminar/<int:pk>', views.CuentaScrapingEliminar.as_view(), name="cuentasScrapearInstagram_eliminar"),
 
+    #Manejo de usuarios
     path('registro/',views.RegistroUsuario.as_view(), name='registro_usuario'),
     path('login/',views.LoginUsuario.as_view(), name='login_usuario'),
+    path('eliminarUsuario',views.eliminarUsuario, name='eliminar_usuario'),
     path('accounts/', include('django.contrib.auth.urls')),                                      #Add Django site authentication urls (for login, logout, password management)
 ]

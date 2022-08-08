@@ -52,13 +52,19 @@
                           </span>
                           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                               <h6 class="dropdown-header">Logueado como <br><b class= "text-dark" >{{user.get_username}}</b></h6>
+                              <div class="dropdown-divider"></div>
                               <a class="dropdown-item" href="{% url 'cuentasScrapearInstagram'%}"> Scraping Instagram</a>
                               <a class="dropdown-item" href="{% url 'logout'%}"> Cerrar Sesión</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item text-danger" href="{% url 'eliminar_usuario'%}"> Eliminar cuenta</a>
                           </div>
                       </li>
                   </div>
               </ul>
           </div>
+
+
+      
       
   
   {%else %}
