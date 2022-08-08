@@ -2,8 +2,7 @@ import os
 from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from datosUsuarioInstagram.instagramy_funciones import modificarSesion_id, informacionHashtag
-from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost, buscadorPost
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost, buscadorPost, iniciarSesion
 from datosUsuarioInstagram.utils import HihglightClass, StoryClass
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
@@ -14,7 +13,7 @@ from .forms import *
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalUpdateView, BSModalCreateView
 
 
 
@@ -46,6 +45,9 @@ def renderizarContacto(request):
 
 
 
+
+
+
 ##-------------------------------------------------------------##
 ##----------------------------USUARIOS-------------------------##
 ##-------------------------------------------------------------##
@@ -53,8 +55,11 @@ def renderizarContacto(request):
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
 def addCuentasBaseDatos(request,IDusuario):
+    #Comprobamos si el usuario tiene cuentas para scrapear usando
+    cuentaScrapeo = comprobarCuentaScrapeo(request)
+
     context = {}
-    context = informacionCuenta(IDusuario)
+    context = informacionCuenta(IDusuario, cuentaScrapeo)
     context['IDcuenta'] = IDusuario
 
     diccionario_datos = {}
@@ -106,8 +111,8 @@ def actualizarCuentasBaseDatos(request,IDusuario):
 
         diferencia_timer = timezone.now() - objetoUsuarioID.timer
         minutos = diferencia_timer.seconds/60
-        #Si hay una diferencia de 10 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
-        if(minutos >= 50):
+        #Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
+        if(minutos >= 3):
             #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
             objetoUsuarioID.delete()
             context = addCuentasBaseDatos(request,IDusuario)
@@ -149,17 +154,18 @@ def obtenerInformacionCuenta(request,IDusuario):
 def bucadorCuentas(request):
 
     queryset = request.GET.get("Buscar")
-    #print(queryset) 
+    #Comprobamos si el usuario tiene cuentas para scrapear usando
+    cuentaScrapeo = comprobarCuentaScrapeo(request)
 
     if queryset:
-        info = buscadorPerfil(queryset)
+        info = buscadorPerfil(queryset,cuentaScrapeo)
         return render(request, os.path.join("cuentas_Instagram", "listaBusquedaCuenta.html"),context=info )
 
     elif (queryset == ''):
         buscado = True
-        return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado})
+        return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"),{'buscado':buscado, 'cuentaScrapeo': cuentaScrapeo})
 
-    return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"))
+    return render(request, os.path.join("cuentas_Instagram", "buscador_cuenta.html"), {'cuentaScrapeo': cuentaScrapeo})
 
 
 ##---------------------------------------------------------##
@@ -169,8 +175,11 @@ def bucadorCuentas(request):
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
 def addPublicacionesBaseDatos(request,IdentificadorPost):
+    #Comprobamos si el usuario tiene cuentas para scrapear usando
+    cuentaScrapeo = comprobarCuentaScrapeo(request)
+
     context = {}
-    context = informacionPost(IdentificadorPost)
+    context = informacionPost(IdentificadorPost,cuentaScrapeo)
 
     diccionario_datos = {}
     diccionario_datos.update(context)
@@ -240,8 +249,8 @@ def actualizarPublicacionesBaseDatos(request,IdentificadorPost):
 
         diferencia_timer = timezone.now() - objetodentificadorPost.timer
         minutos = diferencia_timer.seconds/60
-        #Si hay una diferencia de 10 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
-        if(minutos >= 10):
+        #Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda
+        if(minutos >= 3):
             #Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos
             objetodentificadorPost.delete()
             context = addPublicacionesBaseDatos(request,IdentificadorPost)
@@ -317,8 +326,6 @@ login_required
 @require_http_methods(["GET"])
 def obtenerInformacionPost(request,IdentificadorPost):
 
-    #info = informacionPost(IdentificadorPost)
-
     info = actualizarPublicacionesBaseDatos(request,IdentificadorPost)
 
     return render(request, os.path.join("publicacion", "info_post.html"),context=info)
@@ -328,11 +335,12 @@ def obtenerInformacionPost(request,IdentificadorPost):
 @require_http_methods(["GET"])
 def buscadorPublicacion(request):
 
-    queryset = request.GET.get("Buscar")
-    #print(queryset) 
+    queryset = request.GET.get("Buscar") 
+    #Comprobamos si el usuario tiene cuentas para scrapear usando
+    cuentaScrapeo = comprobarCuentaScrapeo(request)
 
     if queryset:
-        info = buscadorPost(queryset)
+        info = buscadorPost(queryset,cuentaScrapeo)
         if(info == None):
             return render(request, os.path.join("publicacion", "listaBusquedaPost.html"))
         else:
@@ -340,9 +348,9 @@ def buscadorPublicacion(request):
 
     elif (queryset == ''):
         buscado = True
-        return render(request, os.path.join("publicacion", "buscador_post.html"),{'buscado':buscado})
+        return render(request, os.path.join("publicacion", "buscador_post.html"),{'buscado':buscado, 'cuentaScrapeo': cuentaScrapeo})
 
-    return render(request, os.path.join("publicacion", "buscador_post.html"))
+    return render(request, os.path.join("publicacion", "buscador_post.html"),{'cuentaScrapeo': cuentaScrapeo})
 
 
 
@@ -395,7 +403,10 @@ def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
         return highlights
 #'''
     except:
-        highlights = informacionHightlightsCuenta(identificadorCuenta)
+        #Comprobamos si el usuario tiene cuentas para scrapear usando
+        cuentaScrapeo = comprobarCuentaScrapeo(request)
+
+        highlights = informacionHightlightsCuenta(identificadorCuenta,cuentaScrapeo)
 
         if highlights == None:
             dicionarioVacio = {}
@@ -443,70 +454,119 @@ def obtenerInformacionHashtag(request,Hashtag):
 def bucadorHashtag(request):
 
     queryset = request.GET.get("Buscar")
-    #print(queryset) 
+    #Comprobamos si el usuario tiene cuentas para scrapear usando
+    cuentaScrapeo = comprobarCuentaScrapeo(request)
 
     if queryset: 
-        info = buscadorHashtag(queryset)
+        info = buscadorHashtag(queryset,cuentaScrapeo)
         return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=info)
 
     elif (queryset == ''):
         buscado = True
-        return render(request, os.path.join("hashtag", "buscador_hashtag.html"),{'buscado':buscado})
+        return render(request, os.path.join("hashtag", "buscador_hashtag.html"),{'buscado':buscado, 'cuentaScrapeo': cuentaScrapeo})
 
-    return render(request, os.path.join("hashtag", "buscador_hashtag.html"))
+    return render(request, os.path.join("hashtag", "buscador_hashtag.html"), {'cuentaScrapeo': cuentaScrapeo})
 
 
-##--------------------------------------------------------------------##
-##------------------------------IDSESION------------------------------##
-##--------------------------------------------------------------------##
+
+##-----------------------------------------------------------------------##
+##--------------------CUENTAS INSTAGRAM PARA SCRAPEAR--------------------##
+##-----------------------------------------------------------------------##
+
+def comprobarCuentaScrapeo(request):
+    usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
+    cuentaScrapeo = ''
+
+    for c in CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual):
+        if(c.usando == True):
+            cuentaScrapeo = c.cuenta
+            break
+
+    return cuentaScrapeo
+
 
 @login_required
 @require_http_methods(["GET","POST","DELETE"])
-def idSesion(request):
+def cuentasScrapingInstagram(request):
     usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
-    sesionID = modificarSesion_id()
-    
+    context = {
+        "cuentas_scrapeo_disponibles": CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual)
+        }
 
-    if request.method == 'POST':
-        form = IDSesionForm(request.POST)
+    return render(request, os.path.join("cuentas_scrapeo_instagram", "cuentasScrapeo.html"),context = context)
+
+
+class CuentaScrapingCrear(LoginRequiredMixin, BSModalCreateView):
+    template_name = 'cuentas_scrapeo_instagram/cuentaScrapeo_confirm_add.html'
+    form_class = AddCuentaScrapingForm
+    success_message = 'Cuenta añadida correctamente'
+    success_url = reverse_lazy('cuentasScrapearInstagram')
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+
         if form.is_valid():
-            IDSesion = form.save(commit=False)
-            IDSesion.usuario = usuarioActual
+            print('Estoy dentro')
+            usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
+            cuentaScraping = form.save(commit=False)
+
+            #Iniciamos sesión de Instagram y la guardamos en el sistema
+            if(iniciarSesion(cuentaScraping.cuenta, form['password'].data) == False):
+                messages.success(request, 'La cuenta no se ha podido añadir')
+                return redirect ('/analisisInsta/cuentasScraping/')
+
+            cuentaScraping.usuario = usuarioActual
+            cuentaScraping.usando = True
+
+            #Comprobamos que la cuentaScraping para dicho usuario no sea repetida
+            for c in CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual):
+                if cuentaScraping.cuenta == c.cuenta:
+                    messages.success(request, 'Cuenta a añadir repetida')
+                    return redirect ('/analisisInsta/cuentasScraping/')
+            #Comprobamos que solo se esté usando una cuenta de las almacenadas
+            for c in CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual):
+                if((c.usando == True) and (cuentaScraping.cuenta != c.cuenta)):
+                    c.usando = False
+                    c.save()
+
+            return self.form_valid(form)
+        else:
+            print('Estoy fuera')
+            return self.form_invalid(form)
             
-            #Comprobamos que el IDSesion para dicho usuario no sea repetido
-            for ID in IDSesionUsuario.objects.filter(usuario = usuarioActual):
-                if IDSesion.content == ID.content:
-                    messages.success(request, 'IDSesion repetido')
-                    return redirect ('/analisisInsta/IDSesion')
-
-            IDSesion.save()
-            messages.success(request, 'IDSesion añadido correctamente')
-            return redirect ('/analisisInsta/IDSesion') 
-    else:
-        form = IDSesionForm()
-
-        context = {
-            "sesionID": sesionID,
-            "form":form,
-            "idSesion_disponibles": IDSesionUsuario.objects.filter(usuario = usuarioActual)
-            }
 
 
-    return render(request, os.path.join("id_sesion", "idSesion.html"),context = context)
+class CuentaScrapingUsar(LoginRequiredMixin, BSModalUpdateView):
+    model = CuentaScrapeoInstagram
+    template_name = 'cuentas_scrapeo_instagram/cuentaScrapeo_confirm_use.html'
+    form_class = UseCuentaScrapingForm
+    success_message = 'Cuenta preparada para usar'
+    success_url = reverse_lazy('cuentasScrapearInstagram')
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
 
-class IDSeionEliminar(LoginRequiredMixin, BSModalDeleteView):
-    model = IDSesionUsuario
-    template_name = 'id_sesion/idSesion_confirm_delete.html'
-    success_message = 'IDSesion borrado correctamente'
-    success_url = reverse_lazy('IDSesion')
+        #Comprobamos que solo se esté usando una cuenta de las almacenadas
+        #'''
+        if(form['usando'].data):
+            usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
+            for c in CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual):
+                if((c.usando == True) and (self.object.cuenta != c.cuenta)):
+                    c.usando = False
+                    c.save()
+        #'''
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
-class IDSeionEditar(LoginRequiredMixin, BSModalUpdateView):
-    model = IDSesionUsuario
-    template_name = 'id_sesion/idSesion_confirm_update.html'
-    form_class = IDSesionUpdateForm
-    success_message = 'IDSesion editado correctamente'
-    success_url = reverse_lazy('IDSesion')
+class CuentaScrapingEliminar(LoginRequiredMixin, BSModalDeleteView):
+    model = CuentaScrapeoInstagram
+    template_name = 'cuentas_scrapeo_instagram/cuentaScrapeo_confirm_delete.html'
+    success_message = 'Cuenta borrada correctamente'
+    success_url = reverse_lazy('cuentasScrapearInstagram')
 
 
 

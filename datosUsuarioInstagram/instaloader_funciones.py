@@ -11,24 +11,51 @@ HIGHLIGHT = 'stories/highlights/'
 
 
 
-L =Instaloader()
+L = Instaloader()
 #L.login(USER,PASS)                            #Loguearse
 #L.save_session_to_file()                      #Guardar sesión en archivo para no tener que volver a loguearnos
 L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del inicio de sesión anterior. Descomentar y comentar las dos líneas de arriba cuando esté guardada la sesión
 
 
 
+##--------------------------------------------------------------------------##
+##-------------------------Iniciar sesión Instagram-------------------------##
+##--------------------------------------------------------------------------##
+def iniciarSesion(user,contrasena):
+    try:
+        L = Instaloader()
+        L.login(user,contrasena)
+        L.save_session_to_file()
+        return True
+
+    except Exception as e: 
+        traceback.print_exc()
+        return False
+
+
+def comprobarCuentaBuscadora(cuentaScrapeo):
+    if(cuentaScrapeo == ''):
+        cuentaBuscadora = L
+        return cuentaBuscadora
+    else:
+        C = Instaloader()
+        C.load_session_from_file(cuentaScrapeo)
+        cuentaBuscadora = C
+        return cuentaBuscadora
+
 
 ##--------------------------------------------------------------------##
 ##-------------------------Busqueda de perfil-------------------------##
 ##--------------------------------------------------------------------##
 
-def buscadorPerfil(queryset):
+def buscadorPerfil(queryset,cuentaScrapeo):
     contador = 0
     listaPerfiles = []
     diccionarioPerfiles = {}
 
-    for perfil in TopSearchResults(L.context,queryset).get_profiles():
+    cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
+
+    for perfil in TopSearchResults(cuentaBuscadora.context,queryset).get_profiles():
         contador += 1
         listaPerfiles.append(perfil.username)
 
@@ -40,9 +67,11 @@ def buscadorPerfil(queryset):
     return diccionarioPerfiles
 
 
-def informacionCuenta(cuenta):
+def informacionCuenta(cuenta,cuentaScrapeo):
     try:
-        profile = Profile.from_username(L.context, cuenta)
+        cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
+
+        profile = Profile.from_username(cuentaBuscadora.context, cuenta)
 
         context = {}
         
@@ -260,9 +289,11 @@ def obtenerComentariosLikesPublicacionesEtiquetadas(profile, cuenta):
 ##-------------------------Publicación-------------------------##
 ##-------------------------------------------------------------##
 
-def buscadorPost(queryset):
+def buscadorPost(queryset,cuentaScrapeo):
     try:
-        post = Post.from_shortcode(L.context, queryset)
+        cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
+
+        post = Post.from_shortcode(cuentaBuscadora.context, queryset)
 
         diccionarioPost = {
         'nombre': post.pcaption,
@@ -276,9 +307,11 @@ def buscadorPost(queryset):
         return None
 
 
-def informacionPost(IdentificadorPost):
+def informacionPost(IdentificadorPost,cuentaScrapeo):
     try:
-        post = Post.from_shortcode(L.context, IdentificadorPost)
+        cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
+
+        post = Post.from_shortcode(cuentaBuscadora.context, IdentificadorPost)
 
         context = {}
         numeroImagenes = numeroVideos = 0
@@ -414,7 +447,7 @@ def obtenerComentariosMasPopulares(post):
 ##-------------------------Highlights de perfil-------------------------##
 ##----------------------------------------------------------------------##
 
-def informacionHightlightsCuenta(IdentificadorCuenta):
+def informacionHightlightsCuenta(IdentificadorCuenta,cuentaScrapeo):
     try:
         context = {}
 
@@ -424,8 +457,10 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
         listaHighlightIntermedia = []
 
         comienzo = monotonic()                                            #Temporizador para parar la ejecución si hay muchas historias
+
+        cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
         
-        for highlights in L.get_highlights(IdentificadorCuenta):          #Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos
+        for highlights in cuentaBuscadora.get_highlights(IdentificadorCuenta):          #Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos
             contadorHighlights += 1
             listaHistoriasDestacadas = []
             numeroImagenes = 0
@@ -474,12 +509,14 @@ def informacionHightlightsCuenta(IdentificadorCuenta):
 ##-------------------------Busqueda de hashtag-------------------------##
 ##---------------------------------------------------------------------##
 
-def buscadorHashtag(queryset):
+def buscadorHashtag(queryset,cuentaScrapeo):
     contador = 0
     listaHashtags = []
     diccionarioHashtags = {}
 
-    for hashtag in TopSearchResults(L.context,queryset).get_hashtag_strings():
+    cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
+
+    for hashtag in TopSearchResults(cuentaBuscadora.context,queryset).get_hashtag_strings():
         contador += 1
         listaHashtags.append(hashtag)
 

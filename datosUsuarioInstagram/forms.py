@@ -9,9 +9,6 @@ from .models import *
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 
-
-
-
 class RegistroForm(UserCreationForm):
 
     class Meta:
@@ -51,25 +48,25 @@ class LoginForm(AuthenticationForm):
                                                                         'placeholder':'Contraseña',
                                                                         "autocomplete": "current-password"}), required=True)
 
+class AddCuentaScrapingForm(BSModalModelForm):
+    cuenta = forms.CharField(label ='Cuenta:', widget= forms.TextInput(attrs={'class':' form-control',
+                                                                        'placeholder':'Cuenta',
+                                                                        'style':'align-items: center; '}), required=True)
 
-class IDSesionForm(forms.ModelForm):
-    content = forms.CharField(label ='', widget= forms.Textarea(attrs={'class':'mt-2 mr-sm-3',
-                                                                        'rows':1,
-                                                                        'placeholder': "idSesion",
-                                                                        'style':'max-width: 20rem; min-width: 20rem;'}), required=True)
-    class Meta:
-        model = IDSesionUsuario
-        fields = ('content',)
-
-class IDSesionUpdateForm(BSModalModelForm):
-    content = forms.CharField(label ='', widget= forms.Textarea(attrs={'class':'mt-2 mr-sm-3',
-                                                                        'rows':1,
-                                                                        'placeholder': "idSesion",
-                                                                        'style':'max-width: 20rem; min-width: 20rem;'}), required=True)
+    password = forms.CharField(label ='Contraseña:', strip =False, widget= forms.PasswordInput(attrs={'class':'form-control ',
+                                                                        'placeholder':'Contraseña',
+                                                                        "autocomplete": "current-password"}), required=True)
 
     class Meta:
-        model = IDSesionUsuario
-        fields = ('content',)
+        model = CuentaScrapeoInstagram
+        fields = ('cuenta',)
+
+class UseCuentaScrapingForm(BSModalModelForm):
+    usando= forms.BooleanField(widget=forms.CheckboxInput(attrs={'type':'checkbox',
+                                                                'style':'font-size: xx-small; '}), required=False, label='', initial=False)
+    class Meta:
+        model = CuentaScrapeoInstagram
+        fields = ('usando',)
 
 
 class ContactoForm(forms.ModelForm):

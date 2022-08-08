@@ -24,7 +24,11 @@
 
     <div class="row d-flex justify-content-center pt-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
         <div class="col-md-12 col-xl-12 col-sm-12 col-12 col-lg-12">
-            <p class="font-weinght-bold text-center">Cuenta de Instagram usada para buscar:  <b><i>instaanalysistfg</b></i> </p>
+            {% if cuentaScrapeo == '' %}
+                <p class="font-weinght-bold text-center">Cuenta de Instagram usada para buscar:  <b><i>instaanalysistfg</b></i> </p>
+            {%else%}
+                <p class="font-weinght-bold text-center">Cuenta de Instagram usada para buscar:  <b><i>{{cuentaScrapeo}} </b></i> </p>
+            {% endif %}
         </div>
     </div>
 

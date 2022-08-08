@@ -36,10 +36,11 @@ urlpatterns = [
     path('analisisInsta/buscadorPost/', views.buscadorPublicacion, name="buscadorPost"),
     path('analisisInsta/buscadorPost/busqueda/<IdentificadorPost>/', views.obtenerInformacionPost, name="obtenerInformacionPublicacion"),
 
-
-    path('analisisInsta/IDSesion/', views.idSesion, name="IDSesion"),
-    path('analisisInsta/IDSesion//eliminar/<int:pk>', views.IDSeionEliminar.as_view(), name='idSesion_eliminar'), 
-    path('analisisInsta/IDSesion//editar/<int:pk>', views.IDSeionEditar.as_view(), name='idSesion_editar'), 
+    #Introducir cuentas de Instagram para Scrapear
+    path('analisisInsta/cuentasScraping/', views.cuentasScrapingInstagram, name="cuentasScrapearInstagram"),
+    path('analisisInsta/cuentasScraping/crear/', views.CuentaScrapingCrear.as_view(), name="cuentasScrapearInstagram_crear"),
+    path('analisisInsta/cuentasScraping/usar/<int:pk>', views.CuentaScrapingUsar.as_view(), name="cuentasScrapearInstagram_usar"),
+    path('analisisInsta/cuentasScraping/eliminar/<int:pk>', views.CuentaScrapingEliminar.as_view(), name="cuentasScrapearInstagram_eliminar"),
 
     path('registro/',views.RegistroUsuario.as_view(), name='registro_usuario'),
     path('login/',views.LoginUsuario.as_view(), name='login_usuario'),

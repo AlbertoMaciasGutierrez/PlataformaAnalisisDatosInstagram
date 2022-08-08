@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cuentas Scraping Instagram{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<div class ="container-fluid">
+    <div class="flex-row d-flex justify-content-center mt-2 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12" >
+        <div class="col-12 col-sm-12 col-md-6 col-xl-6">
+            <h2 class="font-weinght-bold text-center">Cuentas Scraping Instagram</h2>
+        </div> 
+    </div>
+
+    <div class="d-flex flex-row justify-content-center mt-1 mb-4 row-md-12 row-xl-12 row-sm-12 row-12 row-lg-12">
+        <div class = "col-12 col-sm-12 col-md-9 col-lg-6 col-xl-5">
+            <div class = "d-flex justify-content-center">
+                <h5 class="font-weinght-bold ">Añadir cuenta<button id="create-CuentaScrapeo" class="btn text-primary" type="button" name="button" ><span class="fa fa-plus" aria-hidden="true" ></span></button> </h5>
+                <br>
+                <br>
+            </div>
+            {% if cuentas_scrapeo_disponibles%}
+
+                <div class = "table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">
+                    <table class="table table-bordered table-sm" >
+                        <thead class="thead-dark">
+                            <tr>
+                                <th style="font-size: small;" >Cuenta</th>
+                                <th style="font-size: small;">Usando</th>
+                                <th style="font-size: small;">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for cuentaScrapeo in cuentas_scrapeo_disponibles %}
+                                <tr> 
+                                    <td style="font-size: small;">
+                                        {{cuentaScrapeo.cuenta}}  
+                                    </td>
+                                    <td>
+                                        {%if cuentaScrapeo.usando%}
+                                            <button type="button" class="update-CuentaScrapeo bs-modal btn text-dark" data-form-url="{% url 'cuentasScrapearInstagram_usar' cuentaScrapeo.pk %}"><span class="fa fa-check-square-o" aria-hidden="true"></span></button>
+                                        {%else%}
+                                            <button type="button" class="update-CuentaScrapeo bs-modal btn text-dark" data-form-url="{% url 'cuentasScrapearInstagram_usar' cuentaScrapeo.pk %}"><span class="fa fa-square-o" aria-hidden="true"></span></button>
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="delete-CuentaScrapeo bs-modal btn text-danger" data-form-url="{% url 'cuentasScrapearInstagram_eliminar' cuentaScrapeo.pk %}"><span class="fa fa-trash" aria-hidden="true"></span></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            {%else%}
+                <p class="font-weinght-bold text-center">Aún no hay cuentas guardadas para Scrapear Instagram </p>
+            {%endif%}
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+{% block JavaScript%}
+<script type="text/javascript">
+    $(function () {
+
+        var asyncSuccessMessageUpdate = [
+        "<div ",
+        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+        "Success: Book was updated.",
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+        "<span aria-hidden='true'>&times;</span>",
+        "</button>",
+        "</div>",
+        "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+      ].join("");
+
+
+
+        function createCuentaScrapeoModalForm() {
+        $("#create-CuentaScrapeo").modalForm({
+            formURL: "{% url 'cuentasScrapearInstagram_crear' %}",
+            modalID: "#create-modal"
+        });
+        }
+        createCuentaScrapeoModalForm();
+
+        function updateCuentaScrapeoModalForm() {
+            $(".update-CuentaScrapeo").each(function () {
+                $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false,
+                });
+            });
+        }
+        updateCuentaScrapeoModalForm();
+
+        function deleteCuentaScrapeoModalForm(){
+            $(".delete-CuentaScrapeo").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+        }
+        deleteCuentaScrapeoModalForm();
+
+        function reinstantiateModalForms() {
+            updateCuentaScrapeoModalForm();
+            deleteCuentaScrapeoModalForm();
+        }
+
+        // hide message
+        $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+            $(".alert").slideUp(500);
+        });
+
+    });
+</script>
+{% endblock %}

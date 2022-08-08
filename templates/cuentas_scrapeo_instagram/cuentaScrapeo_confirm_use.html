@@ -4,8 +4,8 @@
     {% csrf_token %}
   
     <div class="modal-header">
-      <p>Cambiar ID Sesión
-          <strong>{{ object.content }}</strong>?</p>
+      <p>¿Desea usar la cuenta
+          <strong>{{ object.cuenta }}</strong>?</p>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -33,7 +33,7 @@
     </div>
     
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Cambiar</button>
+        <button type="submit" class="btn btn-primary">Confirmar</button>
         <button class="btn btn-danger" type="button" data-dismiss="modal">Cancelar</button>
       </div>
   
