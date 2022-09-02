@@ -2,8 +2,9 @@ import os
 from .models import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, buscadorHashtag, informacionPost, buscadorPost, iniciarSesion
+from datosUsuarioInstagram.instaloader_funciones import informacionCuenta, informacionHightlightsCuenta, buscadorPerfil, informacionPost, buscadorPost, iniciarSesion
 from datosUsuarioInstagram.utils import HihglightClass, StoryClass
+from django.http.response import HttpResponseBadRequest, HttpResponseNotFound, HttpResponseServerError, HttpResponseForbidden
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from cuentas.models import Usuario
@@ -36,7 +37,7 @@ def renderizarContacto(request):
         if form.is_valid():
             form.save()
             context['mensaje'] = 'Petición guardada'
-            messages.success(request, 'Peticion enviada correctamente')
+            messages.success(request, 'Mensaje enviado correctamente')
             return redirect ('/analisisInsta/contacto')
         else:
             context['form'] = form
@@ -72,7 +73,6 @@ def addCuentasBaseDatos(request,IDusuario):
     form = BusquedaUsuarioForm(diccionario_datos)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Busqueda actualizada correctamente')
 
     
     #Añadimos los correspondientes post, videos y post etiquetados a la base de datos 
@@ -194,7 +194,6 @@ def addPublicacionesBaseDatos(request,IdentificadorPost):
     form = BusquedaPostForm(diccionario_datos)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Busqueda actualizada correctamente')
 
     #Añadimos comentario com más likes y usuario que más comenta en el post
     if((context['comentarioMaxPopular'] != '') and (context['usuarioMaxComenta'] != '')):
@@ -399,7 +398,6 @@ def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
             
             
         highlights['destacados'] = listaHighlightsIntermedia
-        messages.success(request, 'Highlights cargados correctamente')
         return highlights
 #'''
     except:
@@ -433,40 +431,9 @@ def actualizarHighlightsBaseDatos(request,IDusuario,identificadorCuenta):
                             #print('Historia añadida correctamente')
 
 
-        messages.success(request, 'Highlights añadidos correctamente')
         return highlights
 
 #'''
-
-##---------------------------------------------------------------##
-##----------------------------HASHTAGS---------------------------##
-##---------------------------------------------------------------##
-
-@login_required
-@require_http_methods(["GET"])
-def obtenerInformacionHashtag(request,Hashtag):
-
-    return render(request, os.path.join("hashtag", "info_hashtag.html"))
-
-
-@login_required
-@require_http_methods(["GET"])
-def bucadorHashtag(request):
-
-    queryset = request.GET.get("Buscar")
-    #Comprobamos si el usuario tiene cuentas para scrapear usando
-    cuentaScrapeo = comprobarCuentaScrapeo(request)
-
-    if queryset: 
-        info = buscadorHashtag(queryset,cuentaScrapeo)
-        return render(request, os.path.join("hashtag", "listaBusquedaHashtag.html"),context=info)
-
-    elif (queryset == ''):
-        buscado = True
-        return render(request, os.path.join("hashtag", "buscador_hashtag.html"),{'buscado':buscado, 'cuentaScrapeo': cuentaScrapeo})
-
-    return render(request, os.path.join("hashtag", "buscador_hashtag.html"), {'cuentaScrapeo': cuentaScrapeo})
-
 
 
 ##-----------------------------------------------------------------------##
@@ -507,15 +474,9 @@ class CuentaScrapingCrear(LoginRequiredMixin, BSModalCreateView):
         form = self.get_form()
 
         if form.is_valid():
-            print('Estoy dentro')
             usuarioActual = get_object_or_404(Usuario, pk = request.user.pk)
             cuentaScraping = form.save(commit=False)
-
-            #Iniciamos sesión de Instagram y la guardamos en el sistema
-            if(iniciarSesion(cuentaScraping.cuenta, form['password'].data) == False):
-                messages.success(request, 'La cuenta no se ha podido añadir')
-                return redirect ('/analisisInsta/cuentasScraping/')
-
+            
             cuentaScraping.usuario = usuarioActual
             cuentaScraping.usando = True
 
@@ -524,6 +485,12 @@ class CuentaScrapingCrear(LoginRequiredMixin, BSModalCreateView):
                 if cuentaScraping.cuenta == c.cuenta:
                     messages.success(request, 'Cuenta a añadir repetida')
                     return redirect ('/analisisInsta/cuentasScraping/')
+
+            #Iniciamos sesión de Instagram y la guardamos en el sistema
+            if(iniciarSesion(cuentaScraping.cuenta, form['password'].data) == False):
+                messages.success(request, 'La cuenta no se ha podido añadir')
+                return redirect ('/analisisInsta/cuentasScraping/')
+
             #Comprobamos que solo se esté usando una cuenta de las almacenadas
             for c in CuentaScrapeoInstagram.objects.filter(usuario = usuarioActual):
                 if((c.usando == True) and (cuentaScraping.cuenta != c.cuenta)):
@@ -532,7 +499,6 @@ class CuentaScrapingCrear(LoginRequiredMixin, BSModalCreateView):
 
             return self.form_valid(form)
         else:
-            print('Estoy fuera')
             return self.form_invalid(form)
             
 
@@ -608,3 +574,20 @@ def eliminarUsuario(request):
 
     return render(request, os.path.join("registration", "delete.html"))
 
+
+
+##--------------------------------------------------------------------##
+##-------------------------MANEJO DE ERRORES--------------------------##
+##--------------------------------------------------------------------##
+
+def error_404(request, exception=None):
+    return HttpResponseNotFound(render(request, os.path.join("errores", "404.html")))
+    
+def error_500(request): 
+    return HttpResponseServerError(render(request, os.path.join("errores", "500.html")))
+
+def error_403(request, exception=None):
+    return HttpResponseForbidden(render(request, os.path.join("errores", "403.html")))
+
+def error_400(request, exception=None):
+    return HttpResponseBadRequest(render(request, os.path.join("errores", "400.html")))

@@ -1,0 +1,52 @@
+{% load static %}
+<html lang="es">
+    <head>
+        <title>Página no encontrada</title>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <meta http-equiv="Expires" content="0">
+        <meta http-equiv="Last-Modified" content="0">
+        <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+
+    </head>
+    
+    <body>
+        <center class= "container">
+            {% if user.is_authenticated %}
+                <br><br>
+                <h1><b>No tienes permiso para realizar esta acción</b></h1>
+                <br>
+                <img class="media-object" src="{% static 'img/error/error403.jpg' %}" width="500" height="300">
+                <br><br>
+                <p>Puede acceder a:</p>
+                
+                <ul class = "list-inline">
+                    <li class="list-inline-item "><a href="{%url 'home'%}">Inicio</a></li>
+                </ul>
+
+                
+            {%else %}
+                <br><br>
+                <h1><b>No tienes permiso para realizar esta acción</b></h1>
+                <br>
+                <img class="media-object" src="{% static 'img/error/error403.jpg' %}" width="500" height="300">
+                <br><br>
+                <p>Para realizar la acción necesita Iniciar Sesión o Registrarse:</p>
+                
+                <ul class = "list-inline">
+                    <li class="list-inline-item "><a  href="{%url 'login_usuario'%}">Inicio Sesión</a></li>
+                    <li class="list-inline-item "><a  href="{%url 'registro_usuario'%}">Registrarse</a></li>
+                </ul>   
+        </center>
+        
+
+
+    </body>
+
+</html>

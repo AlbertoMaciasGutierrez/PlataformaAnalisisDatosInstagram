@@ -2,9 +2,11 @@ from instaloader import Instaloader, Profile, TopSearchResults, Post
 import traceback
 from datosUsuarioInstagram.utils import PostClass, PostClassVideo, HihglightClass, SidecarPostClass, StoryClass, UsuarioMaxComentariosClass, ComentarioMaxLikesClass
 from time import monotonic
+from decouple import config
 
-USER = 'instaanalysistfg'
-PASS = 'juliogamer0404'
+USER = config('INSTAGRAM_USER')
+#PASS = config('INSTAGRAM_PASS')
+
 INSTAGRAM = 'https://www.instagram.com/'
 POST = 'p/'
 HIGHLIGHT = 'stories/highlights/'
@@ -14,7 +16,7 @@ HIGHLIGHT = 'stories/highlights/'
 L = Instaloader()
 #L.login(USER,PASS)                            #Loguearse
 #L.save_session_to_file()                      #Guardar sesión en archivo para no tener que volver a loguearnos
-L.load_session_from_file('instaanalysistfg')  #Carga la sesión guardada del inicio de sesión anterior. Descomentar y comentar las dos líneas de arriba cuando esté guardada la sesión
+L.load_session_from_file(USER)                 #Carga la sesión guardada del inicio de sesión anterior.
 
 
 
@@ -123,7 +125,6 @@ def obtenerComentariosLikesPosts(profile,cuenta):
 
     mediaLikes = 0
     mediaComentarios = 0
-    #mediaPublicacionesDia = 0
 
     contador = 0                    #Número de publicaciones mostradas
     contadorPublicaciones = 0
@@ -503,26 +504,3 @@ def informacionHightlightsCuenta(IdentificadorCuenta,cuentaScrapeo):
     except Exception as e: 
         traceback.print_exc()
         return None
-
-
-##---------------------------------------------------------------------##
-##-------------------------Busqueda de hashtag-------------------------##
-##---------------------------------------------------------------------##
-
-def buscadorHashtag(queryset,cuentaScrapeo):
-    contador = 0
-    listaHashtags = []
-    diccionarioHashtags = {}
-
-    cuentaBuscadora = comprobarCuentaBuscadora(cuentaScrapeo)
-
-    for hashtag in TopSearchResults(cuentaBuscadora.context,queryset).get_hashtag_strings():
-        contador += 1
-        listaHashtags.append(hashtag)
-
-    diccionarioHashtags = {
-    'contador': contador,
-    'listaHashtags': listaHashtags
-    }
-
-    return diccionarioHashtags

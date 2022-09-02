@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from datosUsuarioInstagram import views
+from django.conf.urls import handler404, handler500, handler403, handler400
+
+handler404 = 'datosUsuarioInstagram.views.error_404'
+handler500 = 'datosUsuarioInstagram.views.error_500'
+handler403 = 'datosUsuarioInstagram.views.error_403'
+handler400 = 'datosUsuarioInstagram.views.error_400'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,10 +34,6 @@ urlpatterns = [
     path('analisisInsta/buscadorCuenta/busqueda/<IDusuario>/', views.obtenerInformacionCuenta, name="obtenerInformacionCuenta"),
     #Highlights
     path('analisisInsta/buscadorCuenta/busqueda/highlights/<IDusuario>/', views.obtenerHighlightsCuenta, name="obtenerHighlightsCuenta"),
-
-    #Hashtag Instagram
-    path('analisisInsta/buscadorHashtag/', views.bucadorHashtag, name="buscadorHashtag"),
-    path('analisisInsta/buscadorHashtag/busqueda/<Hashtag>/', views.obtenerInformacionHashtag, name="obtenerInformacionHashtag"),
 
     #Post Instagram
     path('analisisInsta/buscadorPost/', views.buscadorPublicacion, name="buscadorPost"),
