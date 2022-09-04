@@ -1,0 +1,1 @@
+Para actualizar o crear la docuentación sacar todos los archivos a la carpeta de 'PlataformaAnalisisDatosInstagram'

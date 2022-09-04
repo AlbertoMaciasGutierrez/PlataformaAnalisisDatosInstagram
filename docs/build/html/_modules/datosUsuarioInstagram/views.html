@@ -1,0 +1,677 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datosUsuarioInstagram.views &#8212; documentación de Plataforma para el analisis de datos de Instagram - 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.views</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Código fuente para datosUsuarioInstagram.views</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">datosUsuarioInstagram.instaloader_funciones</span> <span class="kn">import</span> <span class="n">informacionCuenta</span><span class="p">,</span> <span class="n">informacionHightlightsCuenta</span><span class="p">,</span> <span class="n">buscadorPerfil</span><span class="p">,</span> <span class="n">informacionPost</span><span class="p">,</span> <span class="n">buscadorPost</span><span class="p">,</span> <span class="n">iniciarSesion</span>
+<span class="kn">from</span> <span class="nn">datosUsuarioInstagram.utils</span> <span class="kn">import</span> <span class="n">HihglightClass</span><span class="p">,</span> <span class="n">StoryClass</span>
+<span class="kn">from</span> <span class="nn">django.http.response</span> <span class="kn">import</span> <span class="n">HttpResponseBadRequest</span><span class="p">,</span> <span class="n">HttpResponseNotFound</span><span class="p">,</span> <span class="n">HttpResponseServerError</span><span class="p">,</span> <span class="n">HttpResponseForbidden</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">login</span><span class="p">,</span> <span class="n">authenticate</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.views</span> <span class="kn">import</span> <span class="n">LoginView</span>
+<span class="kn">from</span> <span class="nn">cuentas.models</span> <span class="kn">import</span> <span class="n">Usuario</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">CreateView</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">django.views.decorators.http</span> <span class="kn">import</span> <span class="n">require_http_methods</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.mixins</span> <span class="kn">import</span> <span class="n">LoginRequiredMixin</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">reverse_lazy</span>
+<span class="kn">from</span> <span class="nn">bootstrap_modal_forms.generic</span> <span class="kn">import</span> <span class="n">BSModalDeleteView</span><span class="p">,</span> <span class="n">BSModalUpdateView</span><span class="p">,</span> <span class="n">BSModalCreateView</span>
+
+
+
+
+
+<div class="viewcode-block" id="renderizarHome"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.renderizarHome">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">renderizarHome</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="s2">&quot;home.html&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="renderizarContacto"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.renderizarContacto">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">renderizarContacto</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">ContactoForm</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">ContactoForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;mensaje&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Petición guardada&#39;</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Mensaje enviado correctamente&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span> <span class="p">(</span><span class="s1">&#39;/analisisInsta/contacto&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">form</span>
+    
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;contacto&quot;</span><span class="p">,</span> <span class="s2">&quot;contacto.html&quot;</span><span class="p">),</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span></div>
+
+
+
+
+
+
+<span class="c1">##-------------------------------------------------------------##</span>
+<span class="c1">##----------------------------USUARIOS-------------------------##</span>
+<span class="c1">##-------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="addCuentasBaseDatos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.addCuentasBaseDatos">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">addCuentasBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">):</span>
+    <span class="c1">#Comprobamos si el usuario tiene cuentas para scrapear usando</span>
+    <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">informacionCuenta</span><span class="p">(</span><span class="n">IDusuario</span><span class="p">,</span> <span class="n">cuentaScrapeo</span><span class="p">)</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IDusuario</span>
+
+    <span class="n">diccionario_datos</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">diccionario_datos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;ID_usuario&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaInfoPostRecientes&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaInfoVideos&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaInfoPublicacionesEtiquetadas&#39;</span><span class="p">]</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaUsuarioForm</span><span class="p">(</span><span class="n">diccionario_datos</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    
+    <span class="c1">#Añadimos los correspondientes post, videos y post etiquetados a la base de datos </span>
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaInfoPostRecientes&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaUsuarioPostForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">],</span> <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">likes</span><span class="p">,</span> <span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">comentarios</span><span class="p">,</span> 
+                                        <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">shortcode</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaInfoVideos&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaUsuarioVideosForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">],</span> <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">likes</span><span class="p">,</span> <span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">comentarios</span><span class="p">,</span> 
+                                                <span class="s1">&#39;reproducciones&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">reproducciones</span><span class="p">,</span> <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">shortcode</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaInfoPublicacionesEtiquetadas&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaUsuarioEtiquetadasForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">],</span> <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">likes</span><span class="p">,</span> <span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">comentarios</span><span class="p">,</span> 
+                                                <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">shortcode</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="c1">#Añadimos el número de ID de usuario</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaUsuarioIDusuarioForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">],</span> <span class="s1">&#39;usuarioID&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;ID_usuario&#39;</span><span class="p">]})</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">context</span></div>
+
+
+<div class="viewcode-block" id="actualizarCuentasBaseDatos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.actualizarCuentasBaseDatos">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">actualizarCuentasBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">):</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">objetoUsuarioID</span> <span class="o">=</span> <span class="n">DatosBusquedaUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">IDcuenta</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+
+        <span class="n">diferencia_timer</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">objetoUsuarioID</span><span class="o">.</span><span class="n">timer</span>
+        <span class="n">minutos</span> <span class="o">=</span> <span class="n">diferencia_timer</span><span class="o">.</span><span class="n">seconds</span><span class="o">/</span><span class="mi">60</span>
+        <span class="c1">#Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">minutos</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="c1">#Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos</span>
+            <span class="n">objetoUsuarioID</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">addCuentasBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">context</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#Recuperamos los datos de la base de datos y los retornamos en forma de diccionario</span>
+            <span class="n">objetoUsuarioID</span> <span class="o">=</span> <span class="n">objetoUsuarioID</span><span class="o">.</span><span class="vm">__dict__</span>                   <span class="c1">#Convertimos el objeto a diccionario para pasarlo al template</span>
+            <span class="k">del</span> <span class="n">objetoUsuarioID</span><span class="p">[</span><span class="s1">&#39;_state&#39;</span><span class="p">]</span>                                <span class="c1">#Borramos esta clave innecesaria del diccionario</span>
+
+            <span class="n">objetoUsuarioID</span><span class="p">[</span><span class="s1">&#39;listaInfoPostRecientes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DatosPostBusquedaUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+            <span class="n">objetoUsuarioID</span><span class="p">[</span><span class="s1">&#39;listaInfoVideos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DatosVideosBusquedaUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+            <span class="n">objetoUsuarioID</span><span class="p">[</span><span class="s1">&#39;listaInfoPublicacionesEtiquetadas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DatosEtiquetadasBusquedaUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">objetoUsuarioID</span>
+
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1">#Realizamos la búsqueda, introducimos los datos en la base de datos y los devolvemos</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">addCuentasBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">context</span></div>
+
+
+
+
+<div class="viewcode-block" id="obtenerInformacionCuenta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.obtenerInformacionCuenta">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">obtenerInformacionCuenta</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">):</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">actualizarCuentasBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_Instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;info_cuenta.html&quot;</span><span class="p">),</span><span class="n">context</span><span class="o">=</span><span class="n">info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bucadorCuentas"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.bucadorCuentas">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">bucadorCuentas</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Buscar&quot;</span><span class="p">)</span>
+    <span class="c1">#Comprobamos si el usuario tiene cuentas para scrapear usando</span>
+    <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">queryset</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">buscadorPerfil</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_Instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;listaBusquedaCuenta.html&quot;</span><span class="p">),</span><span class="n">context</span><span class="o">=</span><span class="n">info</span> <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">queryset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">buscado</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_Instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;buscador_cuenta.html&quot;</span><span class="p">),{</span><span class="s1">&#39;buscado&#39;</span><span class="p">:</span><span class="n">buscado</span><span class="p">,</span> <span class="s1">&#39;cuentaScrapeo&#39;</span><span class="p">:</span> <span class="n">cuentaScrapeo</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_Instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;buscador_cuenta.html&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;cuentaScrapeo&#39;</span><span class="p">:</span> <span class="n">cuentaScrapeo</span><span class="p">})</span></div>
+
+
+<span class="c1">##---------------------------------------------------------##</span>
+<span class="c1">##----------------------------POST-------------------------##</span>
+<span class="c1">##---------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="addPublicacionesBaseDatos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.addPublicacionesBaseDatos">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">addPublicacionesBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">):</span>
+    <span class="c1">#Comprobamos si el usuario tiene cuentas para scrapear usando</span>
+    <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">informacionPost</span><span class="p">(</span><span class="n">IdentificadorPost</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+    <span class="n">diccionario_datos</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">diccionario_datos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaPostSidecar&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaHastagsSustitulo&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaMecionesSustitulo&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaPatrocinadoresPost&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;listaUsuariosEtiquetados&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">diccionario_datos</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">BusquedaPostForm</span><span class="p">(</span><span class="n">diccionario_datos</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="c1">#Añadimos comentario com más likes y usuario que más comenta en el post</span>
+    <span class="k">if</span><span class="p">((</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;propietario&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">propietario</span><span class="p">,</span> 
+                                            <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span> <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">likes</span><span class="p">,</span> 
+                                            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">form</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span> 
+                                            <span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">comentarios</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="c1">#Añadimos post sidecar, hashtags y menciones en subtitulo, patrocinadores y usuarios etiquetados en el post</span>
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaPostSidecar&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">PostSidecarForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;numero&#39;</span><span class="p">:</span><span class="n">lista</span><span class="o">.</span><span class="n">numero</span> <span class="p">,</span> <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> 
+                                <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">url</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaHastagsSustitulo&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">HashtagsSubtituloPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;hashtag&#39;</span><span class="p">:</span><span class="n">lista</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaMecionesSustitulo&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">MencionesSubtituloPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;mencion&#39;</span><span class="p">:</span><span class="n">lista</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaPatrocinadoresPost&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">PatrocinadoresPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;patrocinador&#39;</span><span class="p">:</span><span class="n">lista</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaUsuariosEtiquetados&#39;</span><span class="p">]:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">UsuariosEtiquetadosPostForm</span><span class="p">({</span><span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">IdentificadorPost</span><span class="p">,</span> <span class="s1">&#39;usuario&#39;</span><span class="p">:</span><span class="n">lista</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    
+    <span class="k">return</span> <span class="n">context</span></div>
+
+
+<div class="viewcode-block" id="actualizarPublicacionesBaseDatos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.actualizarPublicacionesBaseDatos">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">actualizarPublicacionesBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">):</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">objetodentificadorPost</span> <span class="o">=</span> <span class="n">DatosPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+
+        <span class="n">diferencia_timer</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">objetodentificadorPost</span><span class="o">.</span><span class="n">timer</span>
+        <span class="n">minutos</span> <span class="o">=</span> <span class="n">diferencia_timer</span><span class="o">.</span><span class="n">seconds</span><span class="o">/</span><span class="mi">60</span>
+        <span class="c1">#Si hay una diferencia de 3 minutos entre el tiempo de creación y el actual borramos y volvemos a añadir la búsqueda</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">minutos</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="c1">#Borramos y volvemos a realizar la busqueda, introducimos los datos en la base de datos y los devolvemos</span>
+            <span class="n">objetodentificadorPost</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">addPublicacionesBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">context</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#Recuperamos los datos de la base de datos y los retornamos en forma de diccionario</span>
+            <span class="n">objetodentificadorPost</span> <span class="o">=</span> <span class="n">objetodentificadorPost</span><span class="o">.</span><span class="vm">__dict__</span>                   <span class="c1">#Convertimos el objeto a diccionario para pasarlo al template</span>
+            <span class="k">del</span> <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;_state&#39;</span><span class="p">]</span>                                <span class="c1">#Borramos esta clave innecesaria del diccionario</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;tipo&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Sidecar&#39;</span><span class="p">):</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaPostSidecar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PostSidecar</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objeto</span><span class="o">=</span> <span class="n">HashtagsSubtituloPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+                <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objeto</span><span class="p">:</span>
+                    <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">hashtag</span><span class="p">)</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaHastagsSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lista</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaHastagsSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objeto</span><span class="o">=</span> <span class="n">MencionesSubtituloPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+                <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objeto</span><span class="p">:</span>
+                    <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">mencion</span><span class="p">)</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaMecionesSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lista</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaMecionesSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objeto</span><span class="o">=</span> <span class="n">PatrocinadoresPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+                <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objeto</span><span class="p">:</span>
+                    <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">patrocinador</span><span class="p">)</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaPatrocinadoresPost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lista</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaPatrocinadoresPost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objeto</span><span class="o">=</span> <span class="n">UsuariosEtiquetadosPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+                <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objeto</span><span class="p">:</span>
+                    <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">usuario</span><span class="p">)</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaUsuariosEtiquetados&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lista</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;listaUsuariosEtiquetados&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosPost</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">objetodentificadorPost</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+
+            <span class="k">return</span> <span class="n">objetodentificadorPost</span>
+
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1">#Realizamos la búsqueda, introducimos los datos en la base de datos y los devolvemos</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">addPublicacionesBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">context</span></div>
+
+
+<span class="n">login_required</span>
+<div class="viewcode-block" id="obtenerInformacionPost"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.obtenerInformacionPost">[documentos]</a><span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">obtenerInformacionPost</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">):</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">actualizarPublicacionesBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IdentificadorPost</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;publicacion&quot;</span><span class="p">,</span> <span class="s2">&quot;info_post.html&quot;</span><span class="p">),</span><span class="n">context</span><span class="o">=</span><span class="n">info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buscadorPublicacion"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.buscadorPublicacion">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">buscadorPublicacion</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Buscar&quot;</span><span class="p">)</span> 
+    <span class="c1">#Comprobamos si el usuario tiene cuentas para scrapear usando</span>
+    <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">queryset</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">buscadorPost</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">info</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;publicacion&quot;</span><span class="p">,</span> <span class="s2">&quot;listaBusquedaPost.html&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;publicacion&quot;</span><span class="p">,</span> <span class="s2">&quot;listaBusquedaPost.html&quot;</span><span class="p">),</span><span class="n">context</span><span class="o">=</span><span class="n">info</span> <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">queryset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">buscado</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;publicacion&quot;</span><span class="p">,</span> <span class="s2">&quot;buscador_post.html&quot;</span><span class="p">),{</span><span class="s1">&#39;buscado&#39;</span><span class="p">:</span><span class="n">buscado</span><span class="p">,</span> <span class="s1">&#39;cuentaScrapeo&#39;</span><span class="p">:</span> <span class="n">cuentaScrapeo</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;publicacion&quot;</span><span class="p">,</span> <span class="s2">&quot;buscador_post.html&quot;</span><span class="p">),{</span><span class="s1">&#39;cuentaScrapeo&#39;</span><span class="p">:</span> <span class="n">cuentaScrapeo</span><span class="p">})</span></div>
+
+
+
+
+
+
+
+
+<span class="c1">##---------------------------------------------------------------##</span>
+<span class="c1">##----------------------------HIGHLIGHTS-------------------------##</span>
+<span class="c1">##---------------------------------------------------------------##</span>
+<span class="c1">#&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="obtenerHighlightsCuenta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.obtenerHighlightsCuenta">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">obtenerHighlightsCuenta</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">):</span>
+    <span class="n">identificadorCuenta</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">IdentificadorUsuario</span><span class="p">,</span> <span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span> 
+    <span class="n">highlights</span> <span class="o">=</span> <span class="n">actualizarHighlightsBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">,</span><span class="n">identificadorCuenta</span><span class="o">.</span><span class="n">usuarioID</span><span class="p">)</span>
+    <span class="n">highlights</span><span class="p">[</span><span class="s1">&#39;IDcuenta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IDusuario</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_Instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;highlights_cuenta.html&quot;</span><span class="p">),</span> <span class="n">context</span> <span class="o">=</span> <span class="n">highlights</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="actualizarHighlightsBaseDatos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.actualizarHighlightsBaseDatos">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">actualizarHighlightsBaseDatos</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">IDusuario</span><span class="p">,</span><span class="n">identificadorCuenta</span><span class="p">):</span>
+    <span class="c1">#Si existen los highlights los devolvemos como diccionario y si no hacemos la búsqueda y lo añadimos</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">contadorHighlights</span> <span class="o">=</span> <span class="n">ContadorHighlights</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+        <span class="n">highlights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;contadorHighlights&#39;</span><span class="p">:</span> <span class="n">contadorHighlights</span><span class="o">.</span><span class="n">contadorHighlights</span><span class="p">}</span>
+
+        <span class="n">objetosHighlights</span> <span class="o">=</span> <span class="n">DatosHighlight</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">IDusuario</span><span class="p">)</span>
+        
+        <span class="n">listaHighlightsIntermedia</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">destacados</span> <span class="ow">in</span> <span class="n">objetosHighlights</span><span class="p">:</span>
+            <span class="n">listaHistoriasDestacadas</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">objetosStoriesHighlight</span> <span class="o">=</span> <span class="n">DatosStoryHighlight</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">highlight</span> <span class="o">=</span> <span class="n">destacados</span><span class="o">.</span><span class="n">identificador_highlight_usuario</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">historia</span> <span class="ow">in</span> <span class="n">objetosStoriesHighlight</span><span class="p">:</span>
+                <span class="n">listaHistoriasDestacadas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">StoryClass</span><span class="p">(</span><span class="n">historia</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="n">historia</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span> <span class="n">historia</span><span class="o">.</span><span class="n">duracion</span><span class="p">,</span> <span class="n">historia</span><span class="o">.</span><span class="n">url</span><span class="p">)))</span>
+
+            <span class="n">listaHighlightsIntermedia</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HihglightClass</span><span class="p">(</span><span class="n">destacados</span><span class="o">.</span><span class="n">titulo</span><span class="p">,</span> <span class="n">destacados</span><span class="o">.</span><span class="n">numero_historias</span><span class="p">,</span> <span class="n">destacados</span><span class="o">.</span><span class="n">foto_portada</span><span class="p">,</span> <span class="n">destacados</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">destacados</span><span class="o">.</span><span class="n">numeroImagenes</span><span class="p">,</span> <span class="n">destacados</span><span class="o">.</span><span class="n">numeroVideos</span><span class="p">,</span> <span class="n">listaHistoriasDestacadas</span><span class="p">))</span>
+            
+            
+        <span class="n">highlights</span><span class="p">[</span><span class="s1">&#39;destacados&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">listaHighlightsIntermedia</span>
+        <span class="k">return</span> <span class="n">highlights</span>
+<span class="c1">#&#39;&#39;&#39;</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1">#Comprobamos si el usuario tiene cuentas para scrapear usando</span>
+        <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="n">highlights</span> <span class="o">=</span> <span class="n">informacionHightlightsCuenta</span><span class="p">(</span><span class="n">identificadorCuenta</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">highlights</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dicionarioVacio</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">return</span> <span class="n">dicionarioVacio</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">ContadorHighlightsForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">IDusuario</span><span class="p">,</span> <span class="s1">&#39;contadorHighlights&#39;</span><span class="p">:</span> <span class="n">highlights</span><span class="p">[</span><span class="s1">&#39;contadorHighlights&#39;</span><span class="p">]})</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Contador añadido&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">highlights</span><span class="p">[</span><span class="s1">&#39;destacados&#39;</span><span class="p">]:</span>
+                <span class="n">idetificador_highlight</span> <span class="o">=</span> <span class="n">IDusuario</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">lista</span><span class="o">.</span><span class="n">titulo</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="n">HighlightForm</span><span class="p">({</span><span class="s1">&#39;cuentaID&#39;</span><span class="p">:</span> <span class="n">IDusuario</span><span class="p">,</span> <span class="s1">&#39;identificador_highlight_usuario&#39;</span><span class="p">:</span> <span class="n">idetificador_highlight</span><span class="p">,</span> <span class="s1">&#39;titulo&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">titulo</span><span class="p">,</span> <span class="s1">&#39;numero_historias&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">numero_historias</span><span class="p">,</span> 
+                                        <span class="s1">&#39;foto_portada&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">foto_portada</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="s1">&#39;numeroImagenes&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">numeroImagenes</span><span class="p">,</span> <span class="s1">&#39;numeroVideos&#39;</span><span class="p">:</span> <span class="n">lista</span><span class="o">.</span><span class="n">numeroVideos</span><span class="p">})</span>
+                <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                    <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="c1">#messages.success(request, &#39;Highlight añadido correctamente&#39;)</span>
+
+                    <span class="k">for</span> <span class="n">historia</span> <span class="ow">in</span> <span class="n">lista</span><span class="o">.</span><span class="n">listaHistoriasDestacadas</span><span class="p">:</span>
+                        <span class="n">form</span> <span class="o">=</span> <span class="n">HighlightStoryForm</span><span class="p">({</span><span class="s1">&#39;highlight&#39;</span> <span class="p">:</span> <span class="n">idetificador_highlight</span> <span class="p">,</span> <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">historia</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">historia</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span>          
+                                                    <span class="s1">&#39;duracion&#39;</span><span class="p">:</span> <span class="n">historia</span><span class="o">.</span><span class="n">duracion</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">historia</span><span class="o">.</span><span class="n">url</span><span class="p">})</span>
+                        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                            <span class="c1">#print(&#39;Historia añadida correctamente&#39;)</span>
+
+
+        <span class="k">return</span> <span class="n">highlights</span></div>
+
+<span class="c1">#&#39;&#39;&#39;</span>
+
+
+<span class="c1">##-----------------------------------------------------------------------##</span>
+<span class="c1">##--------------------CUENTAS INSTAGRAM PARA SCRAPEAR--------------------##</span>
+<span class="c1">##-----------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="comprobarCuentaScrapeo"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.comprobarCuentaScrapeo">[documentos]</a><span class="k">def</span> <span class="nf">comprobarCuentaScrapeo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">usuarioActual</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Usuario</span><span class="p">,</span> <span class="n">pk</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+    <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CuentaScrapeoInstagram</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">usando</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">cuentaScrapeo</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">cuenta</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">cuentaScrapeo</span></div>
+
+
+<div class="viewcode-block" id="cuentasScrapingInstagram"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.cuentasScrapingInstagram">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">cuentasScrapingInstagram</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">usuarioActual</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Usuario</span><span class="p">,</span> <span class="n">pk</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;cuentas_scrapeo_disponibles&quot;</span><span class="p">:</span> <span class="n">CuentaScrapeoInstagram</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span><span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;cuentas_scrapeo_instagram&quot;</span><span class="p">,</span> <span class="s2">&quot;cuentasScrapeo.html&quot;</span><span class="p">),</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CuentaScrapingCrear"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.CuentaScrapingCrear">[documentos]</a><span class="k">class</span> <span class="nc">CuentaScrapingCrear</span><span class="p">(</span><span class="n">LoginRequiredMixin</span><span class="p">,</span> <span class="n">BSModalCreateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;cuentas_scrapeo_instagram/cuentaScrapeo_confirm_add.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">AddCuentaScrapingForm</span>
+    <span class="n">success_message</span> <span class="o">=</span> <span class="s1">&#39;Cuenta añadida correctamente&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s1">&#39;cuentasScrapearInstagram&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CuentaScrapingCrear.post"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.CuentaScrapingCrear.post">[documentos]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">usuarioActual</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Usuario</span><span class="p">,</span> <span class="n">pk</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="n">cuentaScraping</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="n">cuentaScraping</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span>
+            <span class="n">cuentaScraping</span><span class="o">.</span><span class="n">usando</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1">#Comprobamos que la cuentaScraping para dicho usuario no sea repetida</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CuentaScrapeoInstagram</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">cuentaScraping</span><span class="o">.</span><span class="n">cuenta</span> <span class="o">==</span> <span class="n">c</span><span class="o">.</span><span class="n">cuenta</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Cuenta a añadir repetida&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span> <span class="p">(</span><span class="s1">&#39;/analisisInsta/cuentasScraping/&#39;</span><span class="p">)</span>
+
+            <span class="c1">#Iniciamos sesión de Instagram y la guardamos en el sistema</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">iniciarSesion</span><span class="p">(</span><span class="n">cuentaScraping</span><span class="o">.</span><span class="n">cuenta</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;La cuenta no se ha podido añadir&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span> <span class="p">(</span><span class="s1">&#39;/analisisInsta/cuentasScraping/&#39;</span><span class="p">)</span>
+
+            <span class="c1">#Comprobamos que solo se esté usando una cuenta de las almacenadas</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CuentaScrapeoInstagram</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span><span class="p">):</span>
+                <span class="k">if</span><span class="p">((</span><span class="n">c</span><span class="o">.</span><span class="n">usando</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">cuentaScraping</span><span class="o">.</span><span class="n">cuenta</span> <span class="o">!=</span> <span class="n">c</span><span class="o">.</span><span class="n">cuenta</span><span class="p">)):</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">usando</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_invalid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span></div></div>
+            
+
+
+<div class="viewcode-block" id="CuentaScrapingUsar"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.CuentaScrapingUsar">[documentos]</a><span class="k">class</span> <span class="nc">CuentaScrapingUsar</span><span class="p">(</span><span class="n">LoginRequiredMixin</span><span class="p">,</span> <span class="n">BSModalUpdateView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">CuentaScrapeoInstagram</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;cuentas_scrapeo_instagram/cuentaScrapeo_confirm_use.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">UseCuentaScrapingForm</span>
+    <span class="n">success_message</span> <span class="o">=</span> <span class="s1">&#39;Cuenta preparada para usar&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s1">&#39;cuentasScrapearInstagram&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CuentaScrapingUsar.post"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.CuentaScrapingUsar.post">[documentos]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form</span><span class="p">()</span>
+
+        <span class="c1">#Comprobamos que solo se esté usando una cuenta de las almacenadas</span>
+        <span class="c1">#&#39;&#39;&#39;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;usando&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">usuarioActual</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Usuario</span><span class="p">,</span> <span class="n">pk</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CuentaScrapeoInstagram</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioActual</span><span class="p">):</span>
+                <span class="k">if</span><span class="p">((</span><span class="n">c</span><span class="o">.</span><span class="n">usando</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">cuenta</span> <span class="o">!=</span> <span class="n">c</span><span class="o">.</span><span class="n">cuenta</span><span class="p">)):</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">usando</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="c1">#&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_invalid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CuentaScrapingEliminar"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.CuentaScrapingEliminar">[documentos]</a><span class="k">class</span> <span class="nc">CuentaScrapingEliminar</span><span class="p">(</span><span class="n">LoginRequiredMixin</span><span class="p">,</span> <span class="n">BSModalDeleteView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">CuentaScrapeoInstagram</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;cuentas_scrapeo_instagram/cuentaScrapeo_confirm_delete.html&#39;</span>
+    <span class="n">success_message</span> <span class="o">=</span> <span class="s1">&#39;Cuenta borrada correctamente&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s1">&#39;cuentasScrapearInstagram&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="c1">##--------------------------------------------------------------------##</span>
+<span class="c1">##-------------------------MANEJO DE USUARIOS-------------------------##</span>
+<span class="c1">##--------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="RegistroUsuario"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.RegistroUsuario">[documentos]</a><span class="k">class</span> <span class="nc">RegistroUsuario</span><span class="p">(</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Usuario</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;registration/registrar.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">RegistroForm</span>
+    
+
+<div class="viewcode-block" id="RegistroUsuario.form_valid"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.RegistroUsuario.form_valid">[documentos]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        En este parte, si el formulario es valido guardamos lo que se obtiene de él y usamos authenticate para que el usuario incie sesión luego de haberse registrado y lo redirigimos al home</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password1&#39;</span><span class="p">)</span>
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+        <span class="n">login</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">usuario</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/analisisInsta&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LoginUsuario"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.LoginUsuario">[documentos]</a><span class="k">class</span> <span class="nc">LoginUsuario</span><span class="p">(</span><span class="n">LoginView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;registration/login.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">LoginForm</span></div>
+
+
+<div class="viewcode-block" id="eliminarUsuario"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.eliminarUsuario">[documentos]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">eliminarUsuario</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eliminamos cuenta&quot;</span><span class="p">)</span>
+        <span class="n">usuarioActual</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Usuario</span><span class="p">,</span> <span class="n">pk</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">usuarioActual</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span> <span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;registration&quot;</span><span class="p">,</span> <span class="s2">&quot;delete.html&quot;</span><span class="p">))</span></div>
+
+
+
+<span class="c1">##--------------------------------------------------------------------##</span>
+<span class="c1">##-------------------------MANEJO DE ERRORES--------------------------##</span>
+<span class="c1">##--------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="error_404"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.error_404">[documentos]</a><span class="k">def</span> <span class="nf">error_404</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">HttpResponseNotFound</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;errores&quot;</span><span class="p">,</span> <span class="s2">&quot;404.html&quot;</span><span class="p">)))</span></div>
+    
+<div class="viewcode-block" id="error_500"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.error_500">[documentos]</a><span class="k">def</span> <span class="nf">error_500</span><span class="p">(</span><span class="n">request</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="n">HttpResponseServerError</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;errores&quot;</span><span class="p">,</span> <span class="s2">&quot;500.html&quot;</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="error_403"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.error_403">[documentos]</a><span class="k">def</span> <span class="nf">error_403</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">HttpResponseForbidden</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;errores&quot;</span><span class="p">,</span> <span class="s2">&quot;403.html&quot;</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="error_400"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.views.error_400">[documentos]</a><span class="k">def</span> <span class="nf">error_400</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">HttpResponseBadRequest</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;errores&quot;</span><span class="p">,</span> <span class="s2">&quot;400.html&quot;</span><span class="p">)))</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Ir a" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.views</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Derechos de autor 2022, Alberto Macias Gutierrez.
+      Creado usando <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>

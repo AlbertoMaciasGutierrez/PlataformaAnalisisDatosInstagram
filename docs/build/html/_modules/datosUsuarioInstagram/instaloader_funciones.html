@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datosUsuarioInstagram.instaloader_funciones &#8212; documentación de Plataforma para el analisis de datos de Instagram - 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.instaloader_funciones</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Código fuente para datosUsuarioInstagram.instaloader_funciones</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">instaloader</span> <span class="kn">import</span> <span class="n">Instaloader</span><span class="p">,</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">TopSearchResults</span><span class="p">,</span> <span class="n">Post</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">datosUsuarioInstagram.utils</span> <span class="kn">import</span> <span class="n">PostClass</span><span class="p">,</span> <span class="n">PostClassVideo</span><span class="p">,</span> <span class="n">HihglightClass</span><span class="p">,</span> <span class="n">SidecarPostClass</span><span class="p">,</span> <span class="n">StoryClass</span><span class="p">,</span> <span class="n">UsuarioMaxComentariosClass</span><span class="p">,</span> <span class="n">ComentarioMaxLikesClass</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">monotonic</span>
+<span class="kn">from</span> <span class="nn">decouple</span> <span class="kn">import</span> <span class="n">config</span>
+
+<span class="n">USER</span> <span class="o">=</span> <span class="n">config</span><span class="p">(</span><span class="s1">&#39;INSTAGRAM_USER&#39;</span><span class="p">)</span>
+<span class="c1">#PASS = config(&#39;INSTAGRAM_PASS&#39;)</span>
+
+<span class="n">INSTAGRAM</span> <span class="o">=</span> <span class="s1">&#39;https://www.instagram.com/&#39;</span>
+<span class="n">POST</span> <span class="o">=</span> <span class="s1">&#39;p/&#39;</span>
+<span class="n">HIGHLIGHT</span> <span class="o">=</span> <span class="s1">&#39;stories/highlights/&#39;</span>
+
+
+
+<span class="n">L</span> <span class="o">=</span> <span class="n">Instaloader</span><span class="p">()</span>
+<span class="c1">#L.login(USER,PASS)                            #Loguearse</span>
+<span class="c1">#L.save_session_to_file()                      #Guardar sesión en archivo para no tener que volver a loguearnos</span>
+<span class="n">L</span><span class="o">.</span><span class="n">load_session_from_file</span><span class="p">(</span><span class="n">USER</span><span class="p">)</span>                 <span class="c1">#Carga la sesión guardada del inicio de sesión anterior.</span>
+
+
+
+<span class="c1">##--------------------------------------------------------------------------##</span>
+<span class="c1">##-------------------------Iniciar sesión Instagram-------------------------##</span>
+<span class="c1">##--------------------------------------------------------------------------##</span>
+<div class="viewcode-block" id="iniciarSesion"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.iniciarSesion">[documentos]</a><span class="k">def</span> <span class="nf">iniciarSesion</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">contrasena</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">Instaloader</span><span class="p">()</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">contrasena</span><span class="p">)</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">save_session_to_file</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="comprobarCuentaBuscadora"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.comprobarCuentaBuscadora">[documentos]</a><span class="k">def</span> <span class="nf">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">cuentaScrapeo</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">L</span>
+        <span class="k">return</span> <span class="n">cuentaBuscadora</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">Instaloader</span><span class="p">()</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">load_session_from_file</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">C</span>
+        <span class="k">return</span> <span class="n">cuentaBuscadora</span></div>
+
+
+<span class="c1">##--------------------------------------------------------------------##</span>
+<span class="c1">##-------------------------Busqueda de perfil-------------------------##</span>
+<span class="c1">##--------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="buscadorPerfil"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.buscadorPerfil">[documentos]</a><span class="k">def</span> <span class="nf">buscadorPerfil</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">listaPerfiles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">diccionarioPerfiles</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">perfil</span> <span class="ow">in</span> <span class="n">TopSearchResults</span><span class="p">(</span><span class="n">cuentaBuscadora</span><span class="o">.</span><span class="n">context</span><span class="p">,</span><span class="n">queryset</span><span class="p">)</span><span class="o">.</span><span class="n">get_profiles</span><span class="p">():</span>
+        <span class="n">contador</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">listaPerfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">perfil</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+
+    <span class="n">diccionarioPerfiles</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;contador&#39;</span><span class="p">:</span> <span class="n">contador</span><span class="p">,</span>
+    <span class="s1">&#39;listaPerfiles&#39;</span><span class="p">:</span> <span class="n">listaPerfiles</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">diccionarioPerfiles</span></div>
+
+
+<div class="viewcode-block" id="informacionCuenta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.informacionCuenta">[documentos]</a><span class="k">def</span> <span class="nf">informacionCuenta</span><span class="p">(</span><span class="n">cuenta</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">from_username</span><span class="p">(</span><span class="n">cuentaBuscadora</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">cuenta</span><span class="p">)</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="n">url_perfil</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">profile</span><span class="o">.</span><span class="n">username</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="n">datos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Nombre&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">full_name</span><span class="p">,</span>
+        <span class="s2">&quot;Usuario_verificado&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">is_verified</span><span class="p">,</span>
+        <span class="s2">&quot;Popularidad&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">followers</span><span class="p">,</span>
+        <span class="s2">&quot;Perfil&quot;</span><span class="p">:</span> <span class="n">url_perfil</span><span class="p">,</span>
+        <span class="s2">&quot;Usuario_privado&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">is_private</span><span class="p">,</span>
+        <span class="s2">&quot;Cuenta_negocios&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">is_business_account</span><span class="p">,</span>
+        <span class="s2">&quot;Publicaciones&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">mediacount</span><span class="p">,</span>
+        <span class="s2">&quot;Biografia&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">biography</span><span class="p">,</span>
+        <span class="s2">&quot;Foto_perfil&quot;</span><span class="p">:</span><span class="n">profile</span><span class="o">.</span><span class="n">profile_pic_url</span><span class="p">,</span>
+        <span class="s2">&quot;Videos&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">igtvcount</span><span class="p">,</span>
+        <span class="s2">&quot;ID_usuario&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">userid</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">datos</span><span class="p">)</span>
+        <span class="c1">#Para poder almacenar este campo dentro de la base de datos</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">external_url</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;Website&quot;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">})</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;Website&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;Website&quot;</span><span class="p">:</span><span class="n">profile</span><span class="o">.</span><span class="n">external_url</span><span class="p">})</span>
+
+        <span class="n">context_publicaciones</span><span class="o">=</span> <span class="n">obtenerComentariosLikesPosts</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span><span class="n">cuenta</span><span class="p">)</span>
+        <span class="n">context_videos</span> <span class="o">=</span> <span class="n">obtenerComentariosLikesVideos</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span><span class="n">cuenta</span><span class="p">)</span>
+        <span class="n">context_publicaciones_etiquetadas</span> <span class="o">=</span> <span class="n">obtenerComentariosLikesPublicacionesEtiquetadas</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span><span class="n">cuenta</span><span class="p">)</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context_publicaciones</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context_videos</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context_publicaciones_etiquetadas</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">context</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+
+<div class="viewcode-block" id="obtenerComentariosLikesPosts"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.obtenerComentariosLikesPosts">[documentos]</a><span class="k">def</span> <span class="nf">obtenerComentariosLikesPosts</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span><span class="n">cuenta</span><span class="p">):</span>
+    
+    <span class="n">publicaciones</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_posts</span><span class="p">()</span>               <span class="c1">#muestra las publicaciones de la cuenta                    </span>
+    
+    <span class="n">listaInfoPostRecientes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">mediaLikes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>                    <span class="c1">#Número de publicaciones mostradas</span>
+    <span class="n">contadorPublicaciones</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tipo_publicacion</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">numeroSidecars</span> <span class="o">=</span> <span class="n">numeroVideos</span> <span class="o">=</span> <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">publicaciones</span><span class="p">:</span>
+        
+        <span class="n">contador</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">contador</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">):</span> <span class="k">break</span>             <span class="c1">#Cantidad de publicaciones a mostrar como máximo</span>
+
+        <span class="n">mediaLikes</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+        <span class="n">mediaComentarios</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span>
+
+        <span class="n">url_post</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">POST</span> <span class="o">+</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphImage&#39;</span><span class="p">):</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Imagen&#39;</span>
+            <span class="n">numeroImagenes</span> <span class="o">+=</span><span class="mi">1</span> 
+        <span class="k">elif</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphVideo&#39;</span><span class="p">):</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Video&#39;</span>
+            <span class="n">numeroVideos</span> <span class="o">+=</span><span class="mi">1</span> 
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Sidecar&#39;</span>
+            <span class="n">numeroSidecars</span> <span class="o">+=</span><span class="mi">1</span> 
+        
+        <span class="c1">#Para evitar que haya likes negativos</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">likes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span> <span class="n">likes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">likes</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+
+        <span class="n">listaInfoPostRecientes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PostClass</span><span class="p">(</span><span class="n">cuenta</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span> <span class="n">tipo_publicacion</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">date_local</span><span class="p">,</span> <span class="n">url_post</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span><span class="p">))</span>
+        <span class="n">contadorPublicaciones</span><span class="o">+=</span><span class="mi">1</span>
+
+
+    <span class="k">if</span><span class="p">(</span><span class="n">contadorPublicaciones</span> <span class="o">!=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">mediaLikes</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaLikes</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaComentarios</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        
+
+    <span class="n">context</span> <span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;listaInfoPostRecientes&#39;</span><span class="p">:</span> <span class="n">listaInfoPostRecientes</span><span class="p">,</span>
+        <span class="s1">&#39;mediaLikesPostRecientes&#39;</span><span class="p">:</span> <span class="n">mediaLikes</span><span class="p">,</span>
+        <span class="s1">&#39;mediaComentariosPostRecientes&#39;</span><span class="p">:</span> <span class="n">mediaComentarios</span><span class="p">,</span>
+        <span class="s1">&#39;numeroImagenesPostRecientes&#39;</span><span class="p">:</span> <span class="n">numeroImagenes</span><span class="p">,</span>
+        <span class="s1">&#39;numeroVideosPostRecientes&#39;</span><span class="p">:</span> <span class="n">numeroVideos</span><span class="p">,</span>
+        <span class="s1">&#39;numeroSidecarsPostRecientes&#39;</span><span class="p">:</span> <span class="n">numeroSidecars</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">context</span></div>
+
+
+
+
+<div class="viewcode-block" id="obtenerComentariosLikesVideos"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.obtenerComentariosLikesVideos">[documentos]</a><span class="k">def</span> <span class="nf">obtenerComentariosLikesVideos</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">cuenta</span><span class="p">):</span>
+    
+    <span class="n">publicaciones</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_igtv_posts</span><span class="p">()</span>               <span class="c1">#muestra los vídeos de la cuenta                    </span>
+    
+    <span class="n">listaInfoVideos</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">mediaLikes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mediaVisualizaciones</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>                    <span class="c1">#Número de publicaciones mostradas</span>
+
+    <span class="n">contadorPublicaciones</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">publicaciones</span><span class="p">:</span>
+        
+        <span class="n">contador</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">contador</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">):</span> <span class="k">break</span>             <span class="c1">#Cantidad de videos a mostrar como máximo</span>
+
+        <span class="n">mediaLikes</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+        <span class="n">mediaComentarios</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span>
+        <span class="n">mediaVisualizaciones</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">video_view_count</span>
+
+        <span class="c1">#Para evitar que haya likes negativos</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">likes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span> <span class="n">likes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">likes</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+
+        <span class="n">url_post</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">POST</span> <span class="o">+</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="n">listaInfoVideos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PostClassVideo</span><span class="p">(</span><span class="n">cuenta</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">video_view_count</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">date_local</span><span class="p">,</span> <span class="n">url_post</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span><span class="p">))</span>
+        <span class="n">contadorPublicaciones</span><span class="o">+=</span><span class="mi">1</span>
+
+
+    <span class="k">if</span><span class="p">(</span><span class="n">contadorPublicaciones</span> <span class="o">!=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">mediaLikes</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaLikes</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaComentarios</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mediaVisualizaciones</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaVisualizaciones</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        
+    <span class="n">context</span> <span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;listaInfoVideos&#39;</span><span class="p">:</span> <span class="n">listaInfoVideos</span><span class="p">,</span>
+        <span class="s1">&#39;mediaLikesVideos&#39;</span><span class="p">:</span> <span class="n">mediaLikes</span><span class="p">,</span>
+        <span class="s1">&#39;mediaComentariosVideos&#39;</span><span class="p">:</span> <span class="n">mediaComentarios</span><span class="p">,</span>
+        <span class="s1">&#39;mediaVisualizacionesVideos&#39;</span><span class="p">:</span> <span class="n">mediaVisualizaciones</span><span class="p">,</span>
+        <span class="s1">&#39;numeroVideos&#39;</span><span class="p">:</span> <span class="n">contadorPublicaciones</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">context</span></div>
+
+
+
+<div class="viewcode-block" id="obtenerComentariosLikesPublicacionesEtiquetadas"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.obtenerComentariosLikesPublicacionesEtiquetadas">[documentos]</a><span class="k">def</span> <span class="nf">obtenerComentariosLikesPublicacionesEtiquetadas</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">cuenta</span><span class="p">):</span>
+    
+    <span class="n">publicaciones</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_tagged_posts</span><span class="p">()</span>              <span class="c1">#muestra publicaciones en las que está etiquetada dicha cuenta                   </span>
+    
+    <span class="n">listaInfoPublicacionesEtiquetadas</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">mediaLikes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>                    <span class="c1">#Número de publicaciones mostradas</span>
+    <span class="n">contadorPublicaciones</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+    <span class="n">numeroSidecars</span> <span class="o">=</span> <span class="n">numeroVideos</span> <span class="o">=</span> <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">publicaciones</span><span class="p">:</span>
+        
+        <span class="n">contador</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">contador</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">):</span> <span class="k">break</span>             <span class="c1">#Cantidad de publicaciones a mostrar como máximo</span>
+
+        <span class="n">mediaLikes</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+        <span class="n">mediaComentarios</span> <span class="o">+=</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span>
+
+        <span class="n">url_post</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">POST</span> <span class="o">+</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphImage&#39;</span><span class="p">):</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Imagen&#39;</span>
+            <span class="n">numeroImagenes</span> <span class="o">+=</span><span class="mi">1</span> 
+        <span class="k">elif</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphVideo&#39;</span><span class="p">):</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Video&#39;</span>
+            <span class="n">numeroVideos</span> <span class="o">+=</span><span class="mi">1</span> 
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Sidecar&#39;</span>
+            <span class="n">numeroSidecars</span> <span class="o">+=</span><span class="mi">1</span> 
+
+        <span class="c1">#Para evitar que haya likes negativos</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">likes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span> <span class="n">likes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">likes</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span>
+
+        <span class="n">listaInfoPublicacionesEtiquetadas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PostClass</span><span class="p">(</span><span class="n">cuenta</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span> <span class="n">tipo_publicacion</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">date_local</span><span class="p">,</span> <span class="n">url_post</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span><span class="p">))</span>
+        <span class="n">contadorPublicaciones</span><span class="o">+=</span><span class="mi">1</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">contadorPublicaciones</span> <span class="o">!=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">mediaLikes</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaLikes</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mediaComentarios</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mediaComentarios</span><span class="o">/</span><span class="n">contadorPublicaciones</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        
+    <span class="n">context</span> <span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;listaInfoPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">listaInfoPublicacionesEtiquetadas</span><span class="p">,</span>
+        <span class="s1">&#39;mediaLikesPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">mediaLikes</span><span class="p">,</span>
+        <span class="s1">&#39;mediaComentariosPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">mediaComentarios</span><span class="p">,</span>
+        <span class="s1">&#39;numeroImagenesPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">numeroImagenes</span><span class="p">,</span>
+        <span class="s1">&#39;numeroVideosPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">numeroVideos</span><span class="p">,</span>
+        <span class="s1">&#39;numeroSidecarsPublicacionesEtiquetadas&#39;</span><span class="p">:</span> <span class="n">numeroSidecars</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">context</span></div>
+
+
+<span class="c1">##-------------------------------------------------------------##</span>
+<span class="c1">##-------------------------Publicación-------------------------##</span>
+<span class="c1">##-------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="buscadorPost"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.buscadorPost">[documentos]</a><span class="k">def</span> <span class="nf">buscadorPost</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+        <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="n">from_shortcode</span><span class="p">(</span><span class="n">cuentaBuscadora</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">queryset</span><span class="p">)</span>
+
+        <span class="n">diccionarioPost</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">pcaption</span><span class="p">,</span>
+        <span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">diccionarioPost</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="informacionPost"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.informacionPost">[documentos]</a><span class="k">def</span> <span class="nf">informacionPost</span><span class="p">(</span><span class="n">IdentificadorPost</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+
+        <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="n">from_shortcode</span><span class="p">(</span><span class="n">cuentaBuscadora</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">IdentificadorPost</span><span class="p">)</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="n">numeroVideos</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphImage&#39;</span><span class="p">):</span>
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Imagen&#39;</span>
+            <span class="n">listaPostSidecar</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphVideo&#39;</span><span class="p">):</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Video&#39;</span>
+            <span class="n">listaPostSidecar</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Sidecar&#39;</span>
+            <span class="n">listaPostSidecar</span><span class="p">,</span> <span class="n">numeroVideos</span><span class="p">,</span> <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="n">obtenerPostSidecar</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+
+        <span class="n">url_post</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">POST</span> <span class="o">+</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;shortcode&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">shortcode</span><span class="p">,</span>
+            <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">likes</span><span class="p">,</span>
+            <span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+            <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">tipo_publicacion</span><span class="p">,</span>
+            <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">date_local</span><span class="p">,</span>
+            <span class="s1">&#39;propietario&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">owner_username</span><span class="p">,</span>
+            <span class="s1">&#39;numero_publicaciones&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">mediacount</span><span class="p">,</span>
+            <span class="s1">&#39;patrocinado&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">is_sponsored</span><span class="p">,</span>
+            <span class="s1">&#39;post_fijado&#39;</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">is_pinned</span><span class="p">,</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url_post</span><span class="p">,</span>
+            <span class="s1">&#39;listaPostSidecar&#39;</span><span class="p">:</span> <span class="n">listaPostSidecar</span><span class="p">,</span>
+            <span class="s1">&#39;numeroVideos&#39;</span><span class="p">:</span> <span class="n">numeroVideos</span><span class="p">,</span>
+            <span class="s1">&#39;numeroImagenes&#39;</span><span class="p">:</span> <span class="n">numeroImagenes</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">pcaption</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;titulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;titulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">pcaption</span>
+        
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">caption</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;subtitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;subtitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">caption</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;ubicacion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;ubicacion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">is_video</span><span class="p">):</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;duracion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">video_duration</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;duracion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaHastagsSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">caption_hashtags</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaMecionesSustitulo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">caption_mentions</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaPatrocinadoresPost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">sponsor_users</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;listaUsuariosEtiquetados&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">tagged_users</span>
+
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;comentarioMaxPopular&#39;</span><span class="p">],</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;usuarioMaxComenta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obtenerComentariosMasPopulares</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">context</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="obtenerPostSidecar"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.obtenerPostSidecar">[documentos]</a><span class="k">def</span> <span class="nf">obtenerPostSidecar</span><span class="p">(</span><span class="n">post</span><span class="p">):</span>
+    <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">numeroVideos</span> <span class="o">=</span> <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">post</span><span class="o">.</span><span class="n">get_sidecar_nodes</span><span class="p">():</span>
+        <span class="n">contador</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_video</span><span class="p">):</span>
+            <span class="n">numeroVideos</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">tipo</span> <span class="o">=</span> <span class="s1">&#39;Video&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">video_url</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">numeroImagenes</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">tipo</span> <span class="o">=</span> <span class="s1">&#39;Imagen&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">display_url</span>
+
+        <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SidecarPostClass</span><span class="p">(</span><span class="n">contador</span><span class="p">,</span><span class="n">tipo</span><span class="p">,</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">lista</span><span class="p">,</span> <span class="n">numeroVideos</span><span class="p">,</span> <span class="n">numeroImagenes</span></div>
+
+<div class="viewcode-block" id="obtenerComentariosMasPopulares"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.obtenerComentariosMasPopulares">[documentos]</a><span class="k">def</span> <span class="nf">obtenerComentariosMasPopulares</span><span class="p">(</span><span class="n">post</span><span class="p">):</span>
+    <span class="n">contador</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">diccionarioComentariosUsuarios</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">comienzo</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>                               <span class="c1">#Temporizador para parar la ejecución si hay muchos comentarios</span>
+    <span class="n">maxComentarios</span> <span class="o">=</span> <span class="n">comentarioMaxLikes</span> <span class="o">=</span> <span class="n">tiempoTranscurrido</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">post</span><span class="o">.</span><span class="n">get_comments</span><span class="p">():</span>
+        <span class="n">contador</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">fin</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">tiempoTranscurrido</span> <span class="o">=</span> <span class="n">fin</span> <span class="o">-</span> <span class="n">comienzo</span>
+        <span class="c1">#Temporizador de 30 segundos</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">tiempoTranscurrido</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">):</span>
+            <span class="k">break</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">contador</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">comentarioMaxLikes</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesClass</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">created_at_utc</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">likes_count</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> 
+            <span class="n">maxComentarios</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosClass</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">comentarioMaxLikes</span><span class="o">.</span><span class="n">likes</span> <span class="o">&lt;</span> <span class="n">c</span><span class="o">.</span><span class="n">likes_count</span><span class="p">):</span>
+            <span class="n">comentarioMaxLikes</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesClass</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">created_at_utc</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">likes_count</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="k">if</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span> <span class="ow">in</span> <span class="n">diccionarioComentariosUsuarios</span><span class="p">):</span>
+            <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">=</span> <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">diccionarioComentariosUsuarios</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxComentarios</span><span class="o">.</span><span class="n">comentarios</span><span class="p">):</span>
+                <span class="n">maxComentarios</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosClass</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+            
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">answers</span><span class="p">:</span>
+            <span class="n">contador</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">comentarioMaxLikes</span><span class="o">.</span><span class="n">likes</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">likes_count</span><span class="p">):</span>
+                <span class="n">comentarioMaxLikes</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesClass</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">created_at_utc</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">likes_count</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="k">if</span><span class="p">(</span> <span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span> <span class="ow">in</span> <span class="n">diccionarioComentariosUsuarios</span><span class="p">):</span>
+                <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">=</span> <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">diccionarioComentariosUsuarios</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxComentarios</span><span class="o">.</span><span class="n">comentarios</span><span class="p">):</span>
+                    <span class="n">maxComentarios</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosClass</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">diccionarioComentariosUsuarios</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            
+
+    <span class="k">if</span> <span class="p">((</span><span class="n">tiempoTranscurrido</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">contador</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">comentarioMaxLikes</span><span class="p">,</span> <span class="n">maxComentarios</span></div>
+        
+
+<span class="c1">##----------------------------------------------------------------------##</span>
+<span class="c1">##-------------------------Highlights de perfil-------------------------##</span>
+<span class="c1">##----------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="informacionHightlightsCuenta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.instaloader_funciones.informacionHightlightsCuenta">[documentos]</a><span class="k">def</span> <span class="nf">informacionHightlightsCuenta</span><span class="p">(</span><span class="n">IdentificadorCuenta</span><span class="p">,</span><span class="n">cuentaScrapeo</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">contadorHighlights</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">contadorSalida</span> <span class="o">=</span> <span class="mi">0</span>                                                <span class="c1">#Contador para dejar de buscar historias de highlights</span>
+
+        <span class="n">listaHighlightIntermedia</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">comienzo</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>                                            <span class="c1">#Temporizador para parar la ejecución si hay muchas historias</span>
+
+        <span class="n">cuentaBuscadora</span> <span class="o">=</span> <span class="n">comprobarCuentaBuscadora</span><span class="p">(</span><span class="n">cuentaScrapeo</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">highlights</span> <span class="ow">in</span> <span class="n">cuentaBuscadora</span><span class="o">.</span><span class="n">get_highlights</span><span class="p">(</span><span class="n">IdentificadorCuenta</span><span class="p">):</span>          <span class="c1">#Recupera las historias destacadas para un usuario id ordenadas de más reciente a menos</span>
+            <span class="n">contadorHighlights</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">listaHistoriasDestacadas</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">numeroImagenes</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">numeroVideos</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">fin</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
+            <span class="n">tiempoTranscurrido</span> <span class="o">=</span> <span class="n">fin</span> <span class="o">-</span> <span class="n">comienzo</span>
+            <span class="c1">#Temporizador de 30 segundos</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">tiempoTranscurrido</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">):</span>
+                <span class="k">break</span>
+
+            <span class="n">url_post</span> <span class="o">=</span> <span class="n">INSTAGRAM</span> <span class="o">+</span> <span class="n">HIGHLIGHT</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">highlights</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+            <span class="k">for</span> <span class="n">historia</span> <span class="ow">in</span> <span class="n">highlights</span><span class="o">.</span><span class="n">get_items</span><span class="p">():</span>
+                <span class="n">contadorSalida</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span><span class="p">(</span><span class="n">historia</span><span class="o">.</span><span class="n">typename</span> <span class="o">==</span> <span class="s1">&#39;GraphStoryVideo&#39;</span><span class="p">):</span> 
+                    <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Video&#39;</span>
+                    <span class="n">numeroVideos</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1">#url_story = historia.video_url                 #A la hora de conseguir la URL de la imagen, da error</span>
+                    <span class="n">duracion</span> <span class="o">=</span> <span class="n">historia</span><span class="o">.</span><span class="n">_node</span><span class="p">[</span><span class="s1">&#39;video_duration&#39;</span><span class="p">]</span>                  
+                <span class="k">else</span><span class="p">:</span> 
+                    <span class="n">tipo_publicacion</span> <span class="o">=</span><span class="s1">&#39;Imagen&#39;</span>
+                    <span class="n">numeroImagenes</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1">#url_story = historia.url                       #A la hora de conseguir la URL de la imagen, da error</span>
+                    <span class="n">duracion</span> <span class="o">=</span> <span class="mf">5.0</span>                  
+
+                <span class="n">url_story</span> <span class="o">=</span><span class="s1">&#39;No funciona&#39;</span>
+                <span class="n">listaHistoriasDestacadas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StoryClass</span><span class="p">(</span><span class="n">tipo_publicacion</span><span class="p">,</span> <span class="n">historia</span><span class="o">.</span><span class="n">date_local</span><span class="p">,</span> <span class="n">duracion</span><span class="p">,</span> <span class="n">url_story</span><span class="p">))</span>
+
+            <span class="n">listaHighlightIntermedia</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HihglightClass</span><span class="p">(</span><span class="n">highlights</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">highlights</span><span class="o">.</span><span class="n">itemcount</span><span class="p">,</span> <span class="n">highlights</span><span class="o">.</span><span class="n">cover_url</span><span class="p">,</span> <span class="n">url_post</span><span class="p">,</span> <span class="n">numeroImagenes</span><span class="p">,</span> <span class="n">numeroVideos</span><span class="p">,</span> <span class="n">listaHistoriasDestacadas</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">contadorHighlights</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>                          <span class="c1">#Si no tiene historias destacadas no devolvemos diccionario</span>
+            <span class="k">return</span> <span class="kc">None</span>                          
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;destacados&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">listaHighlightIntermedia</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;contadorHighlights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">contadorHighlights</span>
+            <span class="k">return</span> <span class="n">context</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Ir a" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.instaloader_funciones</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Derechos de autor 2022, Alberto Macias Gutierrez.
+      Creado usando <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datosUsuarioInstagram.utils &#8212; documentación de Plataforma para el analisis de datos de Instagram - 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.utils</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Código fuente para datosUsuarioInstagram.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1">##------------------------------------------------------------------------------------##</span>
+<span class="c1">##----------------------------Clases para los tipos de datos--------------------------##</span>
+<span class="c1">##------------------------------------------------------------------------------------##</span>
+
+<div class="viewcode-block" id="PostClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.PostClass">[documentos]</a><span class="k">class</span> <span class="nc">PostClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cuentaID</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">comentarios</span><span class="p">,</span> <span class="n">tipo</span><span class="p">,</span> <span class="n">fecha</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">shortcode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">cuentaID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likes</span> <span class="o">=</span> <span class="n">likes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span> <span class="o">=</span> <span class="n">comentarios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">=</span> <span class="n">tipo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">fecha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">shortcode</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cuentaID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="PostClassVideo"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.PostClassVideo">[documentos]</a><span class="k">class</span> <span class="nc">PostClassVideo</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cuentaID</span><span class="p">,</span> <span class="n">reproducciones</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">comentarios</span><span class="p">,</span> <span class="n">fecha</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">shortcode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cuentaID</span> <span class="o">=</span> <span class="n">cuentaID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reproducciones</span> <span class="o">=</span> <span class="n">reproducciones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likes</span> <span class="o">=</span> <span class="n">likes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span> <span class="o">=</span> <span class="n">comentarios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">fecha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcode</span> <span class="o">=</span> <span class="n">shortcode</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cuentaID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reproducciones</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="HihglightClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.HihglightClass">[documentos]</a><span class="k">class</span> <span class="nc">HihglightClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">numero_historias</span><span class="p">,</span> <span class="n">foto_portada</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">numeroImagenes</span><span class="p">,</span> <span class="n">numeroVideos</span><span class="p">,</span> <span class="n">listaHistoriasDestacadas</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titulo</span> <span class="o">=</span> <span class="n">titulo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numero_historias</span> <span class="o">=</span> <span class="n">numero_historias</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foto_portada</span> <span class="o">=</span> <span class="n">foto_portada</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numeroImagenes</span> <span class="o">=</span> <span class="n">numeroImagenes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numeroVideos</span> <span class="o">=</span> <span class="n">numeroVideos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listaHistoriasDestacadas</span> <span class="o">=</span> <span class="n">listaHistoriasDestacadas</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">titulo</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_historias</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">foto_portada</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numeroImagenes</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numeroVideos</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="StoryClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.StoryClass">[documentos]</a><span class="k">class</span> <span class="nc">StoryClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tipo</span><span class="p">,</span> <span class="n">fecha</span><span class="p">,</span> <span class="n">duracion</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">=</span> <span class="n">tipo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">fecha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duracion</span> <span class="o">=</span> <span class="n">duracion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duracion</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="SidecarPostClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.SidecarPostClass">[documentos]</a><span class="k">class</span> <span class="nc">SidecarPostClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">numero</span><span class="p">,</span><span class="n">tipo</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numero</span> <span class="o">=</span> <span class="n">numero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">=</span> <span class="n">tipo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numero</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span>  <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="UsuarioMaxComentariosClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.UsuarioMaxComentariosClass">[documentos]</a><span class="k">class</span> <span class="nc">UsuarioMaxComentariosClass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nombre</span><span class="p">,</span><span class="n">comentarios</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span> <span class="o">=</span> <span class="n">comentarios</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span>  <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comentarios</span><span class="p">)</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+<div class="viewcode-block" id="ComentarioMaxLikesClass"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.utils.ComentarioMaxLikesClass">[documentos]</a><span class="k">class</span> <span class="nc">ComentarioMaxLikesClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propietario</span><span class="p">,</span> <span class="n">fecha</span><span class="p">,</span> <span class="n">likes</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">propietario</span> <span class="o">=</span> <span class="n">propietario</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">fecha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likes</span> <span class="o">=</span> <span class="n">likes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">propietario</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likes</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39;, &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">+</span><span class="s1">&#39;}&#39;</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Ir a" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.utils</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Derechos de autor 2022, Alberto Macias Gutierrez.
+      Creado usando <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>

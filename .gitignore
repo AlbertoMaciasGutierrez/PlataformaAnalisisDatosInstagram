@@ -1,3 +1,4 @@
 .EntornoInstagramDjango
 db.sqlite3
 .env
+CuentaPruebaInstagram.txt

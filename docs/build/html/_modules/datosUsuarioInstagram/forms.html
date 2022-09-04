@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datosUsuarioInstagram.forms &#8212; documentación de Plataforma para el analisis de datos de Instagram - 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.forms</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Código fuente para datosUsuarioInstagram.forms</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">cuentas.models</span> <span class="kn">import</span> <span class="n">Usuario</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.forms</span> <span class="kn">import</span> <span class="n">UserCreationForm</span><span class="p">,</span> <span class="n">AuthenticationForm</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">bootstrap_modal_forms.forms</span> <span class="kn">import</span> <span class="n">BSModalModelForm</span>
+
+
+<div class="viewcode-block" id="RegistroForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.RegistroForm">[documentos]</a><span class="k">class</span> <span class="nc">RegistroForm</span><span class="p">(</span><span class="n">UserCreationForm</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RegistroForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.RegistroForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Usuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span><span class="s1">&#39;email&#39;</span><span class="p">,</span><span class="s1">&#39;first_name&#39;</span><span class="p">,</span><span class="s1">&#39;last_name&#39;</span><span class="p">,</span><span class="s1">&#39;password1&#39;</span><span class="p">,</span><span class="s1">&#39;password2&#39;</span><span class="p">)</span></div>
+
+
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Nombre de Usuario&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                    <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Nombre de Usuario&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Nombre&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Nombre&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Apellidos&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Apellidos&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;rows&#39;</span><span class="p">:</span><span class="s1">&#39;2&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">email</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Correo&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">EmailInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Correo&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">password1</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Contraseña&#39;</span><span class="p">,</span> <span class="n">strip</span> <span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control &#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Contraseña&#39;</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;autocomplete&quot;</span><span class="p">:</span> <span class="s2">&quot;new-password&quot;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">password2</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Contraseña (Confirmación)&#39;</span><span class="p">,</span> <span class="n">strip</span> <span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control &#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Contraseña (Confirmación)&#39;</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;autocomplete&quot;</span><span class="p">:</span> <span class="s2">&quot;new-password&quot;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoginForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.LoginForm">[documentos]</a><span class="k">class</span> <span class="nc">LoginForm</span><span class="p">(</span><span class="n">AuthenticationForm</span><span class="p">):</span>
+
+
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Nombre de Usuario&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Nombre de Usuario&#39;</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;autofocus&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Contraseña&#39;</span><span class="p">,</span> <span class="n">strip</span> <span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control &#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Contraseña&#39;</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;autocomplete&quot;</span><span class="p">:</span> <span class="s2">&quot;current-password&quot;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AddCuentaScrapingForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.AddCuentaScrapingForm">[documentos]</a><span class="k">class</span> <span class="nc">AddCuentaScrapingForm</span><span class="p">(</span><span class="n">BSModalModelForm</span><span class="p">):</span>
+    <span class="n">cuenta</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Cuenta:&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39; form-control&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Cuenta&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;style&#39;</span><span class="p">:</span><span class="s1">&#39;align-items: center; &#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;Contraseña:&#39;</span><span class="p">,</span> <span class="n">strip</span> <span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control &#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Contraseña&#39;</span><span class="p">,</span>
+                                                                        <span class="s2">&quot;autocomplete&quot;</span><span class="p">:</span> <span class="s2">&quot;current-password&quot;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AddCuentaScrapingForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.AddCuentaScrapingForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">CuentaScrapeoInstagram</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cuenta&#39;</span><span class="p">,)</span></div></div>
+
+<div class="viewcode-block" id="UseCuentaScrapingForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UseCuentaScrapingForm">[documentos]</a><span class="k">class</span> <span class="nc">UseCuentaScrapingForm</span><span class="p">(</span><span class="n">BSModalModelForm</span><span class="p">):</span>
+    <span class="n">usando</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">CheckboxInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;checkbox&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;style&#39;</span><span class="p">:</span><span class="s1">&#39;font-size: xx-small; &#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="UseCuentaScrapingForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UseCuentaScrapingForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">CuentaScrapeoInstagram</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;usando&#39;</span><span class="p">,)</span></div></div>
+
+
+<div class="viewcode-block" id="ContactoForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ContactoForm">[documentos]</a><span class="k">class</span> <span class="nc">ContactoForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ContactoForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ContactoForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Contacto</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;nombre&#39;</span><span class="p">,</span><span class="s1">&#39;correo&#39;</span><span class="p">,</span><span class="s1">&#39;mensaje&#39;</span><span class="p">)</span></div>
+    
+    <span class="n">nombre</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Nombre&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">correo</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control mb-3&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span><span class="s1">&#39;Correo&#39;</span><span class="p">}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;form-control&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;rows&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;placeholder&#39;</span><span class="p">:</span> <span class="s2">&quot;Mensaje&quot;</span><span class="p">,}),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BusquedaUsuarioForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaUsuarioForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaUsuarioForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosBusquedaUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+
+<div class="viewcode-block" id="BusquedaUsuarioPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioPostForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaUsuarioPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaUsuarioPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosPostBusquedaUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+
+<div class="viewcode-block" id="BusquedaUsuarioVideosForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioVideosForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaUsuarioVideosForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaUsuarioVideosForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioVideosForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosVideosBusquedaUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+
+<div class="viewcode-block" id="BusquedaUsuarioEtiquetadasForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioEtiquetadasForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaUsuarioEtiquetadasForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaUsuarioEtiquetadasForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioEtiquetadasForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosEtiquetadasBusquedaUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+
+<div class="viewcode-block" id="BusquedaUsuarioIDusuarioForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioIDusuarioForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaUsuarioIDusuarioForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaUsuarioIDusuarioForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaUsuarioIDusuarioForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">IdentificadorUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+<span class="c1">#&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="HighlightForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HighlightForm">[documentos]</a><span class="k">class</span> <span class="nc">HighlightForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="HighlightForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HighlightForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosHighlight</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span></div></div>
+
+<div class="viewcode-block" id="HighlightStoryForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HighlightStoryForm">[documentos]</a><span class="k">class</span> <span class="nc">HighlightStoryForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="HighlightStoryForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HighlightStoryForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosStoryHighlight</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="ContadorHighlightsForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ContadorHighlightsForm">[documentos]</a><span class="k">class</span> <span class="nc">ContadorHighlightsForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="ContadorHighlightsForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ContadorHighlightsForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ContadorHighlights</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<span class="c1">#&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="BusquedaPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaPostForm">[documentos]</a><span class="k">class</span> <span class="nc">BusquedaPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="BusquedaPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.BusquedaPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DatosPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="ComentarioMaxLikesPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ComentarioMaxLikesPostForm">[documentos]</a><span class="k">class</span> <span class="nc">ComentarioMaxLikesPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="ComentarioMaxLikesPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.ComentarioMaxLikesPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ComentarioMaxLikesPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="UsuarioMaxComentariosPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UsuarioMaxComentariosPostForm">[documentos]</a><span class="k">class</span> <span class="nc">UsuarioMaxComentariosPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="UsuarioMaxComentariosPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UsuarioMaxComentariosPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">UsuarioMaxComentariosPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="PostSidecarForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.PostSidecarForm">[documentos]</a><span class="k">class</span> <span class="nc">PostSidecarForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="PostSidecarForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.PostSidecarForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">PostSidecar</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="HashtagsSubtituloPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HashtagsSubtituloPostForm">[documentos]</a><span class="k">class</span> <span class="nc">HashtagsSubtituloPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="HashtagsSubtituloPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.HashtagsSubtituloPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">HashtagsSubtituloPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="MencionesSubtituloPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.MencionesSubtituloPostForm">[documentos]</a><span class="k">class</span> <span class="nc">MencionesSubtituloPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="MencionesSubtituloPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.MencionesSubtituloPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MencionesSubtituloPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="PatrocinadoresPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.PatrocinadoresPostForm">[documentos]</a><span class="k">class</span> <span class="nc">PatrocinadoresPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="PatrocinadoresPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.PatrocinadoresPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">PatrocinadoresPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+
+<div class="viewcode-block" id="UsuariosEtiquetadosPostForm"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UsuariosEtiquetadosPostForm">[documentos]</a><span class="k">class</span> <span class="nc">UsuariosEtiquetadosPostForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="UsuariosEtiquetadosPostForm.Meta"><a class="viewcode-back" href="../../modules/datosUsuarioInstagram.html#datosUsuarioInstagram.forms.UsuariosEtiquetadosPostForm.Meta">[documentos]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">UsuariosEtiquetadosPost</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span> </div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Ir a" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">documentación de Plataforma para el analisis de datos de Instagram - 1.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Código de módulo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">datosUsuarioInstagram.forms</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Derechos de autor 2022, Alberto Macias Gutierrez.
+      Creado usando <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>
