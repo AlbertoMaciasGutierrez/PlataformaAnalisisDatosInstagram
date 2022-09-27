@@ -2,4 +2,5 @@
 db.sqlite3
 .env
 CuentaPruebaInstagram.txt
-*.docx
+docx
+Memoria/SeguimientoProyecto.docx
